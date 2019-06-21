@@ -60,7 +60,7 @@ DasGupt_Npop<-function(df,pop,...){
       }
       return(DG_OUT)
     }else{
-      DasGupt_2pop(testdf,year,c("prev","age_str","freq","disposal_prop","crime_type_prop")) %>%
+      DasGupt_2pop(df,!!pop,factrs) %>%
         map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
       DG_OUT = list(c("prev","age_str","freq","disposal_prop","crime_type_prop"))
       for(f in c("prev","age_str","freq","disposal_prop","crime_type_prop")){
