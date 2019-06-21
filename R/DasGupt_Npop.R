@@ -60,8 +60,8 @@ DasGupt_Npop<-function(df,pop,...){
       }
       return(DG_OUT)
     }else{
-      DasGupt_2pop(df,!!pop,factrs) -> dg2p_res
-      map(dg2p_res, ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect))
+      DasGupt_2pop(df,!!pop,factrs) %>%
+      map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
       DG_OUT = list(factrs)
       for(f in factrs){
         DG_OUT[[f]]=list(
