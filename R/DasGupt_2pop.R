@@ -27,5 +27,14 @@ DasGupt_2pop<-function(df,pop,factrs){
   #equivalent to Q1, Q2, ....  in Ben's function
   decomp_out<-suppressMessages(map(1:nfact,~DGadjust_ratefactor(df_nested,pop,.,factrs)))
   names(decomp_out)<-factrs
+  
+  decomp_out <-
+  decomp_out %>%
+    tibble(
+      factor = names(.),
+      results = .
+    ) %>%
+    unnest()
+  
   return(decomp_out)
 }
