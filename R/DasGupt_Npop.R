@@ -62,8 +62,8 @@ DasGupt_Npop<-function(df,pop,...){
     }else{
       DasGupt_2pop(df,!!pop,factrs) %>%
         map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
-      DG_OUT = list(c("prev","age_str","freq","disposal_prop","crime_type_prop"))
-      for(f in c("prev","age_str","freq","disposal_prop","crime_type_prop")){
+      DG_OUT = list(factrs)
+      for(f in factrs){
         DG_OUT[[f]]=list(
           "standardised_rates" = select(dg2p_res[[f]],starts_with("pop")),
           "factor_effects" = select(dg2p_res[[f]],starts_with("diff")))
