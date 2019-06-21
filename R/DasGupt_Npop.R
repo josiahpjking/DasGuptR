@@ -65,8 +65,8 @@ DasGupt_Npop<-function(df,pop,...){
       DG_OUT = list(c("prev","age_str","freq","disposal_prop","crime_type_prop"))
       for(f in c("prev","age_str","freq","disposal_prop","crime_type_prop")){
         DG_OUT[[f]]=list(
-          "standardised_rates" = dg2p_res[[f]] %>% select(.,starts_with("pop")),
-          "factor_effects" = dg2p_res[[f]] %>% select(.,starts_with("diff")))
+          "standardised_rates" = select(dg2p_res[[f]],starts_with("pop")),
+          "factor_effects" = select(dg2p_res[[f]],starts_with("diff")))
       }
       return(DG_OUT)
     }
