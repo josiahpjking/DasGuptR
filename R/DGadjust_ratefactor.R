@@ -60,8 +60,8 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs){
   qdf %>% select(!!pop,alpha) %>% spread(!!pop,alpha) %>% unnest %>%
     map(.,~.x*rowSums(sum_prods)) -> effects
   tibble(
-    !!paste0("pop",qdf[2,quo_name(pop)]):=effects[[2]],
-    !!paste0("pop",qdf[1,quo_name(pop)]):=effects[[1]],
+    !!paste0("pop",qdf %>% pull(!!pop) %>% .[1] %>% as.character):=effects[[2]],
+    !!paste0("pop",qdf %>% pull(!!pop) %>% .[2] %>% as.character):=effects[[1]],
     factoreffect=effects[[2]]-effects[[1]]
   )
 }
