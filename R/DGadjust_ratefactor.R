@@ -12,8 +12,9 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs){
   nfact=length(factrs)
   df2 %>% mutate(
     factor_df_minus = map(factor_df, magrittr::extract, factrs[-i]),
-    alpha = map(factor_df, magrittr::extract, factrs[i]) %>% map(.,1),
-    pop_prod = map2(pop_prods,alpha, ~ ifelse(is.nan(.x/.y), 0, (.x/.y)))
+    factor_mat_minus = map(factor_df_minus,as.matrix),
+    pop_prod=map(factor_mat_minus,rowProds),
+    alpha = map(factor_df, magrittr::extract, factrs[i]) %>% map(.,1)
   ) -> qdf
 
   #these are all the population factors (for both populations), spread.

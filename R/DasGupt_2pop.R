@@ -7,7 +7,6 @@
 #' @examples
 #' ......
 DasGupt_2pop<-function(df,pop,factrs){
-
   pop=enquo(pop)
   nfact=length(factrs)
   print(factrs)
@@ -17,8 +16,6 @@ DasGupt_2pop<-function(df,pop,factrs){
     nest() %>%
     mutate(
       factor_df = map(data, magrittr::extract,factrs), #replace factrs with sym(...)
-      factor_mat = map(factor_df,as.matrix),
-      pop_prods=map(factor_mat,rowProds) #calculate total products (can simply divide by \alpha afterwards)
     ) -> df_nested
 
   #the get_effect function will loop over the indices of your factors, and for
