@@ -13,7 +13,7 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs){
   df2 %>% mutate(
     factor_df_minus = map(factor_df, magrittr::extract, factrs[-i]),
     factor_mat_minus = map(factor_df_minus,as.matrix),
-    pop_prod=map(factor_mat_minus,rowProds),
+    pop_prod=map(factor_mat_minus,rowProds,na.rm=T),
     alpha = map(factor_df, magrittr::extract, factrs[i]) %>% map(.,1)
   ) -> qdf
 
@@ -40,11 +40,11 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs){
     fact_vals = map(colnums,~pop_facts[,.x]),
     # as matrix and rowProduct
     fact_valsm = map(fact_vals,as.matrix),
-    prods = map(fact_valsm,rowProds)
+    prods = map(fact_valsm,rowProds,na.rm=T)
   ) %>% pull(prods) %>% as_tibble(.,.name_repair="universal")
 
   map(splitAt(1:ncol(prod_tibs),cumsum(length_perms+1)), ~prod_tibs[.x]) %>%
-    map(.,rowSums) %>%
+    map(.,rowSums,na.rm=T) %>%
     map2_dfc(.,denominators, ~(.x/.y)) %>%
     #as_tibble(.,.name_repair="universal") %>%
     #add in the first part of the equation (abcd+ABCD)
@@ -52,13 +52,13 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs){
       p0=qdf %>% select(!!pop,pop_prod) %>%
         spread(!!pop,pop_prod) %>%
         unnest %>%
-        rowSums() %>%
+        rowSums(.,na.rm=T) %>%
         map2_dbl(.,nfact,~(.x/.y))
     ) -> sum_prods
 
   #extract alpha and multiply by Q
   qdf %>% select(!!pop,alpha) %>% spread(!!pop,alpha) %>% unnest %>%
-    map(.,~.x*rowSums(sum_prods)) -> effects
+    map(.,~.x*rowSums(sum_prods,na.rm=T)) -> effects
   tibble(
     !!paste0("pop",qdf %>% pull(!!pop) %>% .[1] %>% as.character):=effects[[2]],
     !!paste0("pop",qdf %>% pull(!!pop) %>% .[2] %>% as.character):=effects[[1]],

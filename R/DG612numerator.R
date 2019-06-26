@@ -15,5 +15,5 @@ DG612numerator<-function(df,y1,y2,yj){
     a12=a12,
     a1j=-a1j,
     a2j=a2j
-  ) %>% rowSums()
+  ) %>% rowSums(.,na.rm=T)
 }

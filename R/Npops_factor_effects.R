@@ -12,7 +12,7 @@ Npops_factor_effects<-function(factoreffs,ps,all_p){
   #all_y=pws_pops %>% unlist %>% unique
   map_dfc(all_p[!(all_p %in% c(y1,y2))],~DG612numerator(factoreffs,y1,y2,.)) %>%
     tibble(
-      dg612=rowSums(.)/length(all_p),
+      dg612=rowSums(.,na.rm=T)/length(all_p),
       a12=factoreffs[,grepl(paste0(y1,"vs",y2),names(factoreffs))] %>% unlist %>% unname,
       !!paste0("diff",y1,"_",y2):=a12-dg612
     ) %>% select(paste0("diff",y1,"_",y2))

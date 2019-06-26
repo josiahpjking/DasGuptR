@@ -7,12 +7,12 @@
 #' @examples
 #' ......
 #DasGupt_TS<-function(df,f,pop,populations=NULL,baseline=NULL,method="DG",...){
-DasGupt_Npop<-function(df,pop,...){
+DasGupt_Npop<-function(df,pop,...,baseline=NULL){
   pop=enquo(pop)
   factrs=map_chr(enquos(...),quo_name)
   nfact=length(factrs)
 
-  allpops=distinct(df,!!pop) %>% unlist %>% unname
+  allpops=pull(df,!!pop) %>% unique
 
 
   #####
@@ -55,13 +55,21 @@ DasGupt_Npop<-function(df,pop,...){
       #separate out the adjusted rates and the factor effects. DG has d
       dg2p_res %>% unlist(recursive = F) %>% as_tibble() %>%
         select(contains(f),-contains("factor")) -> dg2p_rates
-      #std_rates
-      standardized_rates<-map_dfc(allpops,~Npops_std_rates(dg2p_rates,allpops,as.character(.),f))
-      #these are the standardized rate for factor f in each year, stnadardixed over all Ys.
-        dg2p_res %>% unlist(recursive = F) %>% as_tibble() %>%
+      dg2p_res %>% unlist(recursive = F) %>% as_tibble() %>%
         select(contains(paste0(f,".factor"))) -> dg2p_facteffs
-      difference_effects<-map_dfc(pairwise_pops,~Npops_factor_effects(dg2p_facteffs,.,allpops))
-        DG_OUT[[f]]=list("standardised_rates" = standardized_rates, "factor_effects" = difference_effects)
+
+      if(!is.null(baseline)){
+        standardized_rates <- dg2p_rates %>% select(starts_with(paste0("pops",baseline))) %>% select(-ends_with(paste0("pop",baseline)))
+        names(standardized_rates)<-map_chr(strsplit(names(standardized_rates),"\\."),3)
+        difference_effects <- dg2p_facteffs %>% select(starts_with(paste0("pops",baseline)))
+        names(difference_effects)<-gsub("pops","diff",map_chr(strsplit(names(difference_effects),"\\."),1)) %>% gsub("vs","_",.)
+      }else{
+        #std_rates
+        standardized_rates<-map_dfc(allpops,~Npops_std_rates(dg2p_rates,allpops,as.character(.),f))
+        #these are the standardized rate for factor f in each year, stnadardixed over all Ys.
+        difference_effects<-map_dfc(pairwise_pops,~Npops_factor_effects(dg2p_facteffs,.,allpops))
+      }
+      DG_OUT[[f]]=list("standardised_rates" = standardized_rates, "factor_effects" = difference_effects)
     }
     return(DG_OUT)
   }else{
