@@ -7,12 +7,13 @@
 #' @examples
 #' ......
 #DasGupt_TS<-function(df,f,pop,populations=NULL,baseline=NULL,method="DG",...){
-DasGupt_Npop<-function(df,pop,...,baseline=NULL){
+DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
   pop=enquo(pop)
   factrs=map_chr(enquos(...),quo_name)
   nfact=length(factrs)
-
+  id_vars=enquo(id_vars)
   allpops=pull(df,!!pop) %>% unique
+
 
 
   #####
@@ -50,7 +51,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL){
     names(dg2p_res)<-map(pairwise_pops,~paste0("pops",paste(.,collapse="vs")))
     #unlist and tibble up
     dg2p_res %>% map(.,~unlist(.,recursive=F) %>% as_tibble) -> dg2p_res
-    DG_OUT<-list(factrs)
+    DG_OUT = list()
     for(f in factrs){
       #separate out the adjusted rates and the factor effects. DG has d
       dg2p_res %>% unlist(recursive = F) %>% as_tibble() %>%
@@ -71,18 +72,21 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL){
       }
       DG_OUT[[f]]=list("standardised_rates" = standardized_rates, "factor_effects" = difference_effects)
     }
-    return(DG_OUT)
   }else{
-
   # ONLY 2 populations, use dasgupt_2pop directly.
     DasGupt_2pop(df,!!pop,factrs) %>%
       map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
-    DG_OUT = list(factrs)
+    DG_OUT = list()
     for(f in factrs){
       DG_OUT[[f]]=list(
         "standardised_rates" = select(dg2p_res[[f]],starts_with("pop")),
         "factor_effects" = select(dg2p_res[[f]],starts_with("diff")))
     }
-    return(DG_OUT)
   }
+
+
+  if(!is.null(id_vars)){
+     map(DG_OUT, ~bind_cols(df %>% select(!!id_vars) %>% distinct,.)) %>%
+      map2_dfr(.,names(.),~mutate(.x,factor=.y))
+   }else{return(DG_OUT)}
 }
