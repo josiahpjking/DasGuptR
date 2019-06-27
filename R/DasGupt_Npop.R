@@ -60,7 +60,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
         #these are the standardized rate for factor f in each year, stnadardixed over all Ys.
         difference_effects<-map_dfc(pairwise_pops,~Npops_factor_effects(dg2p_facteffs,.,allpops))
       }
-      DG_OUT[[f]]=list("standardised_rates" = standardized_rates, "factor_effects" = difference_effects)
+      DG_OUT[[f]]=bind_cols(standardized_rates,difference_effects)
     }
   }else{
   # ONLY 2 populations, use dasgupt_2pop directly.
@@ -68,9 +68,10 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
       map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
     DG_OUT = list()
     for(f in factrs){
-      DG_OUT[[f]]=list(
-        "standardised_rates" = select(dg2p_res[[f]],starts_with("pop")),
-        "factor_effects" = select(dg2p_res[[f]],starts_with("diff")))
+      DG_OUT[[f]]=bind_cols(
+        select(dg2p_res[[f]],starts_with("pop")),
+        select(dg2p_res[[f]],starts_with("diff"))
+      )
     }
   }
 
