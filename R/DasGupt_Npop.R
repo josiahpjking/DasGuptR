@@ -11,31 +11,21 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
   pop=enquo(pop)
   factrs=map_chr(enquos(...),quo_name)
   nfact=length(factrs)
-  id_vars=enquo(id_vars)
   allpops=pull(df,!!pop) %>% unique
 
-
+  #all pairwise comparisons of years (will filter these depending on user input of baseline)
+  allpops %>% combinat::combn(.,2) %>% as_tibble(.,.name_repair="universal") -> pairwise_pops
+  pairwise_pops<-bind_cols(pairwise_pops, pairwise_pops[c(2,1),])
 
   #####
-  #extra user inputs
+  #future user inputs
   #####
-  # possible to put in functionality to a) choose a specific baseline to compare all years against (no dasgupta), as well as select the set of years you want to include in the time series...
+  #select the set of years you want to include in the time series...
 
   #for comparing specific pops/years. @param populations=NULL
   #if(!is.null(populations)){
     #allpops=allpops[allpops %in% populations]
   #}
-
-  #for setting a baseline @param baseline=NULL
-  # if(is.null(baseline)){
-    allpops %>% combinat::combn(.,2) %>% as_tibble(.,.name_repair="universal") -> pairwise_pops
-    pairwise_pops<-bind_cols(pairwise_pops, pairwise_pops[c(2,1),])
-  # } else{
-  #   allpops[allpops!=baseline] %>% combinat::combn(.,1) -> compyears
-  #   matrix(c(rep(baseline,length(compyears)),compyears),ncol=length(compyears),byrow=T) %>%
-  #     as_tibble() -> pairwise_pops
-  # }
-
 
   ##########
   #THE DAS GUPTA METHOD
@@ -85,8 +75,9 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
   }
 
 
-  if(!is.null(id_vars)){
+  if(!missing(id_vars)){
+     id_vars=enquo(id_vars)
      map(DG_OUT, ~bind_cols(df %>% select(!!id_vars) %>% distinct,.)) %>%
-      map2_dfr(.,names(.),~mutate(.x,factor=.y))
-   }else{return(DG_OUT)}
+       map2_dfr(.,names(.),~mutate(.x,factor=.y))
+  }else{return(DG_OUT)}
 }
