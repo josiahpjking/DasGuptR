@@ -2,7 +2,7 @@
 % Please edit documentation in R/DasGupt_2pop.R
 \name{DasGupt_2pop}
 \alias{DasGupt_2pop}
-\title{Standardisation and decomposition of rates over P rate-factors and 2 populations. 
+\title{Standardisation and decomposition of rates over P rate-factors and 2 populations.
 Outputs a ? object}
 \usage{
 DasGupt_2pop(df, pop, factrs)
@@ -15,7 +15,7 @@ DasGupt_2pop(df, pop, factrs)
 \item{factrs}{character vector of rate-factors}
 }
 \description{
-Standardisation and decomposition of rates over P rate-factors and 2 populations. 
+Standardisation and decomposition of rates over P rate-factors and 2 populations.
 Outputs a ? object
 }
 \examples{
