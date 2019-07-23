@@ -15,5 +15,5 @@ Npops_factor_effects<-function(factoreffs,ps,all_p){
       dg612=rowSums(.,na.rm=T)/length(all_p),
       a12=factoreffs[,grepl(paste0(y1,"vs",y2),names(factoreffs))] %>% unlist %>% unname,
       !!paste0("diff",y1,"_",y2):=a12-dg612
-    ) %>% select(paste0("diff",y1,"_",y2))
+    ) %>% dplyr::select(paste0("diff",y1,"_",y2))
 }

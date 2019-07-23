@@ -22,5 +22,5 @@ Npops_std_rates<-function(srates,all_p,y,fctr){
       sum2=rowSums(.,na.rm=T)/(length(all_p)*(length(all_p)-1)),
       sum1=rowSums(srates[,grepl(paste0(fctr,".pop",y),names(srates))],na.rm=T)/(length(all_p)-1),
       !!(paste0("pop",y)):=sum1+sum2
-    ) %>% select(!!paste0("pop",y))
+    ) %>% dplyr::select(!!paste0("pop",y))
 }

@@ -35,7 +35,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
   if(length(allpops)>2){
     #let's change the names to ensure we keep track of which pairwise standardisations are which
     #okay, so start by applying dasgupt2pop to each pairwise combination
-    map(pairwise_pops,~filter(df,year %in% .x) %>% mutate(
+    map(pairwise_pops,~dplyr::filter(df,year %in% .x) %>% mutate(
       orderedpop=factor(!!pop,c(.x[[1]],.x[[2]])))) %>%
       map(.,~DasGupt_2pop(.,orderedpop,factrs)) -> dg2p_res
     names(dg2p_res)<-map(pairwise_pops,~paste0("pops",paste(.,collapse="vs")))
