@@ -7,7 +7,7 @@
 #' @examples
 #' ......
 #DasGupt_TS<-function(df,f,pop,populations=NULL,baseline=NULL,method="DG",...){
-DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
+DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
   pop=enquo(pop)
   factrs=map_chr(enquos(...),quo_name)
   nfact=length(factrs)
@@ -37,16 +37,17 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
     #okay, so start by applying dasgupt2pop to each pairwise combination
     map(pairwise_pops,~dplyr::filter(df,year %in% .x) %>% mutate(
       orderedpop=factor(!!pop,c(.x[[1]],.x[[2]])))) %>%
-      map(.,~DasGupt_2pop(.,orderedpop,factrs)) -> dg2p_res
+      map(.,~DasGupt_2pop(.,orderedpop,factrs,ratefunction)) -> dg2p_res
+
     names(dg2p_res)<-map(pairwise_pops,~paste0("pops",paste(.,collapse="vs")))
     #unlist and tibble up
-    dg2p_res %>% map(.,~unlist(.,recursive=F) %>% as_tibble) -> dg2p_res
+    dg2p_res %>% map(.,~unlist(.,recursive=F) %>% as_tibble(.name_repair = "universal")) -> dg2p_res
     DG_OUT = list()
     for(f in factrs){
       #separate out the adjusted rates and the factor effects. DG has d
-      dg2p_res %>% unlist(recursive = F) %>% as_tibble() %>%
+      dg2p_res %>% unlist(recursive = F) %>% as_tibble(.name_repair = "universal") %>%
         select(contains(f),-contains("factor")) -> dg2p_rates
-      dg2p_res %>% unlist(recursive = F) %>% as_tibble() %>%
+      dg2p_res %>% unlist(recursive = F) %>% as_tibble(.name_repair = "universal") %>%
         select(contains(paste0(f,".factor"))) -> dg2p_facteffs
 
       if(!is.null(baseline)){
@@ -64,7 +65,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL){
     }
   }else{
   # ONLY 2 populations, use dasgupt_2pop directly.
-    DasGupt_2pop(df,!!pop,factrs) %>%
+    DasGupt_2pop(df,!!pop,factrs,ratefunction) %>%
       map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
     DG_OUT = list()
     for(f in factrs){

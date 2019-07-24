@@ -6,80 +6,91 @@
 #' @export
 #' @examples
 #' ......
-DGadjust_ratefactor<-function(df2,pop,i,factrs){
-  splitAt <- function(x, pos) unname(split(x, cumsum(seq_along(x) %in% pos)))
+allfacts=c(letters[1:5],paste0(letters[1:5],1))
+facti="a"
+nfact=5
+
+DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
+  pop=enquo(pop)
   #how many factors?
   nfact=length(factrs)
-  df2 %>% mutate(
-    factor_df_minus = map(factor_df, magrittr::extract, factrs[-i]),
-    factor_mat_minus = map(factor_df_minus,as.matrix),
-    pop_prod=map(factor_mat_minus,matrixStats::rowProds,na.rm=T),
-    alpha = map(factor_df, magrittr::extract, factrs[i]) %>% map(.,1)
-  ) -> qdf
+  #this is the one we're interested in right now
+  facti=factrs[i]
 
   #these are all the population factors (for both populations), spread.
-  #this means that indices 1:n/2 are pop1, and n/2:n are pop2.
-  pop_facts<-qdf %>% dplyr::select(!!pop,factor_df_minus) %>% spread(!!pop,factor_df_minus) %>% unnest()
+  #this means that indices 1:n/2 are pop1, and n/2:n are pop2. They are distinguished by a "1" in the name.
+  #JK: IMPORTANT - FACTOR NAMES MUST NOT HAVE A "1" IN THEM ALREADY!
+  pop_facts<-df2 %>% dplyr::select(!!pop,factor_df) %>% spread(!!pop,factor_df) %>% unnest()
+  allfacts=names(pop_facts)
 
+  #these are the all the combinations of P-1 factors from 2 populations
+  allperms<-combn(allfacts[!(allfacts %in% c(facti,paste0(facti,1)))],length(allfacts)/2-1) %>% t %>% as_tibble()
 
-  #DG's formula on p15 requires all different permutations of sets of all factors where factors are taken from either population.
-  #I figured the easiest way to do this might be to use permutations of column indices in pop_facts
-  if(nfact==2){
-  sum_prods<-tibble(
-    p0=qdf %>% dplyr::select(!!pop,pop_prod) %>%
-        spread(!!pop,pop_prod) %>%
-        unnest %>%
-        rowSums(.,na.rm=T) %>%
-        map2_dbl(.,nfact,~(.x/.y))
-  )
-  #not working!!!
-    ################################################
-    # all_perms=combinat::permn(2)
-    # colnums=unlist(all_perms)
-    # length_perms=2
-    # denominators=2
-  }
-  else{
-    r=ceiling(nfact/2)-1
-    all_perms=map(1:r,~unique(c(combinat::permn(c(rep(1,nfact-1-.x),rep(2,.x))), combinat::permn(c(rep(2,nfact-1-.x),rep(1,.x))))))
-    colnums=all_perms %>% unlist(.,recursive=F) %>% map(.,~c(which(.x>1)+(nfact-1),which(.x<2)))
-    #relevant later
-    length_perms = map_dbl(all_perms,length)
-    denominators=map_dbl(1:length(length_perms),~nfact*(ncol(utils::combn(nfact-1,.))))
+  #because we need to distinguish between sets by how many are from pop1 and how many from pop2, we'll count the 1s and absence of 1s
+  # we also need to remove any sets in which factors come up twice (e.g. age_str and age_str1)
+  count1s <- apply(allperms, 1, function(x) length(which(grepl("1",x))))
+  count0s <- apply(allperms, 1, function(x) length(which(!grepl("1",x))))
+  countmult <- apply(map_df(allperms,~gsub("1","",.)), 1, function(x) sum(duplicated(x)|duplicated(x, fromLast = TRUE)))
+  allperms %>% mutate(
+    #c0s=ifelse(count0s %in% c(0,(length(allfacts)/2-1)),0,count0s),
+    #c1s=ifelse(count1s %in% c(0,(length(allfacts)/2-1)),0,count1s),
+    eqp=map_dfc(0:floor(nfact/2),~ifelse(count0s==.|count1s==.,.,0)) %>% rowSums,
+    cMs=countmult
+  ) %>% filter(cMs==0) -> allperms
 
-    #extract values, calculate products
-    prod_tibs<-tibble(
-      #these are translating the all_perms values into column indices
-      colnums = colnums,
-      # how many combinations are there? (these are the denominators for DG formula)
-      colcombs = rep(length_perms,times=length_perms),
-      # factor values
-      fact_vals = map(colnums,~pop_facts[,.x]),
-      # as matrix and rowProduct
-      fact_valsm = map(fact_vals,as.matrix),
-      prods = map(fact_valsm,matrixStats::rowProds,na.rm=T)
-    ) %>% pull(prods) %>% as_tibble(.,.name_repair="universal")
+  #make an id for each
+  allperms$f_id<-paste0("f",1:nrow(allperms))
 
-    map(splitAt(1:ncol(prod_tibs),cumsum(length_perms+1)), ~prod_tibs[.x]) %>%
-      map(.,rowSums,na.rm=T) %>%
-      map2_dfc(.,denominators, ~(.x/.y)) %>%
-      #as_tibble(.,.name_repair="universal") %>%
-      #add in the first part of the equation (abcd+ABCD)
-      mutate(
-        p0=qdf %>% dplyr::select(!!pop,pop_prod) %>%
-          spread(!!pop,pop_prod) %>%
-          unnest %>%
-          rowSums(.,na.rm=T) %>%
-          map2_dbl(.,nfact,~(.x/.y))
-      ) -> sum_prods
-  }
-    #extract alpha and multiply by Q
-    qdf %>% dplyr::select(!!pop,alpha) %>% spread(!!pop,alpha) %>% unnest %>%
-      map(.,~.x*rowSums(sum_prods,na.rm=T)) -> effects
+  #these are the parts of the DG 3.54 equation (page 32)
+  eq_parts <- allperms %>% group_by(eqp) %>%
+    summarise(
+      n=n(),
+      F_eqs=list(f_id)
+    ) %>% ungroup
+  #these are the denominators for each part
+  denominators = map_dbl(1:nrow(eq_parts)-1,~nfact*(ncol(combn(nfact-1,.))))
 
-    tibble(
-      !!paste0("pop",qdf %>% pull(!!pop) %>% .[1] %>% as.character):=effects[[2]],
-      !!paste0("pop",qdf %>% pull(!!pop) %>% .[2] %>% as.character):=effects[[1]],
-      factoreffect=effects[[2]]-effects[[1]]
+  #extract all the data for each F() calculation
+  #one is for when alpha is from pop1, and one when alpha is from pop2
+  allperms <- allperms %>% as_tibble %>%
+    mutate(
+      data=map(1:nrow(allperms),~pop_facts[allfacts[allfacts %in% c(facti,allperms[.,1:((length(allfacts)/2)-1)])]]),
+      data1=map(1:nrow(allperms),~pop_facts[allfacts[allfacts %in% c(paste0(facti,1),allperms[.,1:((length(allfacts)/2)-1)])]])
     )
+
+  #this is to clean up the 1s. Again, this aspect could be a lot better...
+  colClean <- function(x){ colnames(x) <- gsub("1", "", colnames(x)); x }
+
+  #Now we map the rate function (user defined) onto the data.
+  allperms %>% mutate(
+    data_rn = map(data,colClean),
+    rfunct = map(data_rn,~mutate(.,rf=eval(parse(text=ratefunction))) %>% pull(rf)),
+
+    data1_rn = map(data1,colClean),
+    rfunct1 = map(data1_rn,~mutate(.,rf=eval(parse(text=ratefunction))) %>% pull(rf))
+  ) %>% select(-c(data,data_rn,cMs,data1,data1_rn)) -> allperms
+
+
+  #spread, unnest
+  feq_data = allperms %>% select(f_id, rfunct) %>% spread(f_id,rfunct) %>% unnest
+  feq_data1 = allperms %>% select(f_id, rfunct1) %>% spread(f_id,rfunct1) %>% unnest
+
+  eq_parts %>%
+    mutate(
+      top_part = map(F_eqs, ~select(feq_data,.) %>% rowSums),
+      top_part1 = map(F_eqs, ~select(feq_data1,.) %>% rowSums),
+      bottom_part = denominators,
+      eq = map2(top_part,bottom_part,~(.x/.y)),
+      eq1 = map2(top_part1,bottom_part,~(.x/.y))
+    ) -> eq_parts
+  pop1=eq_parts %>% select(eq1) %>% unlist(recursive = F) %>% as_tibble() %>% rowSums
+  pop2=eq_parts %>% select(eq) %>% unlist(recursive = F) %>% as_tibble() %>% rowSums
+  diff=pop1-pop2
+
+  tibble(
+    !!paste0("pop",df2 %>% pull(!!pop) %>% .[1] %>% as.character):=pop1,
+    !!paste0("pop",df2 %>% pull(!!pop) %>% .[2] %>% as.character):=pop2,
+    factoreffect=diff
+  )
+
 }

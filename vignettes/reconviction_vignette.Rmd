@@ -1,0 +1,70 @@
+---
+title: "Exploring reconvictions in Scotland with Das Gupta"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exploring reconvictions in Scotland with Das Gupta}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE)
+```
+
+# Reconviction rates
+
+Scottish Government publish an annual statistical bulletin on the [Reconviction Rates in Scotland](https://www.gov.scot/publications/reconviction-rates-scotland-2016-17-offender-cohort/). 
+For the cohort of people convicted in a given year, it provides information on the numbers of reconvictions they have received. 
+The headline figure in this bulletin is the _reconviction rate_, which is simply the percentage of offenders who have been reconvicted within the follow-up of one year. The bulletin published in 2019 showed that Scotland's reconviction rate has fallen steadily over the last fifteen years. 
+
+However, measures such as reconviction rates often hide underlying changes in, for example, the age/sex structure of the population. 
+Standardization and decomposition are widely used analytic techniques to adjust for the impact of compositional factors on rates.  
+
+* _Standardization_: Shows us what a rate would have been under different scenarios - for example, if there was no change in the age/sex structure of the population, or if there was no change in the prevalence of the event we are studying (e.g. reconviction).  
+
+* _Decomposition_: Gives us the percentage of the difference in rates between two years attributable to each of the factors we have included in the standardization.  
+
+The _DasGuptR_ package provides an implementation of Prithwith Das Gupta's specification of these two techniques[^7].  
+
+[^7]: As set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.   
+
+# N.B. 
+Currently, the DasGuptR package only supports rate as a product of factors. It would be worthwhile at some point for us to extend this to rate as a function of factors (see DasGupta chapter 3). In theory, this would just involve changing DGadjust_ratefactor.R to use colnames instead of colnums, and a user supplied function of names in place of matrixStats::rowProds(). However, it feels a bit complicated right now.  
+
+
+# Reconviction data
+```{r packages}
+library(tidyverse)
+library(DasGuptR)
+data(reconv)
+str(reconv)
+```
+
+* age_str: proportion of total offenders in a given year within each age/sex group   
+* prevalence: proportion of offenders within each age/sex group who have been reconvicted  
+* frequency: average number of reconvictions per reconvicted offender within each age/sex group[^6]  
+
+[^6]: Note this is different to Scottish Government's measure of the average number of reconvictions _per offender_, which was previously a National Indicator.  
+
+
+# Two-factor decomposition
+
+The main function of the DasGuptR package is DasGupt_Npop()
+Given P factors and N populations, it will standardize rates for all combinations of P-1 factors.
+
+formula for P factors = DG p15/16
+
+
+
+```{r 2factor, warning=FALSE,message=FALSE}
+DG_reconv <- DasGupt_Npop(reconv, 
+                          pop=year,
+                          prevalence, age_str,
+                          id_vars=c(Age,Gender)
+                          )
+
+head(DG_reconv)
+```
+
+
+

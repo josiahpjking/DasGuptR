@@ -5,7 +5,7 @@
 \title{Standardisation and decomposition of rates over P rate-factors and 2 populations.
 Outputs a ? object}
 \usage{
-DasGupt_2pop(df, pop, factrs)
+DasGupt_2pop(df, pop, factrs, ratefunction = NULL)
 }
 \arguments{
 \item{df}{dataframe or tibble object, with columns specifying 1) population and 2) each rate-factor to be considered}

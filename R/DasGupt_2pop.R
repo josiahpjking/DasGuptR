@@ -6,23 +6,28 @@
 #' @export
 #' @examples
 #' ......
-DasGupt_2pop<-function(df,pop,factrs){
+DasGupt_2pop<-function(df,pop,factrs,ratefunction=NULL){
   pop=enquo(pop)
   nfact=length(factrs)
-  print(factrs)
 
   #nest and make factor matrix
   df %>% group_by(!!pop) %>%
     nest() %>%
     mutate(
-      factor_df = map(data, magrittr::extract,factrs), #replace factrs with sym(...)
+      factor_df = map(data, magrittr::extract,factrs)
     ) -> df_nested
 
-  #the get_effect function will loop over the indices of your factors, and for
+  #the below function will loop over the indices of your factors, and for
   #each factor A, it will get the BCD... adjusted rates for each population, and
   #spit out the difference too.
   #equivalent to Q1, Q2, ....  in Ben's function
-  decomp_out<-suppressMessages(map(1:nfact,~DGadjust_ratefactor(df_nested,pop,.,factrs)))
+  if(!is.null(ratefunction)){
+    decomp_out<-map(1:nfact,~DGadjust_ratefactor(df_nested,!!pop,.,factrs,ratefunction))
+  }else{
+    prodrf=paste(factrs,collapse="*")
+    decomp_out<-map(1:nfact,~DGadjust_ratefactor(df_nested,!!pop,.,factrs,prodrf))
+    #decomp_out<-map(1:nfact,~DGadjust_ratefactor_old(df_nested,!!pop,.,factrs))
+  }
   names(decomp_out)<-factrs
 
   # decomp_out <-
