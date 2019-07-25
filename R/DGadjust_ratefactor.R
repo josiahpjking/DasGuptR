@@ -22,14 +22,15 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #JK: IMPORTANT - FACTOR NAMES MUST NOT HAVE A "1" IN THEM ALREADY!
   pop_facts<-df2 %>% dplyr::select(!!pop,factor_df) %>% spread(!!pop,factor_df) %>% unnest()
   allfacts=names(pop_facts)
-
+  allfacts0 = allfacts[1:nfact]
+  allfacts1 = allfacts[(nfact+1):length(allfacts)]
   #these are the all the combinations of P-1 factors from 2 populations
-  allperms<-combn(allfacts[!(allfacts %in% c(facti,paste0(facti,1)))],length(allfacts)/2-1) %>% t %>% as_tibble()
+  allperms<-combn(allfacts[!(allfacts %in% c(facti,paste0(facti,1)))],length(allfacts)/2-1) %>% t %>% as_tibble(.name_repair = "universal")
 
   #because we need to distinguish between sets by how many are from pop1 and how many from pop2, we'll count the 1s and absence of 1s
   # we also need to remove any sets in which factors come up twice (e.g. age_str and age_str1)
-  count1s <- apply(allperms, 1, function(x) length(which(grepl("1",x))))
-  count0s <- apply(allperms, 1, function(x) length(which(!grepl("1",x))))
+  count1s <- apply(allperms, 1, function(x) length(which(x %in% allfacts1)))
+  count0s <- apply(allperms, 1, function(x) length(which(x %in% allfacts0)))
   countmult <- apply(map_df(allperms,~gsub("1","",.)), 1, function(x) sum(duplicated(x)|duplicated(x, fromLast = TRUE)))
   allperms %>% mutate(
     #c0s=ifelse(count0s %in% c(0,(length(allfacts)/2-1)),0,count0s),
