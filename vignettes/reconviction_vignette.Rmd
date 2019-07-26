@@ -272,17 +272,12 @@ reconv <-
   ) %>% 
   filter(year %in% 2004:2007) #the output is pretty cumbersome, so lets keep it at 4 years for now
 
-
 #standardize and decompose!
-
-reconv_DG <- DasGupt_Npop(data=reconv,
-                          pop=year,
-                          prevalence, pop_str, 
-                          id_vars=c(Age,Gender),
-                          ratefunction="prevalence*pop_str" 
+reconv_DG <- DasGupt_Npop(df=reconv,
+                          pop=year,prevalence, pop_str,
+                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str")
                           # the default ratefunction calculates rate as the product of all specified factors
                           # in theory this function works with any function you like.
-)
 ```
   
   

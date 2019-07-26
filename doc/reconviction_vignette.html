@@ -386,16 +386,19 @@ All
 </div>
 <div id="the-das-gupta-method" class="section level1">
 <h1>The Das Gupta Method</h1>
-<p>Das Gupta’s methodologies of standardisation and decomposition are explained in full in his 1993 book <em><a href="https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450">Standardization and decomposition of rates: A user’s manual</a></em><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>.</p>
+<p>Das Gupta’s methodologies of standardisation and decomposition are explained in full in his 1993 book <em><a href="https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450">Standardization and decomposition of rates: A user’s manual</a></em></p>
 <div id="p-factors-2-populations" class="section level2">
 <h2>P factors, 2 populations</h2>
-<p>The essence of Das Gupta’s method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54). We can interpret the P-<span class="math inline">\(\alpha\)</span> adjusted rate as ‘what the crude rate would look like if only <span class="math inline">\(\alpha\)</span> had changed (all else being equal)’.</p>
-<p>Neatly, the crude rate can be decomposed into Das Gupta’s adjusted rates such that changes in the P-<span class="math inline">\(\alpha\)</span> adjusted rate are proportional to changes in crude rates. For instance, if the crude rate decreases by 1.2, and the P-<span class="math inline">\(\alpha\)</span> adjusted rate decreases by .6, we can say that 50% of the change is crude rate is attributable to changes in <span class="math inline">\(\alpha\)</span><a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>.<br />
+<p>The essence of Das Gupta’s method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).<br />
+We can interpret the P-<span class="math inline">\(\alpha\)</span> adjusted rate as ‘what the crude rate would look like if only <span class="math inline">\(\alpha\)</span> had changed (all else being equal)’.</p>
+<p>Neatly, the crude rate can be decomposed into Das Gupta’s adjusted rates such that changes in the P-<span class="math inline">\(\alpha\)</span> adjusted rate are proportional to changes in crude rates.<br />
+For instance, if the crude rate decreases by 1.2, and the P-<span class="math inline">\(\alpha\)</span> adjusted rate decreases by .6, we can say that 50% of the change is crude rate is attributable to changes in <span class="math inline">\(\alpha\)</span><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>.<br />
 The change in P-<span class="math inline">\(\alpha\)</span> adjusted rate is known as a <em>decomposition effect</em>, in this case the <span class="math inline">\(\alpha\)</span> <em>effect</em>.</p>
 </div>
 <div id="p-factors-n-populations" class="section level2">
 <h2>P factors, N populations</h2>
-<p>Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which is perfect for time series analysis. This process involves first calculating the P-1 adjusted rates and decompositions effects for all possible pairwise comparisons of populations, and then standardizing these across the N populations (see Das Gupta 1993, p.106, equations 6.11 and 6.12) to obtain a consistent set of rates and effects, such that</p>
+<p>Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which can be applied to populations at given years for analysis of time series.<br />
+This process involves first calculating the P-1 adjusted rates and decompositions effects for all possible pairwise comparisons of populations, and then standardizing these across the N populations (see Das Gupta 1993, p.106, equations 6.11 and 6.12) to obtain a consistent set of rates and effects, such that</p>
 <ul>
 <li>there is only one P-<span class="math inline">\(\alpha\)</span> adjusted rate per population (as opposed to N-1)<br />
 </li>
@@ -856,40 +859,53 @@ Male
 <p>The second thing we require is the function F by which the rate is to be calculated from the decomposition factors.<br />
 In our two examples of the <em>reconviction rate</em> and <em>average number of reconvictions per offender</em>, rates are simply the product of factors.</p>
 <ul>
-<li>reconviction rate = prevalence <span class="math inline">\(\times\)</span> pop_str<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a><br />
+<li>reconviction rate = prevalence <span class="math inline">\(\times\)</span> pop_str<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a><br />
 </li>
 <li>avg number reconvs per offender = prevalence <span class="math inline">\(\times\)</span> frequency <span class="math inline">\(\times\)</span> pop_str</li>
 </ul>
 <div id="standardizing-and-decomposing-scotlands-reconviction-rate" class="section level2">
 <h2>Standardizing and decomposing Scotland’s reconviction rate</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reconv &lt;-<span class="st"> </span>
-<span class="st">  </span>reconv <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(
-  <span class="dt">prevalence =</span> reconvicted<span class="op">/</span>offenders,
-  <span class="dt">frequency =</span> reconvictions<span class="op">/</span>reconvicted,
-  <span class="dt">pop_str =</span> offenders<span class="op">/</span>convicted_population
-) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">%in%</span><span class="st"> </span><span class="dv">2004</span><span class="op">:</span><span class="dv">2006</span>) 
-<span class="co">#the output is pretty cumbersome, so lets keep it at 3 years for now</span>
+<p>Below, we decompose Scotland’s reconviction rate into the prevalence of reconviction and the age-sex structure of the convicted population.<br />
+This is useful because we can then investigate how much changes in the overall reconviction rate are due to fewer people being reconvicted, or due to the changing age-sex mix of the convicted population (so, if younger people tend to have higher reconviction rates, but are becoming more frequently <a href="http://scottishjusticematters.com/wp-content/uploads/Shrinking-YJ-population-SJM_5-1_April2017-18.pdf">diverted from prosecution</a>, then younger groups will begin to make up a smaller proportion of the convicted population, and so the overall rate at which the population is reconvicted will go down (even if the rates at which different sub-groups are reconvicted do not).</p>
+<p>The code below decomposes the Scotland’s reconviction rates for 2004 to 2007 into prevalence and population structure. We focus initially on this small period of time simply because the output becomes cumbersome as the the number of populations increases.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create our decomposition factors</span>
+reconv &lt;-<span class="st"> </span>
+<span class="st">  </span>reconv <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(
+    <span class="dt">prevalence =</span> reconvicted<span class="op">/</span>offenders,
+    <span class="dt">frequency =</span> reconvictions<span class="op">/</span>reconvicted, <span class="co">#not used here</span>
+    <span class="dt">pop_str =</span> offenders<span class="op">/</span>convicted_population
+  ) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(year <span class="op">%in%</span><span class="st"> </span><span class="dv">2004</span><span class="op">:</span><span class="dv">2007</span>) <span class="co">#the output is pretty cumbersome, so lets keep it at 4 years for now</span>
 
-reconv_DG &lt;-<span class="st"> </span><span class="kw">DasGupt_Npop</span>(reconv, 
-                          <span class="dt">pop=</span>year,
-                          prevalence, pop_str,
-                          <span class="dt">id_vars=</span><span class="kw">c</span>(Age,Gender),
-                          <span class="co">#ratefunction=&quot;prevalence*pop_str&quot;</span>
-)
-
-<span class="kw">str</span>(reconv_DG)</code></pre></div>
-<pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    20 obs. of  12 variables:
+<span class="co">#standardize and decompose!</span>
+reconv_DG &lt;-<span class="st"> </span><span class="kw">DasGupt_Npop</span>(<span class="dt">df=</span>reconv,
+                          <span class="dt">pop=</span>year,prevalence, pop_str,
+                          <span class="dt">id_vars=</span><span class="kw">c</span>(Age,Gender),<span class="dt">ratefunction=</span><span class="st">&quot;prevalence*pop_str&quot;</span>)
+                          <span class="co"># the default ratefunction calculates rate as the product of all specified factors</span>
+                          <span class="co"># in theory this function works with any function you like.</span></code></pre></div>
+<p>As shown below, the DasGupt_Npop() function returns a tibble with a column for the P-<span class="math inline">\(\alpha\)</span> adjusted rates in each population. The ‘factor’ column specifies <span class="math inline">\(\alpha\)</span>.</p>
+<p>It also specifies the standardized decomposition <span class="math inline">\(\alpha\)</span> effects for each pairwise comparison of populations (again, the ‘factor’ column specifies <span class="math inline">\(\alpha\)</span>)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(reconv_DG)</code></pre></div>
+<pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    20 obs. of  19 variables:
 ##  $ Age          : chr  &quot;21 to 25&quot; &quot;26 to 30&quot; &quot;31 to 40&quot; &quot;over 40&quot; ...
 ##  $ Gender       : chr  &quot;Female&quot; &quot;Female&quot; &quot;Female&quot; &quot;Female&quot; ...
-##  $ pop2004      : num  0.01118 0.00865 0.01098 0.00471 0.00895 ...
-##  $ pop2005      : num  0.0099 0.00826 0.01057 0.00427 0.00899 ...
-##  $ pop2006      : num  0.01013 0.00844 0.01117 0.00468 0.00928 ...
-##  $ diff2004_2005: num  -1.28e-03 -3.89e-04 -4.13e-04 -4.42e-04 3.43e-05 ...
-##  $ diff2004_2006: num  -1.05e-03 -2.17e-04 1.83e-04 -3.04e-05 3.27e-04 ...
-##  $ diff2005_2006: num  0.000227 0.000172 0.000597 0.000411 0.000293 ...
-##  $ diff2005_2004: num  1.28e-03 3.89e-04 4.13e-04 4.42e-04 -3.43e-05 ...
-##  $ diff2006_2004: num  1.05e-03 2.17e-04 -1.83e-04 3.04e-05 -3.27e-04 ...
-##  $ diff2006_2005: num  -0.000227 -0.000172 -0.000597 -0.000411 -0.000293 ...
+##  $ pop2004      : num  0.01121 0.0087 0.01086 0.00484 0.00904 ...
+##  $ pop2005      : num  0.00993 0.00831 0.01045 0.00439 0.00907 ...
+##  $ pop2006      : num  0.01015 0.00848 0.01105 0.00481 0.00936 ...
+##  $ pop2007      : num  0.00981 0.00803 0.01095 0.00478 0.00914 ...
+##  $ diff2004_2005: num  -1.28e-03 -3.87e-04 -4.10e-04 -4.49e-04 3.46e-05 ...
+##  $ diff2004_2006: num  -1.06e-03 -2.17e-04 1.83e-04 -3.26e-05 3.29e-04 ...
+##  $ diff2004_2007: num  -1.40e-03 -6.62e-04 8.98e-05 -6.56e-05 1.05e-04 ...
+##  $ diff2005_2006: num  0.000226 0.000169 0.000593 0.000417 0.000294 ...
+##  $ diff2005_2007: num  -1.16e-04 -2.75e-04 5.00e-04 3.84e-04 7.06e-05 ...
+##  $ diff2006_2007: num  -3.42e-04 -4.44e-04 -9.36e-05 -3.30e-05 -2.24e-04 ...
+##  $ diff2005_2004: num  1.28e-03 3.87e-04 4.10e-04 4.49e-04 -3.46e-05 ...
+##  $ diff2006_2004: num  1.06e-03 2.17e-04 -1.83e-04 3.26e-05 -3.29e-04 ...
+##  $ diff2007_2004: num  1.40e-03 6.62e-04 -8.98e-05 6.56e-05 -1.05e-04 ...
+##  $ diff2006_2005: num  -0.000226 -0.000169 -0.000593 -0.000417 -0.000294 ...
+##  $ diff2007_2005: num  1.16e-04 2.75e-04 -5.00e-04 -3.84e-04 -7.06e-05 ...
+##  $ diff2007_2006: num  3.42e-04 4.44e-04 9.36e-05 3.30e-05 2.24e-04 ...
 ##  $ factor       : chr  &quot;prevalence&quot; &quot;prevalence&quot; &quot;prevalence&quot; &quot;prevalence&quot; ...</code></pre>
 </div>
 </div>
@@ -898,12 +914,8 @@ reconv_DG &lt;-<span class="st"> </span><span class="kw">DasGupt_Npop</span>(rec
 <ol>
 <li id="fn1"><p>As set out in his 1993 book <em><a href="https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450">Standardization and decomposition of rates: A user’s manual</a></em>.<a href="#fnref1">↩</a></p></li>
 <li id="fn2"><p>As an avid R user, the reliance upon the term ‘factor’ here will get annoying. Sorry. Just remember it’s ‘factor’ in the sense akin to CFA/PCA.<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>Key formulas can be found as follows:<br />
-* page 15/16 - standardising P factors between two populations (where rate is a product of different factors)<br />
-* page 32 - standardising P factors between two populations (where rate is a function of different factors)<br />
-* page 106 - standardising P factors between N populations<a href="#fnref3">↩</a></p></li>
-<li id="fn4"><p>Importantly, this analysis is not causal as the different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).<a href="#fnref4">↩</a></p></li>
-<li id="fn5"><p>When we’re disaggregating by population structure, this factor remains implicitly present with a value of 1 (thereby having no impact).<a href="#fnref5">↩</a></p></li>
+<li id="fn3"><p>Importantly, this analysis is not causal as the different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>When we’re disaggregating by population structure, this factor remains implicitly present with a value of 1 (thereby having no impact).<a href="#fnref4">↩</a></p></li>
 </ol>
 </div>
 

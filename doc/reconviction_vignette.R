@@ -96,21 +96,24 @@ reconv %>%
   column_spec(7:9, color = "grey10") %>%
   add_header_above(c("Population" = 1, "ID variables" = 2, "Decomposition factors" = 3, "Raw numbers" = 3),background="white",color="grey70")
 
-## ----2factor, warning=FALSE,message=FALSE--------------------------------
+## ----reconv_decomp, warning=FALSE,message=FALSE--------------------------
+# create our decomposition factors
 reconv <- 
-  reconv %>% mutate(
-  prevalence = reconvicted/offenders,
-  frequency = reconvictions/reconvicted,
-  pop_str = offenders/convicted_population
-) %>% filter(year %in% 2004:2006) 
-#the output is pretty cumbersome, so lets keep it at 3 years for now
+  reconv %>% 
+  mutate(
+    prevalence = reconvicted/offenders,
+    frequency = reconvictions/reconvicted, #not used here
+    pop_str = offenders/convicted_population
+  ) %>% 
+  filter(year %in% 2004:2007) #the output is pretty cumbersome, so lets keep it at 4 years for now
 
-reconv_DG <- DasGupt_Npop(reconv, 
-                          pop=year,
-                          prevalence, pop_str,
-                          id_vars=c(Age,Gender),
-                          #ratefunction="prevalence*pop_str"
-)
+#standardize and decompose!
+reconv_DG <- DasGupt_Npop(df=reconv,
+                          pop=year,prevalence, pop_str,
+                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str")
+                          # the default ratefunction calculates rate as the product of all specified factors
+                          # in theory this function works with any function you like.
 
+## ------------------------------------------------------------------------
 str(reconv_DG)
 

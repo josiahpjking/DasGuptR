@@ -178,20 +178,16 @@ Crude birth rate per 1,000 population = $[AB + C(1-B)]D$
   
 # The Das Gupta Method
 
-Das Gupta's methodologies of standardisation and decomposition are explained in full in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_[^form].   
-
-[^form]: Key formulas can be found as follows:  
-* page 15/16 - standardising P factors between two populations (where rate is a product of different factors)  
-* page 32 - standardising P factors between two populations (where rate is a function of different factors)  
-* page 106 - standardising P factors between N populations    
+Das Gupta's methodologies of standardisation and decomposition are explained in full in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_
 
 ## P factors, 2 populations  
 
-The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54). 
+The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).  
 We can interpret the P-$\alpha$ adjusted rate as 'what the crude rate would look like if only $\alpha$ had changed (all else being equal)'.  
   
   
-Neatly, the crude rate can be decomposed into Das Gupta's adjusted rates such that changes in the P-$\alpha$ adjusted rate are proportional to changes in crude rates. For instance, if the crude rate decreases by 1.2, and the P-$\alpha$ adjusted rate decreases by .6, we can say that 50% of the change is crude rate is attributable to changes in $\alpha$[^caus].  
+Neatly, the crude rate can be decomposed into Das Gupta's adjusted rates such that changes in the P-$\alpha$ adjusted rate are proportional to changes in crude rates.  
+For instance, if the crude rate decreases by 1.2, and the P-$\alpha$ adjusted rate decreases by .6, we can say that 50% of the change is crude rate is attributable to changes in $\alpha$[^caus].  
 The change in P-$\alpha$ adjusted rate is known as a _decomposition effect_, in this case the $\alpha$ _effect_.
 
 [^caus]: Importantly, this analysis is not causal as the different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
@@ -200,7 +196,7 @@ The change in P-$\alpha$ adjusted rate is known as a _decomposition effect_, in 
 ## P factors, N populations  
   
   
-Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which is perfect for time series analysis.
+Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which can be applied to populations at given years for analysis of time series.  
 This process involves first calculating the P-1 adjusted rates and decompositions effects for all possible pairwise comparisons of populations, and then standardizing these across the N populations (see Das Gupta 1993, p.106, equations 6.11 and 6.12) to obtain a consistent set of rates and effects, such that  
   
 * there is only one P-$\alpha$ adjusted rate per population (as opposed to N-1)  
@@ -259,23 +255,37 @@ In our two examples of the _reconviction rate_ and _average number of reconvicti
 [^agg]: When we're disaggregating by population structure, this factor remains implicitly present with a value of 1 (thereby having no impact).
 
 ## Standardizing and decomposing Scotland's reconviction rate  
+  
+Below, we decompose Scotland's reconviction rate into the prevalence of reconviction and the age-sex structure of the convicted population.  
+This is useful because we can then investigate how much changes in the overall reconviction rate are due to fewer people being reconvicted, or due to the changing age-sex mix of the convicted population (so, if younger people tend to have higher reconviction rates, but are becoming more frequently [diverted from prosecution](http://scottishjusticematters.com/wp-content/uploads/Shrinking-YJ-population-SJM_5-1_April2017-18.pdf), then younger groups will begin to make up a smaller proportion of the convicted population, and so the overall rate at which the population is reconvicted will go down (even if the rates at which different sub-groups are reconvicted do not).  
+  
+The code below decomposes the Scotland's reconviction rates for 2004 to 2007 into prevalence and population structure. We focus initially on this small period of time simply because the output becomes cumbersome as the the number of populations increases.  
 
-```{r 2factor, warning=FALSE,message=FALSE}
+```{r reconv_decomp, warning=FALSE,message=FALSE}
+# create our decomposition factors
 reconv <- 
-  reconv %>% mutate(
-  prevalence = reconvicted/offenders,
-  frequency = reconvictions/reconvicted,
-  pop_str = offenders/convicted_population
-) %>% filter(year %in% 2004:2006) 
-#the output is pretty cumbersome, so lets keep it at 3 years for now
+  reconv %>% 
+  mutate(
+    prevalence = reconvicted/offenders,
+    frequency = reconvictions/reconvicted, #not used here
+    pop_str = offenders/convicted_population
+  ) %>% 
+  filter(year %in% 2004:2007) #the output is pretty cumbersome, so lets keep it at 4 years for now
 
-reconv_DG <- DasGupt_Npop(reconv, 
-                          pop=year,
-                          prevalence, pop_str,
-                          id_vars=c(Age,Gender),
-                          #ratefunction="prevalence*pop_str"
-)
+#standardize and decompose!
+reconv_DG <- DasGupt_Npop(df=reconv,
+                          pop=year,prevalence, pop_str,
+                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str")
+                          # the default ratefunction calculates rate as the product of all specified factors
+                          # in theory this function works with any function you like.
+```
+  
+  
+As shown below, the DasGupt_Npop() function returns a tibble with a column for the P-$\alpha$ adjusted rates in each population.  The 'factor' column specifies $\alpha$.  
 
+It also specifies the standardized decomposition $\alpha$ effects for each pairwise comparison of populations (again, the 'factor' column specifies $\alpha$)
+
+```{r}
 str(reconv_DG)
 ```
 
