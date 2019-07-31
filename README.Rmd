@@ -145,8 +145,9 @@ reconv %>% filter(year==2004) %>%
   row_spec(3, bold = T, color = "white", background = "#555555") %>%
   column_spec(7,bold=T)
 ```
+  
 ## Average number of reconvictions per offender    
-
+  
 A further measure provided by Scottish Government [(previously a National Indicator)](https://www2.gov.scot/About/Performance/scotPerforms/indicator/reconviction), is the _average number of reconvictions per offender_. The measure, as well as being influenced by changes in the age-sex structure of the population and changes in the prevalence of reconviction, may reflect changes in the frequency with offenders are reconvicted.  
   
 The _average number of reconvictions per offender_ in a given year can be written as:  
@@ -181,9 +182,9 @@ reconv %>% filter(year==2004) %>%
   column_spec(5,bold=T)
 
 ```
-
+  
 ## Other rates as a function F of factors  
-
+  
 While both of the reconviction measures above can be calculated as the product of different factors, other rates might be specific functions of factors, for example:  
   
 Crude rate of natural increase = $A-B$  
@@ -200,12 +201,13 @@ Crude birth rate per 1,000 population = *[AB + C(1-B)]D*
 * $C$ = Nonmarital births per 1,000 unmarried women aged 15 to 49  
 * $D$ = proportion of women aged 15 to 49 in the total population  
   
+    
 # Standardisation and decomposition with the DasGuptR package  
-
+  
 Standardization and decomposition via Das Gupta's formulae can be achieved in R via the **DasGupt_Npop()** function.   
   
 Suitable data requires a column specifying the population (e.g., *year* in the reconv data), and a column for each of the factors we wish to include in the decomposition.  
-For example, if we are interested in decomposing the _average number of reconvictions per offender_ into the prevalence and frequency of reconviction, then the following (in red) will suffice:  
+For example, if we are interested in decomposing the _average number of reconvictions per offender_ into the prevalence and frequency of reconviction, then the first 3 columns of the following will suffice:  
 
 ```{r, echo=FALSE}
 reconv %>% group_by(year) %>% 
@@ -220,7 +222,7 @@ reconv %>% group_by(year) %>%
   add_header_above(c("Population" = 1, "Decomposition Factors" = 2, "Raw numbers" = 3),background="white",color="grey70")
 ```
 
-If we are also interested in including the underlying structure of the population (e.g. age and sex sub-groups) in the decomposition, then each row should identify the sub-group via a set of id variables (i.e., age and sex), with a column specifying the proportion of the population made up by that sub-group (the *pop_str* variable below):
+If we are also interested in including the underlying structure of the population (e.g. age and sex sub-groups) in the decomposition, then each row should identify the sub-group via a set of id variables (i.e., age and sex), with a column specifying the proportion of the population made up by that sub-group (the *pop str* variable below):
 
 
 ```{r, echo=FALSE}
@@ -245,7 +247,9 @@ In our two examples of the *reconviction rate* and *average number of reconvicti
 
 (When we're not disaggregating by population structure, the "pop_str" factor remains implicitly present with a value of 1 (thereby having no impact).  
   
+  
 ### Standardizing and decomposing Scotland's reconviction rate  
+  
   
 The code below decomposes the Scotland's reconviction rates for 2004 to 2007 into prevalence and age-sex structure of the convicted population. We focus initially on this small period of time simply because the output becomes cumbersome as the the number of populations increases.  
 
@@ -280,14 +284,16 @@ str(reconv_DG)
 ```
 
 The returning rates and decomposition effects are age-sex specific (i.e., they are $A \times B$ for each sub-group). Recalling that $B$ is the proportions of the population that each group constitutes, the sum of these age-sex specific rates gives us the overall rates.  
-We can extract these population rates with the **DasGupt_rates()** function, which simply groups by $\alpha$ (the factor not being adjusted for), sums, and reshapes.
+We can extract these population rates with the **DasGupt_rates()** function, which simply groups by $\alpha$ (the factor not being adjusted for), sums, and reshapes.  
+  
 ```{r getrates}
 DasGupt_rates(reconv_DG)
 ```
-
+  
 Here the output is somewhat counterintuitive. It is important to remembe that the 'factor' column here represents the **$\alpha$ and not the P** in the expression "P-$\alpha$ adjusted rate". It can become mightily confusing, for instance, that to investigate the "age/sex adjusted rates", requires looking at the rates where `factor=="prevalence"`.  
   
 We can plot the adjusted rates alongside the crude rates...  
+  
 ```{r}
 crude_rates <-
   reconv %>%
@@ -320,7 +326,9 @@ bind_rows(
 From this, we can say that had the prevalence of reconvictions remained equal, the changing age-sex structure of the convicted population would have resulted in a change in the overall reconviction rate of 21.4% the size of the actual change.  
 This is useful because we can now get a measrue of how much changes in the overall reconviction rate are due to fewer people being reconvicted vs how much is due to the changing age-sex mix of the convicted population (e.g., if younger people tend to have higher reconviction rates, but are becoming more frequently [diverted from prosecution](http://scottishjusticematters.com/wp-content/uploads/Shrinking-YJ-population-SJM_5-1_April2017-18.pdf), then younger groups will begin to make up a smaller proportion of the convicted population, and so the overall rate at which the population is reconvicted will go down even if the rates at which different sub-groups are reconvicted do not).  
   
+  
 ## Standardizing and decomposing the average number of reconvictions per offender  
+  
   
 Scottish Government's second measure, the *average number of reconvictions per offender*, also captures changes in the frequency with which offenders are reconvicted. It is therefore possible to decompose this rate into the prevalence and frequency of reconviction, as well as age-sex structure of the population:  
 

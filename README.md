@@ -401,7 +401,7 @@ Standardisation and decomposition with the DasGuptR package
 Standardization and decomposition via Das Gupta's formulae can be achieved in R via the **DasGupt\_Npop()** function.
 
 Suitable data requires a column specifying the population (e.g., *year* in the reconv data), and a column for each of the factors we wish to include in the decomposition.
-For example, if we are interested in decomposing the *average number of reconvictions per offender* into the prevalence and frequency of reconviction, then the following (in red) will suffice:
+For example, if we are interested in decomposing the *average number of reconvictions per offender* into the prevalence and frequency of reconviction, then the first 3 columns of the following will suffice:
 
 <table>
 <thead>
@@ -583,7 +583,7 @@ reconvictions
 </tr>
 </tbody>
 </table>
-If we are also interested in including the underlying structure of the population (e.g. age and sex sub-groups) in the decomposition, then each row should identify the sub-group via a set of id variables (i.e., age and sex), with a column specifying the proportion of the population made up by that sub-group (the *pop\_str* variable below):
+If we are also interested in including the underlying structure of the population (e.g. age and sex sub-groups) in the decomposition, then each row should identify the sub-group via a set of id variables (i.e., age and sex), with a column specifying the proportion of the population made up by that sub-group (the *pop str* variable below):
 
 <table>
 <thead>
