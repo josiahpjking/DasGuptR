@@ -72,7 +72,7 @@ data(reconv)
 str(reconv)
 #> Classes 'tbl_df', 'tbl' and 'data.frame':    130 obs. of  7 variables:
 #>  $ year                : int  2004 2004 2004 2004 2004 2004 2004 2004 2004 2004 ...
-#>  $ Gender              : chr  "Female" "Female" "Female" "Female" ...
+#>  $ Sex              : chr  "Female" "Female" "Female" "Female" ...
 #>  $ Age                 : chr  "21 to 25" "26 to 30" "31 to 40" "over 40" ...
 #>  $ convicted_population: num  49351 49351 49351 49351 49351 ...
 #>  $ offenders           : num  1650 1268 2238 1198 1488 ...
@@ -90,7 +90,7 @@ The overall reconviction rate in a given year is simply the average of the recon
 <thead>
 <tr>
 <th style="text-align:left;">
-Gender
+Sex
 </th>
 <th style="text-align:right;">
 offenders
@@ -168,7 +168,7 @@ The table below (2004 reconviction rates) shows how the sex-specific reconvictio
 <thead>
 <tr>
 <th style="text-align:left;">
-Gender
+Sex
 </th>
 <th style="text-align:right;">
 offenders
@@ -284,7 +284,7 @@ Again, the sex-specific crude rates in the table below (freq\_reconvicted × pro
 <thead>
 <tr>
 <th style="text-align:left;">
-Gender
+Sex
 </th>
 <th style="text-align:right;">
 reconvicted
@@ -614,7 +614,7 @@ Raw numbers
 year
 </th>
 <th style="text-align:left;">
-Gender
+Sex
 </th>
 <th style="text-align:left;">
 Age
@@ -873,7 +873,7 @@ reconv <-
 reconv_DG <- DasGupt_Npop(df=reconv,
                           pop=year,
                           prevalence, pop_str,
-                          id_vars=c(Age,Gender),
+                          id_vars=c(Age,Sex),
                           ratefunction="prevalence*pop_str")
                           # the default ratefunction calculates rate as the product of all specified factors
                           # in theory this function works with any function you like.
@@ -887,7 +887,7 @@ It also returns the standardized decomposition *α* effects ("diff"- columns) fo
 str(reconv_DG)
 #> Classes 'tbl_df', 'tbl' and 'data.frame':    20 obs. of  19 variables:
 #>  $ Age          : chr  "21 to 25" "26 to 30" "31 to 40" "over 40" ...
-#>  $ Gender       : chr  "Female" "Female" "Female" "Female" ...
+#>  $ Sex       : chr  "Female" "Female" "Female" "Female" ...
 #>  $ pop2004      : num  0.01121 0.0087 0.01086 0.00484 0.00904 ...
 #>  $ pop2005      : num  0.00993 0.00831 0.01045 0.00439 0.00907 ...
 #>  $ pop2006      : num  0.01015 0.00848 0.01105 0.00481 0.00936 ...
@@ -1056,7 +1056,7 @@ reconv <-
 
 reconv_DG <- DasGupt_Npop(df=reconv,
                           pop=year,prevalence, pop_str,frequency,
-                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str*frequency")
+                          id_vars=c(Age,Sex),ratefunction="prevalence*pop_str*frequency")
 
 crude_rates <-
   reconv %>%

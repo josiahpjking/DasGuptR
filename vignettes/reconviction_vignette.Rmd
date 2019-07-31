@@ -89,7 +89,7 @@ The overall reconviction rate in a given year is simply the average of the recon
 
 ```{r tib, echo=FALSE}
 tibble(
-  Gender=c("Female","Male","All"),
+  Sex=c("Female","Male","All"),
   offenders=c(7842,41509,49351),
   reconvicted=c(2190,13787,15977),
   rate = reconvicted/offenders
@@ -112,20 +112,20 @@ The overall reconviction rate simply becomes the sum of these sub-group rates, $
 The table below (2004 reconviction rates) shows how the sex-specific reconviction rates (prop_reconvicted) multiplied by the proportion of the population that group makes up (prop_offenders) sum to the overall reconviction rate.   
 ```{r tablerates, echo=FALSE}
 reconv %>% filter(year==2004) %>%
-  group_by(Gender, convicted_population) %>% 
+  group_by(Sex, convicted_population) %>% 
   summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>%
   select(-reconvictions) %>%
   bind_rows(.,
             reconv %>% filter(year==2004) %>% 
               group_by(convicted_population) %>%
-              summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>% mutate(Gender="All") %>%
+              summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>% mutate(Sex="All") %>%
               select(-reconvictions)
   ) %>%
   mutate(
     prop_reconvicted = reconvicted/offenders,
     prop_offenders = offenders/convicted_population,
     crude_rate = prop_reconvicted*prop_offenders
-  ) %>% select(Gender,offenders,reconvicted,convicted_population,prop_reconvicted, prop_offenders,crude_rate) %>%
+  ) %>% select(Sex,offenders,reconvicted,convicted_population,prop_reconvicted, prop_offenders,crude_rate) %>%
   kable(.,digits=2) %>%
   row_spec(3, bold = T, color = "white", background = "#555555") %>%
   column_spec(7,bold=T)
@@ -150,19 +150,19 @@ Again, the sex-specific crude rates in the table below (freq_reconvicted $\times
 
 ```{r arpoexpl, echo=FALSE}
 reconv %>% filter(year==2004) %>%
-  group_by(Gender, convicted_population) %>% 
+  group_by(Sex, convicted_population) %>% 
   summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>%
   bind_rows(.,
             reconv %>% filter(year==2004) %>% 
               group_by(convicted_population) %>%
-              summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>% mutate(Gender="All")
+              summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>% mutate(Sex="All")
   ) %>%
   mutate(
     prop_reconvicted = reconvicted/offenders,
     prop_offenders = offenders/convicted_population,
     freq_reconvicted = reconvictions/reconvicted,
     crude_rate = prop_reconvicted*prop_offenders*freq_reconvicted
-  ) %>% select(Gender,reconvicted,reconvictions,freq_reconvicted,prop_reconvicted, prop_offenders,crude_rate) %>% 
+  ) %>% select(Sex,reconvicted,reconvictions,freq_reconvicted,prop_reconvicted, prop_offenders,crude_rate) %>% 
   kable(.,digits=2) %>%
   row_spec(3, bold = T, color = "white", background = "#555555") %>%
   column_spec(5,bold=T)
@@ -216,7 +216,7 @@ reconv %>%
     prevalence=round(reconvicted/offenders,3), 
     frequency=round(reconvictions/reconvicted,3),
     pop_str=round(offenders/convicted_population,3)
-  ) %>% select(year,Gender,Age,prevalence,frequency,pop_str,offenders,reconvicted,reconvictions) %>% 
+  ) %>% select(year,Sex,Age,prevalence,frequency,pop_str,offenders,reconvicted,reconvictions) %>% 
   head %>% rbind(.,"...") %>% kable() %>%
   column_spec(1:6,bold=T,color="white",background = "#D7261E") %>%
   column_spec(7:9, color = "grey10") %>%
@@ -251,7 +251,7 @@ reconv <-
 reconv_DG <- DasGupt_Npop(df=reconv,
                           pop=year,
                           prevalence, pop_str,
-                          id_vars=c(Age,Gender),
+                          id_vars=c(Age,Sex),
                           ratefunction="prevalence*pop_str")
                           # the default ratefunction calculates rate as the product of all specified factors
                           # in theory this function works with any function you like.
@@ -325,7 +325,7 @@ reconv <-
 
 reconv_DG <- DasGupt_Npop(df=reconv,
                           pop=year,prevalence, pop_str,frequency,
-                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str*frequency")
+                          id_vars=c(Age,Sex),ratefunction="prevalence*pop_str*frequency")
 
 crude_rates <-
   reconv %>%
