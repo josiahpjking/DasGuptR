@@ -1,18 +1,37 @@
 ---
-title: "Exploring reconvictions in Scotland with Das Gupta"
-author: Josiah King & Ben Matthews
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Exploring reconvictions in Scotland with Das Gupta}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+output: github_document
+always_allow_html: yes
 ---
 
-```{r setup, echo=FALSE,message=FALSE}
-knitr::opts_chunk$set(message=FALSE, warning=FALSE)
-require(kableExtra)
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  message=FALSE,
+  warning=FALSE,
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+require(kableExtra)
 ```
+# DasGuptR
+
+The goal of DasGuptR is to provide an implementation of Prithwith Das Gupta's specification of *standardization* and *decomposition* of rates[^7].
+
+[^7]: As set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.    
+  
+## Installation
+
+You can install DasGuptR from here with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("josiahpjking/DasGuptR")
+```
+
+## Background and worked examples  
 
 Standardization and decomposition are widely used analytic techniques to adjust for the impact of compositional factors on rates.  
 
@@ -20,18 +39,16 @@ Standardization and decomposition are widely used analytic techniques to adjust 
 
 * _Decomposition_: Gives us the percentage of the difference in rates between two years attributable to each of the factors we have included in the standardization.  
 
-The _DasGuptR_ package provides an implementation of Prithwith Das Gupta's specification of these two techniques[^7].  
+The _DasGuptR_ package provides an implementation of Prithwith Das Gupta's specification of these two techniques.  
   
-[^7]: As set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.    
-  
-This vignette provides an example of using the DasGuptR package to explore patterns of reconvictions in Scotland.  
+Below we provide a brief background, and a worked an example of using the DasGuptR package to explore patterns of reconvictions in Scotland.  
 
   
 # The Das Gupta Method  
 
 Das Gupta's methodologies of standardisation and decomposition are explained in full in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_
 
-## P factors, 2 populations  
+#### P factors, 2 populations  
 
 The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).  
 We can interpret the P-$\alpha$ adjusted rate as 'what the crude rate would look like if only $\alpha$ had changed (all else being equal)'.  
@@ -43,7 +60,7 @@ The change in the P-$\alpha$ adjusted rate is known as a _decomposition effect_ 
 [^caus]: Importantly, this analysis is not causal as the different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
   
   
-## P factors, N populations  
+#### P factors, N populations  
   
 When we extend the standardisation and decomposition methodology to more than two populations, the starting point is to apply the same process on all pairwise comparisons of two populations at a time.
 However, the results of these pairwise comparisons are not internally consistent: We are left with multiple different adjusted rates for a given year, and the decomposition effects between populations are not additive.  
@@ -53,9 +70,6 @@ This process involves first calculating the P-1 adjusted rates and decomposition
   
 * **A:** there is only one P-$\alpha$ adjusted rate per population (as opposed to N-1)  
 * **B:** the *$\alpha$-effect* from populations 1 and 2 and the *$\alpha$-effect* from populations 2 and 3 now sum to the *$\alpha$-effect* from populations 1 and 3.  
-
-  
-
 
 # Reconviction data  
   
@@ -109,7 +123,8 @@ where
   
 The overall reconviction rate simply becomes the sum of these sub-group rates, $\Sigma(A \times B)$  
   
-The table below (2004 reconviction rates) shows how the sex-specific reconviction rates (prop_reconvicted) multiplied by the proportion of the population that group makes up (prop_offenders) sum to the overall reconviction rate.   
+The table below (2004 reconviction rates) shows how the sex-specific reconviction rates (prop_reconvicted) multiplied by the proportion of the population that group makes up (prop_offenders) sum to the overall reconviction rate.  
+
 ```{r tablerates, echo=FALSE}
 reconv %>% filter(year==2004) %>%
   group_by(Gender, convicted_population) %>% 
@@ -129,9 +144,7 @@ reconv %>% filter(year==2004) %>%
   kable(.,digits=2) %>%
   row_spec(3, bold = T, color = "white", background = "#555555") %>%
   column_spec(7,bold=T)
-
 ```
-
 ## Average number of reconvictions per offender    
 
 A further measure provided by Scottish Government [(previously a National Indicator)](https://www2.gov.scot/About/Performance/scotPerforms/indicator/reconviction), is the _average number of reconvictions per offender_. The measure, as well as being influenced by changes in the age-sex structure of the population and changes in the prevalence of reconviction, may reflect changes in the frequency with offenders are reconvicted.  
@@ -180,7 +193,7 @@ Crude rate of natural increase = $A-B$
   
 Or a more complex example:  
   
-Crude birth rate per 1,000 population = $[AB + C(1-B)]D$  
+Crude birth rate per 1,000 population = *[AB + C(1-B)]D*  
   
 * $A$ = marital births per 1,000 married women aged 15 to 49  
 * $B$ = proportion of married women among all women aged 15 to 49  
@@ -227,11 +240,11 @@ reconv %>%
 The second thing we require is the function F by which the rate is to be calculated from the decomposition factors.  
 In our two examples of the *reconviction rate* and *average number of reconvictions per offender*, rates are simply the product of factors.   
   
-* reconviction rate = prevalence $\times$ pop_str[^agg]    
+* reconviction rate = prevalence $\times$ pop_str    
 * avg number reconvs per offender = prevalence $\times$ frequency $\times$ pop_str  
 
-[^agg]: When we're not disaggregating by population structure, this factor remains implicitly present with a value of 1 (thereby having no impact).
-
+(When we're not disaggregating by population structure, the "pop_str" factor remains implicitly present with a value of 1 (thereby having no impact).  
+  
 ### Standardizing and decomposing Scotland's reconviction rate  
   
 The code below decomposes the Scotland's reconviction rates for 2004 to 2007 into prevalence and age-sex structure of the convicted population. We focus initially on this small period of time simply because the output becomes cumbersome as the the number of populations increases.  
@@ -346,4 +359,3 @@ DasGupt_rates(reconv_DG) %>%
        x = "Year")
 
 ```
-
