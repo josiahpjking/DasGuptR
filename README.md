@@ -148,6 +148,7 @@ All
 </tr>
 </tbody>
 </table>
+
 ``` r
 weighted.mean(x=c(.279,.332),w=c(7842,41509))
 #> [1] 0.3235782
@@ -261,6 +262,7 @@ All
 </tr>
 </tbody>
 </table>
+
 Average number of reconvictions per offender
 --------------------------------------------
 
@@ -376,6 +378,7 @@ All
 </tr>
 </tbody>
 </table>
+
 Other rates as a function F of factors
 --------------------------------------
 
@@ -583,6 +586,7 @@ reconvictions
 </tr>
 </tbody>
 </table>
+
 If we are also interested in including the underlying structure of the population (e.g. age and sex sub-groups) in the decomposition, then each row should identify the sub-group via a set of id variables (i.e., age and sex), with a column specifying the proportion of the population made up by that sub-group (the *pop str* variable below):
 
 <table>
