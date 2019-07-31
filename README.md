@@ -177,16 +177,16 @@ offenders
 reconvicted
 </th>
 <th style="text-align:right;">
-convicted\_population
+convicted_population
 </th>
 <th style="text-align:right;">
-prop\_reconvicted
+prop_reconvicted
 </th>
 <th style="text-align:right;">
-prop\_offenders
+prop_offenders
 </th>
 <th style="text-align:right;">
-crude\_rate
+crude_rate
 </th>
 </tr>
 </thead>
@@ -293,16 +293,16 @@ reconvicted
 reconvictions
 </th>
 <th style="text-align:right;">
-freq\_reconvicted
+freq_reconvicted
 </th>
 <th style="text-align:right;">
-prop\_reconvicted
+prop_reconvicted
 </th>
 <th style="text-align:right;">
-prop\_offenders
+prop_offenders
 </th>
 <th style="text-align:right;">
-crude\_rate
+crude_rate
 </th>
 </tr>
 </thead>
@@ -587,7 +587,7 @@ reconvictions
 </tbody>
 </table>
 
-If we are also interested in including the underlying structure of the population (e.g. age and sex sub-groups) in the decomposition, then each row should identify the sub-group via a set of id variables (i.e., age and sex), with a column specifying the proportion of the population made up by that sub-group (the *pop str* variable below):
+If we are also interested in including the underlying structure of the population (e.g. age and sex sub-groups) in the decomposition, then each row should identify the sub-group via a set of id variables (i.e., age and sex), with a column specifying the proportion of the population made up by that sub-group (the pop\_str variable below):
 
 <table>
 <thead>
@@ -626,7 +626,7 @@ prevalence
 frequency
 </th>
 <th style="text-align:left;">
-pop\_str
+pop_str
 </th>
 <th style="text-align:left;">
 offenders
@@ -845,6 +845,7 @@ Male
 </tr>
 </tbody>
 </table>
+
 The second thing we require is the function F by which the rate is to be calculated from the decomposition factors.
 In our two examples of the *reconviction rate* and *average number of reconvictions per offender*, rates are simply the product of factors.
 
@@ -975,14 +976,14 @@ factor
 difference
 </th>
 <th style="text-align:right;">
-percentage\_of\_unadjusted
+percentage_of_unadjusted
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-pop\_str
+pop_str
 </td>
 <td style="text-align:right;">
 0.322
