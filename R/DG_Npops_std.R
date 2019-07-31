@@ -7,7 +7,7 @@
 #' @export
 #' @examples
 #' ......
-Npops_std_rates<-function(srates,all_p,y,fctr){
+DG_Npops_std<-function(srates,all_p,y,fctr){
   #this could be done somewhere else maybe.. not sure.
   all_p %>% combinat::combn(.,2) %>% as_tibble(.,.name_repair="universal") -> pwise
     pwise[c(2,1),] %>% map_chr(.,~paste(.,collapse="vs")) %>% paste(.,collapse="|") -> unique_comparisons

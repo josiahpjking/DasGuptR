@@ -6,7 +6,7 @@
 #' @export
 #' @examples
 #' ......
-Npops_factor_effects<-function(factoreffs,ps,all_p){
+DG_Npops_decomp<-function(factoreffs,ps,all_p){
   y1<-ps[1]
   y2<-ps[2]
   #all_y=pws_pops %>% unlist %>% unique

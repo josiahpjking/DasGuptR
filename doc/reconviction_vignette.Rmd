@@ -11,8 +11,22 @@ vignette: >
 ```{r setup, echo=FALSE,message=FALSE}
 knitr::opts_chunk$set(message=FALSE, warning=FALSE)
 require(kableExtra)
-```
 
+DasGupt_rates<-function(df){
+  df %>%
+    group_by(factor) %>%
+    summarise_at(vars(starts_with("pop")),sum) %>% 
+    gather(population,rate,starts_with("pop")) %>%
+    mutate(population=gsub("pop","",population))
+}
+
+DasGupt_table<-function(DGdf,pop1,pop2){
+  DasGupt_rates(DGdf) %>% filter(population %in% c(pop1,pop2)) %>%
+    spread(population,rate) %>%
+    mutate(difference=get(paste0(pop1))-get(paste0(pop2)))
+}  
+
+```
 
 Standardization and decomposition are widely used analytic techniques to adjust for the impact of compositional factors on rates.  
 
@@ -21,30 +35,59 @@ Standardization and decomposition are widely used analytic techniques to adjust 
 * _Decomposition_: Gives us the percentage of the difference in rates between two years attributable to each of the factors we have included in the standardization.  
 
 The _DasGuptR_ package provides an implementation of Prithwith Das Gupta's specification of these two techniques[^7].  
+  
+[^7]: As set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.    
+  
+This vignette provides an example of using the DasGuptR package to explore patterns of reconvictions in Scotland.  
 
-[^7]: As set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.   
+  
+# The Das Gupta Method  
 
-# Reconviction rates
+Das Gupta's methodologies of standardisation and decomposition are explained in full in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_
 
+## P factors, 2 populations  
+
+The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).  
+We can interpret the P-$\alpha$ adjusted rate as 'what the crude rate would look like if only $\alpha$ had changed (all else being equal)'.  
+  
+  
+Neatly, crude rates can be decomposed into Das Gupta's adjusted rates such that changes in the P-$\alpha$ adjusted rate are proportional to changes in crude rates. For instance, if the crude rate decreases by 1.2, and the P-$\alpha$ adjusted rate decreases by .6, we can say that 50% of the change in crude rate is attributable to changes in $\alpha$[^caus].  
+The change in the P-$\alpha$ adjusted rate is known as a _decomposition effect_ (in this case the *$\alpha$-effect*).
+
+[^caus]: Importantly, this analysis is not causal as the different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
+  
+  
+## P factors, N populations  
+  
+When we extend the standardisation and decomposition methodology to more than two populations, the starting point is to apply the same process on all pairwise comparisons of two populations at a time.
+However, the results of these pairwise comparisons are not internally consistent: We are left with multiple different adjusted rates for a given year, and the decomposition effects between populations are not additive.  
+  
+Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which can be applied to populations at given years for analysis of time series.  
+This process involves first calculating the P-1 adjusted rates and decompositions effects for all possible pairwise comparisons of populations, and then standardizing these across the N populations (by averaging over all possible ways of substituting adjusted rates to satisfy the condition B below, see Das Gupta 1993, p.106, equations 6.11 and 6.12) to obtain a consistent set of rates and effects for which:  
+  
+* **A:** there is only one P-$\alpha$ adjusted rate per population (as opposed to N-1)  
+* **B:** the *$\alpha$-effect* from populations 1 and 2 and the *$\alpha$-effect* from populations 2 and 3 now sum to the *$\alpha$-effect* from populations 1 and 3.  
+
+  
+
+
+# Reconviction data  
+  
 Scottish Government publish an annual statistical bulletin on the [Reconviction Rates in Scotland](https://www.gov.scot/publications/reconviction-rates-scotland-2016-17-offender-cohort/). 
 For the cohort of people convicted in a given year, it provides information on the numbers of reconvictions they have received. 
-The headline figure in this bulletin is the _reconviction rate_, which is simply the percentage of offenders who have been reconvicted within the follow-up of one year. The bulletin published in 2019 showed that Scotland's reconviction rate has fallen steadily over the last fifteen years. 
-
-Rates such as this measure the prevalence of some event (i.e., prevalence of reconviction), but often also reflect underlying changes in, for example, the age/sex structure of the population. 
-For example, if women over 40, who have a low average reconviction rate, made up a larger proportion of all people convicted then the overall reconviction rate would go down, even if the reconviction rate itself did not change for any age group.
-
-Similarly, Scottish Government's old measure of the _average number of reconvictions per offender_ [(previously a National Indicator)](https://www2.gov.scot/About/Performance/scotPerforms/indicator/reconviction) might reflect changes in:  
+The headline figure in this bulletin is the _reconviction rate_, which is simply the percentage of offenders who have been reconvicted within the follow-up of one year. The bulletin published in 2019 showed that Scotland's reconviction rate has fallen steadily over the last fifteen years.  
   
-  
-* the proportion of offenders who are reconvicted  
-* the frequency with which reconvicted offenders are reconvicted  
-* the age-sex structure of the convicted population  
-  
-  
+This sort of measure captures the prevalence of some event (i.e., prevalence of reconviction), but often also reflects underlying changes in, for example, the age/sex structure of the population. For example, if women over 40, who have a low average reconviction rate, made up a larger proportion of all people convicted then the overall reconviction rate would go down, even if the reconviction rate itself did not change for any age group. Scottish Government mention that the size of the under 21 group (relative to the size of the convicted population) has dropped over this period, referring to a fall in youth convictions as a "significant driver in the reduction in the overall national reconviction rate". Standardisation and decomposition offer a means of quantifying the influence of this sort of underlying change.
 
-## Reconviction data
-
-DasGuptR package provides data on the reconviction rates in Scotland between 2004 and 2016, by age group and sex. 
+The DasGuptR package provides data on the reconviction rates in Scotland between 2004 and 2016, by age group and sex[^dat]. 
+It includes data on the numbers of offenders, reconvictions, and reconvicted offenders in each age-sex group for offender cohorts between 2004 to 2016.   
+  
+Below, we discuss two measures produced by Scottish Government:  
+  
+* _reconviction rate_ : proportion of offenders who are reconvicted.  
+* _average number of reconvictions per offender_ : total number of reconvictions divided by number of offenders
+  
+[^dat]: Data was extracted from [Scottish Government's 2016/17 reconviction bulletin and accompanying tables (published June 2019)](https://www.gov.scot/publications/reconviction-rates-scotland-2016-17-offender-cohort/). Mid-year population estimates were taken from the [National Records of Scotland time series data](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/population-estimates-time-series-data).
 
 ```{r packages}
 library(tidyverse)
@@ -53,22 +96,32 @@ data(reconv)
 str(reconv)
 ```
 
-# Rate as a product/function of factors
+## Reconviction rate
 
-Our starting point is our crude rate. 
-In the example provided here, our _overall reconviction rate_ is simply the average of the reconviction rates for each age-sex group, _weighted by the size of the group_. 
+To adjust the _reconviction rate_ for the age/sex structure of the convicted population, we need to look at the measure in terms of the reconviction rates for the underlying age-sex groups.  
+The overall reconviction rate in a given year is simply the average of the reconviction rates for each group, _weighted by the size of the group_.  
 
-### rate of reconviction  
+```{r tib, echo=FALSE}
+tibble(
+  Gender=c("Female","Male","All"),
+  offenders=c(7842,41509,49351),
+  reconvicted=c(2190,13787,15977),
+  rate = reconvicted/offenders
+) %>% kable(.,digits=3)
+```
 
-We can write the _reconviction rate_ as is a function of 2 factors[^fs].  
-The overall reconviction rate can be written as  
+```{r wgtmean}
+weighted.mean(x=c(.279,.332),w=c(7842,41509))
+```
   
-$\Sigma(A \times B)$  
   
+Alternatively, we can calculate the _reconviction rate_ as the product of 2 factors $A$ and $B$,  
 where  
   
-* $A$ = the proportion of offenders in a given age-sex group who are reconvicted  
-* $B$ = the proportion of total offenders who are in that age-sex group  
+* $A$ = reconviction rate for a given age-sex group  
+* $B$ = the proportion of convicted population (the 'offender cohort') who are in that age-sex group  
+  
+The overall reconviction rate simply becomes the sum of these sub-group rates, $\Sigma(A \times B)$  
   
 The table below (2004 reconviction rates) shows how the sex-specific reconviction rates (prop_reconvicted) multiplied by the proportion of the population that group makes up (prop_offenders) sum to the overall reconviction rate.   
 ```{r tablerates, echo=FALSE}
@@ -91,49 +144,25 @@ reconv %>% filter(year==2004) %>%
   row_spec(3, bold = T, color = "white", background = "#555555") %>%
   column_spec(7,bold=T)
 
-
 ```
 
-[^fs]: As an avid R user, the reliance upon the term 'factor' here will get annoying. Sorry. Just remember it's 'factor' in the sense akin to CFA/PCA. 
+## Average number of reconvictions per offender    
 
-```{r rateexpl, include=FALSE}
-reconv %>% 
-  mutate(
-    prop_reconvicted = reconvicted / offenders,
-    prop_totaloffenders = offenders / convicted_population
-  ) %>% 
-  group_by(year) %>%
-  summarise(
-    rate=sum(prop_reconvicted*prop_totaloffenders)
-  )
-```
-
-### average number of reconvictions per offender  
-
-Likewise, the _average number of reconvictions per offender_ in a given year can likewise be written as:  
+A further measure provided by Scottish Government [(previously a National Indicator)](https://www2.gov.scot/About/Performance/scotPerforms/indicator/reconviction), is the _average number of reconvictions per offender_. The measure, as well as being influenced by changes in the age-sex structure of the population and changes in the prevalence of reconviction, may reflect changes in the frequency with offenders are reconvicted.  
+  
+The _average number of reconvictions per offender_ in a given year can be written as:  
   
 $\Sigma(A \times B \times C)$  
   
 where  
   
 * $A$ = the frequency with which reconvicted offenders are reconvicted  
-* $B$ = the proportion of offenders in a given age-sex group who are reconvicted  
-* $C$ = the proportion of total offenders who are in that age-sex group  
+* $B$ = the proportion of offenders in a given age-sex group who are reconvicted (the reconviction rate for that group)  
+* $C$ = the proportion of convicted population who are in that age-sex group  
   
-Again, the sex-specific crude rates in the table below (freq_reconvicted $\times$ prop_reconvicted $\times$ prop_offenders) sum to the overall average number of reconvictions per offender. Note that this measure is more easily calculated as simply the _number of reconvictions_ / _number of offenders_, but by separating out into two factors of prevalence ( _number reconvicted_ / _number of offenders_ ) and frequency ( _number of reconvictions_ / _number reconvicted_ ) we can investigate the extent to which changes in the _average number of reconvictions per offender_ are due to a) the percentages of offenders who are reconvicted, or b) the frequency with which reconvicted offenders are reconvicted.  
+Again, the sex-specific crude rates in the table below (freq_reconvicted $\times$ prop_reconvicted $\times$ prop_offenders) sum to the overall average number of reconvictions per offender. Note that this measure is more easily calculated as simply the *number of reconvictions/number of offenders*, but by separating out into two factors of prevalence (*number reconvicted/number of offenders*) and frequency (*number of reconvictions/number reconvicted*) we can investigate the extent to which changes in the *average number of reconvictions per offender* are due to a) the percentages of offenders who are reconvicted, or b) the frequency with which reconvicted offenders are reconvicted.  
 
 ```{r arpoexpl, echo=FALSE}
-# reconv %>% 
-#   mutate(
-#     prop_reconvicted = reconvicted / offenders,
-#     prop_totaloffenders = offenders / convicted_population,
-#     freq_reconvicted = reconvictions / reconvicted
-#   ) %>% 
-#   group_by(year) %>% 
-#   summarise(
-#     `avg reconvs per offender` = sum(freq_reconvicted*prop_reconvicted*prop_totaloffenders)
-#   )
-
 reconv %>% filter(year==2004) %>%
   group_by(Gender, convicted_population) %>% 
   summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>%
@@ -154,18 +183,16 @@ reconv %>% filter(year==2004) %>%
 
 ```
 
-## Rates as a function F of factors  
+## Other rates as a function F of factors  
 
-While both of the reconviction measures above can be taken as a product of different factors, other rates can often be a specific function F of factors.  
-  
-A simple example:  
+While both of the reconviction measures above can be calculated as the product of different factors, other rates might be specific functions of factors, for example:  
   
 Crude rate of natural increase = $A-B$  
   
 * $A$ = crude birth rate  
 * $B$ = crude death rate  
   
-A more complex example:  
+Or a more complex example:  
   
 Crude birth rate per 1,000 population = $[AB + C(1-B)]D$  
   
@@ -174,46 +201,12 @@ Crude birth rate per 1,000 population = $[AB + C(1-B)]D$
 * $C$ = Nonmarital births per 1,000 unmarried women aged 15 to 49  
 * $D$ = proportion of women aged 15 to 49 in the total population  
   
-  
-  
-# The Das Gupta Method
-
-Das Gupta's methodologies of standardisation and decomposition are explained in full in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_
-
-## P factors, 2 populations  
-
-The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).  
-We can interpret the P-$\alpha$ adjusted rate as 'what the crude rate would look like if only $\alpha$ had changed (all else being equal)'.  
-  
-  
-Neatly, the crude rate can be decomposed into Das Gupta's adjusted rates such that changes in the P-$\alpha$ adjusted rate are proportional to changes in crude rates.  
-For instance, if the crude rate decreases by 1.2, and the P-$\alpha$ adjusted rate decreases by .6, we can say that 50% of the change is crude rate is attributable to changes in $\alpha$[^caus].  
-The change in P-$\alpha$ adjusted rate is known as a _decomposition effect_, in this case the $\alpha$ _effect_.
-
-[^caus]: Importantly, this analysis is not causal as the different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
-  
-  
-## P factors, N populations  
-  
-  
-Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which can be applied to populations at given years for analysis of time series.  
-This process involves first calculating the P-1 adjusted rates and decompositions effects for all possible pairwise comparisons of populations, and then standardizing these across the N populations (see Das Gupta 1993, p.106, equations 6.11 and 6.12) to obtain a consistent set of rates and effects, such that  
-  
-* there is only one P-$\alpha$ adjusted rate per population (as opposed to N-1)  
-* the $\alpha$ _effect_ corresponding to populations 1 and 2 and the $\alpha$ _effect_ for populations 2 and 3 now sum to the $\alpha$ _effect_ corresponding to populations 1 and 3.  
-
-  
-  
-  
-# The DasGuptR package  
+# Standardisation and decomposition with the DasGuptR package  
 
 Standardization and decomposition via Das Gupta's formulae can be achieved in R via the **DasGupt_Npop()** function.   
   
-  
-To begin, we firstly require some data.  
-  
-A column is required specifying the population (e.g., *year* in the reconv data), and a column for each of the factors we wish to include in the decomposition.  
-For example, if we were interested in decomposing the _average number of reconvictions per offender_ into the prevalence and frequency of reconviction, then the following (in red) would suffice:  
+Suitable data requires a column specifying the population (e.g., *year* in the reconv data), and a column for each of the factors we wish to include in the decomposition.  
+For example, if we are interested in decomposing the _average number of reconvictions per offender_ into the prevalence and frequency of reconviction, then the following (in red) will suffice:  
 
 ```{r, echo=FALSE}
 reconv %>% group_by(year) %>% 
@@ -245,21 +238,17 @@ reconv %>%
 ```
   
   
-   
 The second thing we require is the function F by which the rate is to be calculated from the decomposition factors.  
-In our two examples of the _reconviction rate_ and _average number of reconvictions per offender_, rates are simply the product of factors.   
+In our two examples of the *reconviction rate* and *average number of reconvictions per offender*, rates are simply the product of factors.   
   
 * reconviction rate = prevalence $\times$ pop_str[^agg]    
 * avg number reconvs per offender = prevalence $\times$ frequency $\times$ pop_str  
 
-[^agg]: When we're disaggregating by population structure, this factor remains implicitly present with a value of 1 (thereby having no impact).
+[^agg]: When we're not disaggregating by population structure, this factor remains implicitly present with a value of 1 (thereby having no impact).
 
-## Standardizing and decomposing Scotland's reconviction rate  
+### Standardizing and decomposing Scotland's reconviction rate  
   
-Below, we decompose Scotland's reconviction rate into the prevalence of reconviction and the age-sex structure of the convicted population.  
-This is useful because we can then investigate how much changes in the overall reconviction rate are due to fewer people being reconvicted, or due to the changing age-sex mix of the convicted population (so, if younger people tend to have higher reconviction rates, but are becoming more frequently [diverted from prosecution](http://scottishjusticematters.com/wp-content/uploads/Shrinking-YJ-population-SJM_5-1_April2017-18.pdf), then younger groups will begin to make up a smaller proportion of the convicted population, and so the overall rate at which the population is reconvicted will go down (even if the rates at which different sub-groups are reconvicted do not).  
-  
-The code below decomposes the Scotland's reconviction rates for 2004 to 2007 into prevalence and population structure. We focus initially on this small period of time simply because the output becomes cumbersome as the the number of populations increases.  
+The code below decomposes the Scotland's reconviction rates for 2004 to 2007 into prevalence and age-sex structure of the convicted population. We focus initially on this small period of time simply because the output becomes cumbersome as the the number of populations increases.  
 
 ```{r reconv_decomp, warning=FALSE,message=FALSE}
 # create our decomposition factors
@@ -274,20 +263,101 @@ reconv <-
 
 #standardize and decompose!
 reconv_DG <- DasGupt_Npop(df=reconv,
-                          pop=year,prevalence, pop_str,
-                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str")
+                          pop=year,
+                          prevalence, pop_str,
+                          id_vars=c(Age,Gender),
+                          ratefunction="prevalence*pop_str")
                           # the default ratefunction calculates rate as the product of all specified factors
                           # in theory this function works with any function you like.
 ```
   
   
-As shown below, the DasGupt_Npop() function returns a tibble with a column for the P-$\alpha$ adjusted rates in each population.  The 'factor' column specifies $\alpha$.  
+The DasGupt_Npop() function returns a tibble with a column for the P-$\alpha$ adjusted rates ("pop"- columns) in each population (see below).  The 'factor' column specifies $\alpha$.  
 
-It also specifies the standardized decomposition $\alpha$ effects for each pairwise comparison of populations (again, the 'factor' column specifies $\alpha$)
+It also returns the standardized decomposition $\alpha$ effects ("diff"- columns) for each pairwise comparison of populations (again, the 'factor' column specifies $\alpha$)
 
 ```{r}
 str(reconv_DG)
 ```
 
+The returning rates and decomposition effects are age-sex specific (i.e., they are $A \times B$ for each sub-group). Recalling that $B$ is the proportions of the population that each group constitutes, the sum of these age-sex specific rates gives us the overall rates.  
+We can extract these population rates with the **DasGupt_rates()** function, which simply groups by $\alpha$ (the factor not being adjusted for), sums, and reshapes.
+```{r getrates}
+DasGupt_rates(reconv_DG)
+```
 
+Here the output is somewhat counterintuitive. It is important to remembe that the 'factor' column here represents the **$\alpha$ and not the P** in the expression "P-$\alpha$ adjusted rate". It can become mightily confusing, for instance, that to investigate the "age/sex adjusted rates", requires looking at the rates where `factor=="prevalence"`.  
+  
+We can plot the adjusted rates alongside the crude rates...  
+```{r}
+crude_rates <-
+  reconv %>%
+  mutate(rate=prevalence*pop_str) %>%
+  group_by(year) %>% 
+  summarise(
+    rate=sum(rate),
+    factor="crude"
+  )
+
+DasGupt_rates(reconv_DG) %>%
+  mutate(year=as.numeric(population)) %>%
+  bind_rows(., crude_rates) %>%  
+  ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
+  ylim(.3,.35)
+
+```
+
+We can then compare the change in the adjusted rates to the change in the crude rates, to give what equates to an effect size:  
+```{r}
+bind_rows(
+  DasGupt_table(reconv_DG,2004,2007),
+  crude_rates %>% filter(year %in% c(2004,2007)) %>%
+    spread(year,rate) %>% mutate(difference=`2004`-`2007`)
+) %>%
+  mutate(percentage_of_unadjusted=100*(difference/difference[factor=="crude"])) %>%
+  kable(.,digits=3)
+```
+
+From this, we can say that had the prevalence of reconvictions remained equal, the changing age-sex structure of the convicted population would have resulted in a change in the overall reconviction rate of 21.4% the size of the actual change.  
+This is useful because we can now get a measrue of how much changes in the overall reconviction rate are due to fewer people being reconvicted vs how much is due to the changing age-sex mix of the convicted population (e.g., if younger people tend to have higher reconviction rates, but are becoming more frequently [diverted from prosecution](http://scottishjusticematters.com/wp-content/uploads/Shrinking-YJ-population-SJM_5-1_April2017-18.pdf), then younger groups will begin to make up a smaller proportion of the convicted population, and so the overall rate at which the population is reconvicted will go down even if the rates at which different sub-groups are reconvicted do not).  
+  
+## Standardizing and decomposing the average number of reconvictions per offender  
+  
+Scottish Government's second measure, the *average number of reconvictions per offender*, also captures changes in the frequency with which offenders are reconvicted. It is therefore possible to decompose this rate into the prevalence and frequency of reconviction, as well as age-sex structure of the population:  
+
+```{r}
+#reload the data
+data(reconv)
+
+reconv <- 
+  reconv %>% 
+  mutate(
+    prevalence = reconvicted/offenders,
+    frequency = reconvictions/reconvicted,
+    pop_str = offenders/convicted_population
+  ) 
+
+reconv_DG <- DasGupt_Npop(df=reconv,
+                          pop=year,prevalence, pop_str,frequency,
+                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str*frequency")
+
+crude_rates <-
+  reconv %>%
+  mutate(rate=prevalence*pop_str*frequency) %>%
+  group_by(year) %>% 
+  summarise(
+    rate=sum(rate),
+    factor="crude"
+  )
+
+DasGupt_rates(reconv_DG) %>%
+  mutate(year=as.numeric(population)) %>%
+  bind_rows(., crude_rates) %>%  
+  ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
+  theme(legend.position="bottom",axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(colour = guide_legend(nrow = 3, byrow = TRUE)) +
+  labs(y = "avg number reconvs per offender",
+       x = "Year")
+
+```
 

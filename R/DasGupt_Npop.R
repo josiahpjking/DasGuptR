@@ -37,7 +37,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
     #okay, so start by applying dasgupt2pop to each pairwise combination
     map(pairwise_pops,~dplyr::filter(df,year %in% .x) %>% mutate(
       orderedpop=factor(!!pop,c(.x[[1]],.x[[2]])))) %>%
-      map(.,~DasGupt_2pop(.,orderedpop,factrs,ratefunction)) -> dg2p_res
+      map(.,~DG_2pop(.,orderedpop,factrs,ratefunction)) -> dg2p_res
 
     names(dg2p_res)<-map(pairwise_pops,~paste0("pops",paste(.,collapse="vs")))
     #unlist and tibble up
@@ -57,15 +57,15 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
         names(difference_effects)<-gsub("pops","diff",map_chr(strsplit(names(difference_effects),"\\."),1)) %>% gsub("vs","_",.)
       }else{
         #std_rates
-        standardized_rates<-map_dfc(allpops,~Npops_std_rates(dg2p_rates,allpops,as.character(.),f))
+        standardized_rates<-map_dfc(allpops,~DG_Npops_std(dg2p_rates,allpops,as.character(.),f))
         #these are the standardized rate for factor f in each year, stnadardixed over all Ys.
-        difference_effects<-map_dfc(pairwise_pops,~Npops_factor_effects(dg2p_facteffs,.,allpops))
+        difference_effects<-map_dfc(pairwise_pops,~DG_Npops_decomp(dg2p_facteffs,.,allpops))
       }
       DG_OUT[[f]]=bind_cols(standardized_rates,difference_effects)
     }
   }else{
   # ONLY 2 populations, use dasgupt_2pop directly.
-    DasGupt_2pop(df,!!pop,factrs,ratefunction) %>%
+    DG_2pop(df,!!pop,factrs,ratefunction) %>%
       map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
     DG_OUT = list()
     for(f in factrs){

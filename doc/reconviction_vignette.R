@@ -2,11 +2,37 @@
 knitr::opts_chunk$set(message=FALSE, warning=FALSE)
 require(kableExtra)
 
+DasGupt_rates<-function(df){
+  df %>%
+    group_by(factor) %>%
+    summarise_at(vars(starts_with("pop")),sum) %>% 
+    gather(population,rate,starts_with("pop")) %>%
+    mutate(population=gsub("pop","",population))
+}
+
+DasGupt_table<-function(DGdf,pop1,pop2){
+  DasGupt_rates(DGdf) %>% filter(population %in% c(pop1,pop2)) %>%
+    spread(population,rate) %>%
+    mutate(difference=get(paste0(pop1))-get(paste0(pop2)))
+}  
+
+
 ## ----packages------------------------------------------------------------
 library(tidyverse)
 library(DasGuptR)
 data(reconv)
 str(reconv)
+
+## ----tib, echo=FALSE-----------------------------------------------------
+tibble(
+  Gender=c("Female","Male","All"),
+  offenders=c(7842,41509,49351),
+  reconvicted=c(2190,13787,15977),
+  rate = reconvicted/offenders
+) %>% kable(.,digits=3)
+
+## ----wgtmean-------------------------------------------------------------
+weighted.mean(x=c(.279,.332),w=c(7842,41509))
 
 ## ----tablerates, echo=FALSE----------------------------------------------
 reconv %>% filter(year==2004) %>%
@@ -29,30 +55,7 @@ reconv %>% filter(year==2004) %>%
   column_spec(7,bold=T)
 
 
-
-## ----rateexpl, include=FALSE---------------------------------------------
-reconv %>% 
-  mutate(
-    prop_reconvicted = reconvicted / offenders,
-    prop_totaloffenders = offenders / convicted_population
-  ) %>% 
-  group_by(year) %>%
-  summarise(
-    rate=sum(prop_reconvicted*prop_totaloffenders)
-  )
-
 ## ----arpoexpl, echo=FALSE------------------------------------------------
-# reconv %>% 
-#   mutate(
-#     prop_reconvicted = reconvicted / offenders,
-#     prop_totaloffenders = offenders / convicted_population,
-#     freq_reconvicted = reconvictions / reconvicted
-#   ) %>% 
-#   group_by(year) %>% 
-#   summarise(
-#     `avg reconvs per offender` = sum(freq_reconvicted*prop_reconvicted*prop_totaloffenders)
-#   )
-
 reconv %>% filter(year==2004) %>%
   group_by(Gender, convicted_population) %>% 
   summarise_at(vars(one_of(c("offenders","reconvicted","reconvictions"))),sum) %>%
@@ -109,11 +112,77 @@ reconv <-
 
 #standardize and decompose!
 reconv_DG <- DasGupt_Npop(df=reconv,
-                          pop=year,prevalence, pop_str,
-                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str")
+                          pop=year,
+                          prevalence, pop_str,
+                          id_vars=c(Age,Gender),
+                          ratefunction="prevalence*pop_str")
                           # the default ratefunction calculates rate as the product of all specified factors
                           # in theory this function works with any function you like.
 
 ## ------------------------------------------------------------------------
 str(reconv_DG)
+
+## ----getrates------------------------------------------------------------
+DasGupt_rates(reconv_DG)
+
+## ------------------------------------------------------------------------
+crude_rates <-
+  reconv %>%
+  mutate(rate=prevalence*pop_str) %>%
+  group_by(year) %>% 
+  summarise(
+    rate=sum(rate),
+    factor="crude"
+  )
+
+DasGupt_rates(reconv_DG) %>%
+  mutate(year=as.numeric(population)) %>%
+  bind_rows(., crude_rates) %>%  
+  ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
+  ylim(.3,.35)
+
+
+## ------------------------------------------------------------------------
+bind_rows(
+  DasGupt_table(reconv_DG,2004,2007),
+  crude_rates %>% filter(year %in% c(2004,2007)) %>%
+    spread(year,rate) %>% mutate(difference=`2004`-`2007`)
+) %>%
+  mutate(percentage_of_unadjusted=100*(difference/difference[factor=="crude"])) %>%
+  kable(.,digits=3)
+
+## ------------------------------------------------------------------------
+#reload the data
+data(reconv)
+
+reconv <- 
+  reconv %>% 
+  mutate(
+    prevalence = reconvicted/offenders,
+    frequency = reconvictions/reconvicted,
+    pop_str = offenders/convicted_population
+  ) 
+
+reconv_DG <- DasGupt_Npop(df=reconv,
+                          pop=year,prevalence, pop_str,frequency,
+                          id_vars=c(Age,Gender),ratefunction="prevalence*pop_str*frequency")
+
+crude_rates <-
+  reconv %>%
+  mutate(rate=prevalence*pop_str*frequency) %>%
+  group_by(year) %>% 
+  summarise(
+    rate=sum(rate),
+    factor="crude"
+  )
+
+DasGupt_rates(reconv_DG) %>%
+  mutate(year=as.numeric(population)) %>%
+  bind_rows(., crude_rates) %>%  
+  ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
+  theme(legend.position="bottom",axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(colour = guide_legend(nrow = 3, byrow = TRUE)) +
+  labs(y = "avg number reconvs per offender",
+       x = "Year")
+
 
