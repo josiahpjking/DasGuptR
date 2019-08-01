@@ -274,7 +274,7 @@ The *average number of reconvictions per offender* in a given year can be writte
 
 where
 
--   *A* = the frequency with which reconvicted offenders are reconvicted
+-   *A* = the frequency with which reconvicted offenders are reconvicted in a given age-sex group
 -   *B* = the proportion of offenders in a given age-sex group who are reconvicted (the reconviction rate for that group)
 -   *C* = the proportion of convicted population who are in that age-sex group
 

@@ -17,6 +17,9 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #this is the one we're interested in right now
   facti=factrs[i]
 
+  print(paste0("comparing: ",distinct(df2,!!pop) %>% pull(!!pop) %>% paste(collapse=":")," Factor = ",facti))
+
+
   #these are all the population factors (for both populations), spread.
   #this means that indices 1:n/2 are pop1, and n/2:n are pop2. They are distinguished by a "1" in the name.
   #JK: IMPORTANT - FACTOR NAMES MUST NOT HAVE A "1" IN THEM ALREADY!
@@ -24,8 +27,9 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   allfacts=names(pop_facts)
   allfacts0 = allfacts[1:nfact]
   allfacts1 = allfacts[(nfact+1):length(allfacts)]
+
   #these are the all the combinations of P-1 factors from 2 populations
-  allperms<-combn(allfacts[!(allfacts %in% c(facti,paste0(facti,1)))],length(allfacts)/2-1) %>% t %>% as_tibble(.name_repair = "universal")
+  allperms<-tibble(perms=combn(allfacts[!(allfacts %in% c(facti,paste0(facti,1)))],length(allfacts)/2-1) %>% t)
 
   #because we need to distinguish between sets by how many are from pop1 and how many from pop2, we'll count the 1s and absence of 1s
   # we also need to remove any sets in which factors come up twice (e.g. age_str and age_str1)

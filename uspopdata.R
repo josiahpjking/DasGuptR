@@ -1,4 +1,4 @@
-
+require(tidyverse)
 require(readxl)
 
 #https://www.census.gov/data/tables/time-series/demo/popest/pre-1980-national.html
@@ -169,7 +169,7 @@ ggplot(rates_crude, aes(x=year,y=rate))+geom_path()
 #     id_vars=c(agebin)
 #   )
 # saveRDS(dcomps,"../decomposition_standardisation/script/uspopdecomped.RDS")
-# readRDS("../decomposition_standardisation/script/uspopdecomped.RDS")
+# dcomps<-readRDS("../decomposition_standardisation/script/uspopdecomped.RDS")
 
 rates_adj <-
   dcomps %>%
@@ -215,7 +215,7 @@ left_join(
                       "std 1940"="rate1940",
                       "std 1990"="rate1990",
                       "crude"="ratecrude",
-                      "age-sex adjusted"="birthrate",
+                      "DG age-sex\n adjusted"="birthrate",
                       "birthrate adjusted"="pop_str"
     ),
     label=ifelse(year==max(year),as.character(factor),NA_character_)
@@ -225,7 +225,8 @@ left_join(
   geom_path()+
   theme_bw()+
   theme(legend.position="bottom",axis.text.x = element_text(angle = 45, hjust = 1)) +
-  guides(colour = guide_legend(nrow = 3, byrow = TRUE)) +
+  #guides(colour = guide_legend(nrow = 3, byrow = TRUE)) +
+  guides(colour = FALSE) +
   geom_label_repel(aes(label=label),nudge_x=1,na.rm=T)+
   NULL
 

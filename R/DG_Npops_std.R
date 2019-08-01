@@ -8,8 +8,9 @@
 #' @examples
 #' ......
 DG_Npops_std<-function(srates,all_p,y,fctr){
+  print(paste0("standardising across Npops: ",y," rate:",fctr))
   #this could be done somewhere else maybe.. not sure.
-  all_p %>% combinat::combn(.,2) %>% as_tibble(.,.name_repair="universal") -> pwise
+  all_p %>% combinat::combn(.,2) %>% as.data.frame -> pwise
     pwise[c(2,1),] %>% map_chr(.,~paste(.,collapse="vs")) %>% paste(.,collapse="|") -> unique_comparisons
   srates<-srates[,grepl(unique_comparisons,names(srates))]
 
@@ -17,7 +18,7 @@ DG_Npops_std<-function(srates,all_p,y,fctr){
       ~srates[,grepl(paste0(fctr,".pop",.x),names(srates))]
   ) %>%
     map(.,~mutate_at(.,vars(matches(y)),~(-(length(all_p)-2)*.x))) %>%
-    map(.,rowSums,na.rm=T) %>% as_tibble(.,.name_repair="universal") %>%
+    map_dfc(.,rowSums,na.rm=T) %>%
     mutate(
       sum2=rowSums(.,na.rm=T)/(length(all_p)*(length(all_p)-1)),
       sum1=rowSums(srates[,grepl(paste0(fctr,".pop",y),names(srates))],na.rm=T)/(length(all_p)-1),

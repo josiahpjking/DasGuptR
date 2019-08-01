@@ -7,6 +7,7 @@
 #' @examples
 #' ......
 DG_Npops_decomp<-function(factoreffs,ps,all_p){
+  print(paste0("adjusting decomposition effects for N pops: ",paste(ps,collapse="vs")))
   y1<-ps[1]
   y2<-ps[2]
   #all_y=pws_pops %>% unlist %>% unique
