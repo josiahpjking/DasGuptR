@@ -17,7 +17,7 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #this is the one we're interested in right now
   facti=factrs[i]
 
-  print(paste0("comparing: ",distinct(df2,!!pop) %>% pull(!!pop) %>% paste(collapse=":")," Factor = ",facti))
+  #print(paste0("comparing: ",distinct(df2,!!pop) %>% pull(!!pop) %>% paste(collapse=":")," Factor = ",facti))
 
 
   #these are all the population factors (for both populations), spread.

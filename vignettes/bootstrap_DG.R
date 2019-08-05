@@ -1,5 +1,6 @@
 require(tidyverse)
 #require(DasGuptR)
+map(list.files("R",full.names=T),source)
 data(reconv)
 head(reconv)
 
@@ -36,7 +37,7 @@ Bs_samps<-function(x){
 map_dfr(unique(reconv$year),~filter(reconv,year==.x) %>% Bs_samps %>% mutate(year=.x))
 
 #set R for bootstrapping
-bs_r = 50
+bs_r = 200
 
 #create bootstrapping samples, and then standardize & decompose them (takes ages!)
 #13 populations, 10 subgroup breakdowns, takes approx 5mins per 10 bootstrap samples
@@ -48,7 +49,7 @@ system.time(
       dg = map(sampledata, ~DasGupt_Npop(.,pop=year,prevalence,pop_str,id_vars=c(Age,Sex),ratefunction="prevalence*pop_str"))
   )
 )
-#saveRDS(bs_ALLsamples, "archive/bootstrappedr50.RDS")
+#saveRDS(bs_ALLsamples, "archive/bootstrappedr200.RDS")
 #bs_ALLsamples <- readRDS("archive/bootstrappedr50.RDS")
 
 #pull the rates for each sample,
