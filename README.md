@@ -53,12 +53,12 @@ Das Gupta provides a further process for standardizing the rates and decompositi
 
 ![](dg2.png)  
 
-Where   
+Where  
 *α*<sub>1.23...N</sub> is the P-*α* adjusted rate for population 1 in the presence of populations 2-N.  
 and *α*<sub>12.3...N</sub> is the *α*-effect between populations 1 and 2 when in the presence of populations 3-N.  
-  
+   
 This process involves first calculating the P-1 adjusted rates and decompositions effects for all possible pairwise comparisons of populations, and then standardizing these across the N populations (by averaging over all possible ways of substituting adjusted rates to satisfy the condition B below, see Das Gupta 1993, p.106, equations 6.11 and 6.12) to obtain a consistent set of rates and effects for which:
-
+  
 -   **A:** there is only one P-*α* adjusted rate per population (as opposed to N-1)
 -   **B:** the **α*-effect* from populations 1 and 2 and the **α*-effect* from populations 2 and 3 now sum to the **α*-effect* from populations 1 and 3.
 
