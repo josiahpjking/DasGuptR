@@ -3,7 +3,7 @@
 DasGuptR
 ========
 
-The goal of DasGuptR is to provide an implementation of Prithwith Das Gupta's specification of *standardization* and *decomposition* of rates[1].
+The goal of DasGuptR is to provide an implementation of Prithwis Das Gupta's specification of *standardization* and *decomposition* of rates[1].
 
 Installation
 ------------
@@ -24,7 +24,7 @@ Standardization and decomposition are widely used analytic techniques to adjust 
 
 -   *Decomposition*: Gives us the percentage of the difference in rates between two years attributable to each of the factors we have included in the standardization.
 
-The *DasGuptR* package provides an implementation of Prithwith Das Gupta's specification of these two techniques.
+The *DasGuptR* package provides an implementation of Prithwis Das Gupta's specification of these two techniques.
 
 Below we provide a brief background, and a worked an example of using the DasGuptR package to explore patterns of reconvictions in Scotland.
 
