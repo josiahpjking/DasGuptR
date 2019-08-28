@@ -35,17 +35,28 @@ Das Gupta's methodologies of standardisation and decomposition are explained in 
 
 #### P factors, 2 populations
 
-The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).
+The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors according to the formula below.  
+
+![](dg15.png)  
+
 We can interpret the P-*α* adjusted rate as 'what the crude rate would look like if only *α* had changed (all else being equal)'.
 
 Neatly, crude rates can be decomposed into Das Gupta's adjusted rates such that changes in the P-*α* adjusted rate are proportional to changes in crude rates. For instance, if the crude rate decreases by 1.2, and the P-*α* adjusted rate decreases by .6, we can say that 50% of the change in crude rate is attributable to changes in *α*[2].
-The change in the P-*α* adjusted rate is known as a *decomposition effect* (in this case the **α*-effect*).
+The change in the P-*α* adjusted rate is known as a *decomposition effect* (in this case the **α*-effect*).  
+
 
 #### P factors, N populations
 
 When we extend the standardisation and decomposition methodology to more than two populations, the starting point is to apply the same process on all pairwise comparisons of two populations at a time. However, the results of these pairwise comparisons are not internally consistent: We are left with multiple different adjusted rates for a given year, and the decomposition effects between populations are not additive.
 
-Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which can be applied to populations at given years for analysis of time series.
+Das Gupta provides a further process for standardizing the rates and decomposition effects across N populations, which can be applied to populations at given years for analysis of time series, which is as follows.
+
+![](dg2.png)  
+
+Where   
+*α*<sub>1.23...N</sub> is the P-*α* adjusted rate for population 1 in the presence of populations 2-N.  
+and *α*<sub>12.3...N</sub> is the *α*-effect between populations 1 and 2 when in the presence of populations 3-N.  
+  
 This process involves first calculating the P-1 adjusted rates and decompositions effects for all possible pairwise comparisons of populations, and then standardizing these across the N populations (by averaging over all possible ways of substituting adjusted rates to satisfy the condition B below, see Das Gupta 1993, p.106, equations 6.11 and 6.12) to obtain a consistent set of rates and effects for which:
 
 -   **A:** there is only one P-*α* adjusted rate per population (as opposed to N-1)
