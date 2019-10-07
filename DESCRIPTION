@@ -1,11 +1,10 @@
 Package: DasGuptR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: standardisation and decomposition following Prithwis Das Gupta's 1991 method
 Version: 0.1.0
 Author: Josiah King and Ben Matthews
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Maintainer: Josiah King <josiahpjking@gmail.com>
+Description: Standardization and decomposition are widely used analytic techniques to adjust for the impact of compositional factors on rates. Standardization shows us what a rate would have been under different scenarios - for example, if there was no change in the age/sex structure of the population, or if there was no change in the prevalence of the event we are studying (e.g. reconviction). Decomposition gives us the percentage of the difference in rates between two years attributable to each of the factors we have included in the standardization. The DasGuptR package provides an implementation of Prithwis Das Gupta's specification of these two techniques.
 Imports:
     tidyverse
 License: What license is it under?
