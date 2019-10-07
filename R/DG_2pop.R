@@ -7,11 +7,10 @@
 #' @examples
 #' ......
 DG_2pop<-function(df,pop,factrs,ratefunction=NULL){
-  pop=enquo(pop)
   nfact=length(factrs)
 
   #nest and make factor matrix
-  df %>% group_by(!!pop) %>%
+  df %>% group_by({{pop}}) %>%
     nest() %>%
     mutate(
       factor_df = map(data, magrittr::extract,factrs)
@@ -22,10 +21,10 @@ DG_2pop<-function(df,pop,factrs,ratefunction=NULL){
   #spit out the difference too.
   #equivalent to Q1, Q2, ....  in Ben's function
   if(!is.null(ratefunction)){
-    decomp_out<-map(1:nfact,~DGadjust_ratefactor(df_nested,!!pop,.,factrs,ratefunction))
+    decomp_out<-map(1:nfact,~DGadjust_ratefactor(df_nested,{{pop}},.,factrs,ratefunction))
   }else{
     prodrf=paste(factrs,collapse="*")
-    decomp_out<-map(1:nfact,~DGadjust_ratefactor(df_nested,!!pop,.,factrs,prodrf))
+    decomp_out<-map(1:nfact,~DGadjust_ratefactor(df_nested,{{pop}},.,factrs,prodrf))
     #decomp_out<-map(1:nfact,~DGadjust_ratefactor_old(df_nested,!!pop,.,factrs))
   }
   names(decomp_out)<-factrs

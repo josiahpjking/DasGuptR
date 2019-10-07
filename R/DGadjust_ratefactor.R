@@ -6,12 +6,7 @@
 #' @export
 #' @examples
 #' ......
-allfacts=c(letters[1:5],paste0(letters[1:5],1))
-facti="a"
-nfact=5
-
 DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
-  pop=enquo(pop)
   #how many factors?
   nfact=length(factrs)
   #this is the one we're interested in right now
@@ -23,7 +18,7 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #these are all the population factors (for both populations), spread.
   #this means that indices 1:n/2 are pop1, and n/2:n are pop2. They are distinguished by a "1" in the name.
   #JK: IMPORTANT - FACTOR NAMES MUST NOT HAVE A "1" IN THEM ALREADY!
-  pop_facts<-df2 %>% dplyr::select(!!pop,factor_df) %>% spread(!!pop,factor_df) %>% unnest()
+  pop_facts<-df2 %>% dplyr::select({{pop}},factor_df) %>% spread({{pop}},factor_df) %>% unnest()
   allfacts=names(pop_facts)
   allfacts0 = allfacts[1:nfact]
   allfacts1 = allfacts[(nfact+1):length(allfacts)]
@@ -93,8 +88,8 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   diff=pop1-pop2
 
   tibble(
-    !!paste0("pop",df2 %>% pull(!!pop) %>% .[1] %>% as.character):=pop1,
-    !!paste0("pop",df2 %>% pull(!!pop) %>% .[2] %>% as.character):=pop2,
+    !!paste0("pop",df2 %>% pull({{pop}}) %>% .[1] %>% as.character):=pop1,
+    !!paste0("pop",df2 %>% pull({{pop}}) %>% .[2] %>% as.character):=pop2,
     factoreffect=diff
   )
 

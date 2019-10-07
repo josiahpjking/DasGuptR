@@ -4,8 +4,9 @@ map(list.files("R",full.names=T),source)
 data(reconv)
 head(reconv)
 
+
 #this function basically expands our age/sex count data into binomial data (e.g. reconvicted 0/1)
-#it then samples this data, and turns it back to group count data
+#it then samples this data, and reduces it back to group count data
 Bs_samps<-function(x){
   #get 1 year
   df = x %>% mutate(nreconv = offenders-reconvicted)
@@ -36,6 +37,10 @@ Bs_samps<-function(x){
 #i.e. the following code provides us with one sample
 map_dfr(unique(reconv$year),~filter(reconv,year==.x) %>% Bs_samps %>% mutate(year=.x))
 
+
+
+#### DG bootstrapped
+
 #set R for bootstrapping
 bs_r = 200
 
@@ -50,18 +55,19 @@ system.time(
   )
 )
 #saveRDS(bs_ALLsamples, "archive/bootstrappedr200.RDS")
-#bs_ALLsamples <- readRDS("archive/bootstrappedr50.RDS")
+#bs_ALLsamples <- readRDS("archive/bootstrappedr200.RDS")
 
 #pull the rates for each sample,
 rateSD <-
   bs_ALLsamples %>%
   mutate(
-    pops=map(dg, DasGupt_rates) #this function extracts the rates from the DasGupt_Npop() output
+    pops=map(dg, DasGupt_rates) #this function is just a quick extractsion of the rates from the DasGupt_Npop() output
   ) %>% pull(pops) %>%
   bind_rows() %>%
   group_by(factor,population) %>%
   summarise(sdrate=sd(rate))
 
+#get DG estimates
 reconv %>%
   mutate(prevalence=reconvicted/offenders, pop_str=offenders/convicted_population) %>%
   DasGupt_Npop(.,pop=year,prevalence,pop_str,id_vars=c(Age,Sex),ratefunction="prevalence*pop_str") -> DGreconv
@@ -91,8 +97,8 @@ DasGupt_rates(DGreconv) %>%
   scale_fill_manual(values = c("black","#1b9e77","#d95f02"))+
   NULL
 
-#
 
+#diffs should be normal?
 bs_diffs <- function(x){
   x %>% group_by(factor) %>%
     summarise_at(vars(starts_with("diff")),sum) %>% gather(diff,effect,starts_with("diff"))

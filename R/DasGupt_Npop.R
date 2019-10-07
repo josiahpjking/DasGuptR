@@ -8,10 +8,9 @@
 #' ......
 #DasGupt_TS<-function(df,f,pop,populations=NULL,baseline=NULL,method="DG",...){
 DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
-  pop=enquo(pop)
   factrs=map_chr(enquos(...),quo_name)
   nfact=length(factrs)
-  allpops=pull(df,!!pop) %>% unique
+  allpops=pull(df,{{pop}}) %>% unique
 
   #all pairwise comparisons of years (will filter these depending on user input of baseline)
   allpops %>% combinat::combn(.,2) %>% as.data.frame -> pairwise_pops
@@ -37,7 +36,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
     #okay, so start by applying dasgupt2pop to each pairwise combination
     print("Standardising and decomposing for all pairwise comparisons...")
     map(pairwise_pops,~dplyr::filter(df,year %in% .x) %>% mutate(
-      orderedpop=factor(!!pop,c(.x[[1]],.x[[2]])))) %>%
+      orderedpop=factor({{pop}},c(.x[[1]],.x[[2]])))) %>%
       map(.,~DG_2pop(.,orderedpop,factrs,ratefunction)) -> dg2p_res
 
     names(dg2p_res)<-map(pairwise_pops,~paste0("pops",paste(.,collapse="vs")))
@@ -68,7 +67,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
     }
   }else{
   # ONLY 2 populations, use dasgupt_2pop directly.
-    DG_2pop(df,!!pop,factrs,ratefunction) %>%
+    DG_2pop(df,{{pop}},factrs,ratefunction) %>%
       map(., ~rename(.,!!paste0("diff",paste(allpops,collapse="_")):=factoreffect)) -> dg2p_res
     DG_OUT = list()
     for(f in factrs){
@@ -81,8 +80,8 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
 
 
   if(!missing(id_vars)){
-     id_vars=enquo(id_vars)
-     map(DG_OUT, ~bind_cols(df %>% select(!!id_vars) %>% distinct,.)) %>%
+     #id_vars=enquo(id_vars)
+     map(DG_OUT, ~bind_cols(df %>% select({{id_vars}}) %>% distinct,.)) %>%
        map2_dfr(.,names(.),~mutate(.x,factor=.y))
   }else{return(DG_OUT)}
 }

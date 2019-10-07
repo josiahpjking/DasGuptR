@@ -171,12 +171,17 @@ ggplot(rates_crude, aes(x=year,y=rate))+geom_path()
 # saveRDS(dcomps,"../decomposition_standardisation/script/uspopdecomped.RDS")
 # dcomps<-readRDS("../decomposition_standardisation/script/uspopdecomped.RDS")
 
+dcomps<-readRDS("script/jk_data/uspopdecomped.RDS")
+
 rates_adj <-
   dcomps %>%
   group_by(factor) %>%
   summarise_at(vars(starts_with("pop")),sum) %>%
   gather(year,rate,starts_with("pop")) %>%
   mutate(year=as.numeric(gsub("pop","",year)))
+
+
+
 
 bind_rows(rates_crude,rates_adj) %>%
   ggplot(.,aes(x=year,y=rate,col=factor))+
@@ -233,4 +238,52 @@ left_join(
 
 ###
 # qqplots adj rates, and factor effects
+
+
+
+
+
+
+#little bit of prediction
+
+require(mgcv)
+require(itsadug)
+
+
+train = allrates %>% separate(agebin,c("age1","age2"),"-") %>%
+  mutate(
+    age=(as.numeric(age2)+as.numeric(age1))/2,
+    cohort=year-age,
+    agespecbirthrate=birthrate*pop_str
+  )
+
+test = train %>% filter(year>1985) %>%
+  mutate(
+    #year=year+10,
+    cohort=year-age
+  ) #%>% select(-agespecbirthrate)
+
+train <- train %>% filter(year<=1985)
+#train based on age cohort model
+m2<-bam(agespecbirthrate~s(cohort,by=factor(age)),data=train)
+head(train)
+
+test %>%
+  mutate(
+    pred=predict(m2,newdata=test,type="link"),
+    pred.se=predict(m2,newdata=test,type="link",se=T)$se.fit
+  ) %>%
+  bind_rows(
+    train %>% mutate(pred=predict(m2,newdata=train,type="link")),
+    .
+  ) %>%
+  #train %>% mutate(pred=predict(m2,newdata=train)) %>%
+  group_by(year) %>% summarise(rate=sum(agespecbirthrate),
+                               pred=sum(pred,na.rm=T), pred.se=sum(pred.se,na.rm=T)) %>%
+  ggplot(.,aes(x=year))+
+  geom_point(aes(y=rate))+
+  geom_point(aes(y=pred),col="red")+
+  geom_ribbon(aes(y=pred,ymin=pred-pred.se,ymax=pred+pred.se),alpha=.2)+
+  theme_bw()+
+  NULL
 
