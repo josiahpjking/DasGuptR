@@ -8,7 +8,7 @@
 #' ......
 DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #quick fix
-  unnest<-unnest_legacy
+  if(exists("unnest_legacy",where="package:tidyr",mode="function")){unnest<-unnest_legacy}
 
   #how many factors?
   nfact=length(factrs)
