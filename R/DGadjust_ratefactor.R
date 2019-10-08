@@ -7,6 +7,9 @@
 #' @examples
 #' ......
 DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
+  #quick fix
+  unnest<-unnest_legacy
+
   #how many factors?
   nfact=length(factrs)
   #this is the one we're interested in right now
@@ -18,19 +21,19 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #these are all the population factors (for both populations), spread.
   #this means that indices 1:n/2 are pop1, and n/2:n are pop2. They are distinguished by a "1" in the name.
   #JK: IMPORTANT - FACTOR NAMES MUST NOT HAVE A "1" IN THEM ALREADY!
-  pop_facts<-df2 %>% dplyr::select({{pop}},factor_df) %>% spread({{pop}},factor_df) %>% unnest()
+  pop_facts<-df2 %>% dplyr::select({{pop}},factor_df) %>% spread({{pop}},factor_df) %>% unnest
   allfacts=names(pop_facts)
   allfacts0 = allfacts[1:nfact]
   allfacts1 = allfacts[(nfact+1):length(allfacts)]
 
   #these are the all the combinations of P-1 factors from 2 populations
-  allperms<-tibble(perms=combn(allfacts[!(allfacts %in% c(facti,paste0(facti,1)))],length(allfacts)/2-1) %>% t)
+  allperms<-combn(allfacts[!(allfacts %in% c(facti,paste0(facti,1)))],length(allfacts)/2-1) %>% t %>% as.data.frame(.,stringsAsFactors=FALSE)
 
   #because we need to distinguish between sets by how many are from pop1 and how many from pop2, we'll count the 1s and absence of 1s
   # we also need to remove any sets in which factors come up twice (e.g. age_str and age_str1)
   count1s <- apply(allperms, 1, function(x) length(which(x %in% allfacts1)))
   count0s <- apply(allperms, 1, function(x) length(which(x %in% allfacts0)))
-  countmult <- apply(map_df(allperms,~gsub("1","",.)), 1, function(x) sum(duplicated(x)|duplicated(x, fromLast = TRUE)))
+  countmult <- apply(data.frame(lapply(allperms, function(x) {gsub("1","",x)})), 1, function(x) sum(duplicated(x)|duplicated(x, fromLast = TRUE)))
   allperms %>% mutate(
     #c0s=ifelse(count0s %in% c(0,(length(allfacts)/2-1)),0,count0s),
     #c1s=ifelse(count1s %in% c(0,(length(allfacts)/2-1)),0,count1s),
