@@ -110,6 +110,8 @@ bs_ALLsamples %>%
   ) %>% pull(diffs) %>%
   bind_rows() -> diffs
 
+
 qqnorm(diffs$effect[diffs$factor=="prevalence"])
 qqnorm(diffs$effect[diffs$factor=="prevalence" & diffs$diff=="diff2004_2005"])
+
 

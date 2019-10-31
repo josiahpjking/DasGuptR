@@ -3,9 +3,9 @@
 #' @param df dataframe or tibble object, with columns specifying 1) population and 2) each rate-factor to be considered
 #' @param pop tidyselect variable indicating population ID
 #' @param factrs character vector of rate-factors
+#' @param ratefunction allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").
 #' @export
 #' @examples
-#' ......
 DG_2pop<-function(df,pop,factrs,ratefunction=NULL){
   nfact=length(factrs)
 
