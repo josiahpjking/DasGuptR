@@ -17,13 +17,13 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #this is the one we're interested in right now
   facti=factrs[i]
 
-  #print(paste0("comparing: ",distinct(df2,!!pop) %>% pull(!!pop) %>% paste(collapse=":")," Factor = ",facti))
+  print(paste0("comparing: ",distinct(df2,{{pop}}) %>% pull({{pop}}) %>% paste(collapse=":")," Factor = ",facti))
 
 
   #these are all the population factors (for both populations), spread.
   #this means that indices 1:n/2 are pop1, and n/2:n are pop2. They are distinguished by a "1" in the name.
   #JK: IMPORTANT - FACTOR NAMES MUST NOT HAVE A "1" IN THEM ALREADY!
-  pop_facts<-df2 %>% dplyr::select({{pop}},factor_df) %>% spread({{pop}},factor_df) %>% unnest
+  pop_facts<-df2 %>% dplyr::select({{pop}},factor_df) %>% spread({{pop}},factor_df) %>% tidyr::unnest(.)
   allfacts=names(pop_facts)
   allfacts0 = allfacts[1:nfact]
   allfacts1 = allfacts[(nfact+1):length(allfacts)]
@@ -48,13 +48,13 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
 
   #these are the parts of the DG 3.54 equation (page 32)
   eq_parts <- allperms %>% group_by(eqp) %>%
-    summarise(
-      n=n(),
-      F_eqs=list(f_id)
-    ) %>% ungroup
+      summarise(
+        n=n(),
+        F_eqs=list(f_id)
+      ) %>% ungroup
   #these are the denominators for each part
-  denominators = map_dbl(1:nrow(eq_parts)-1,~nfact*(ncol(combn(nfact-1,.))))
-
+  denominators = map(1:(nrow(eq_parts)-1),~nfact*(ncol(combn(nfact-1,.)))) %>% unlist()
+  print(length(denominators))
   #extract all the data for each F() calculation
   #one is for when alpha is from pop1, and one when alpha is from pop2
   allperms <- allperms %>% as_tibble %>%
@@ -62,7 +62,6 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
       data=map(1:nrow(allperms),~pop_facts[allfacts[allfacts %in% c(facti,allperms[.,1:((length(allfacts)/2)-1)])]]),
       data1=map(1:nrow(allperms),~pop_facts[allfacts[allfacts %in% c(paste0(facti,1),allperms[.,1:((length(allfacts)/2)-1)])]])
     )
-
   #this is to clean up the 1s. Again, this aspect could be a lot better...
   colClean <- function(x){ colnames(x) <- gsub("1", "", colnames(x)); x }
 
@@ -77,14 +76,14 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
 
 
   #spread, unnest
-  feq_data = allperms %>% select(f_id, rfunct) %>% spread(f_id,rfunct) %>% unnest
-  feq_data1 = allperms %>% select(f_id, rfunct1) %>% spread(f_id,rfunct1) %>% unnest
+  feq_data = allperms %>% select(f_id, rfunct) %>% spread(f_id,rfunct) %>% unnest()
+  feq_data1 = allperms %>% select(f_id, rfunct1) %>% spread(f_id,rfunct1) %>% unnest()
 
   eq_parts %>%
     mutate(
       top_part = map(F_eqs, ~select(feq_data,.) %>% rowSums),
       top_part1 = map(F_eqs, ~select(feq_data1,.) %>% rowSums),
-      bottom_part = denominators,
+      bottom_part = ifelse(length(denominators)<1,nfact,denominators),
       eq = map2(top_part,bottom_part,~(.x/.y)),
       eq1 = map2(top_part1,bottom_part,~(.x/.y))
     ) -> eq_parts

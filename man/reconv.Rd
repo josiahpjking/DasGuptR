@@ -4,7 +4,9 @@
 \name{reconv}
 \alias{reconv}
 \title{Arabidopsis QTL data on gravitropism}
-\format{An object of class \code{"cross"}; see \code{\link[qtl]{read.cross}}.}
+\format{
+An object of class \code{"cross"}; see \code{\link[qtl]{read.cross}}.
+}
 \source{
 \href{https://phenome.jax.org/projects/Moore1b}{QTL Archive}
 }

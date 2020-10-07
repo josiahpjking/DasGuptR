@@ -8,11 +8,15 @@ Outputs a ? object}
 DGadjust_ratefactor(df2, pop, i, factrs, ratefunction)
 }
 \arguments{
+\item{df2}{dataframe in which rows are populations, column 'factor_df' is a nested dataframe of rate-factors, and column 'pop_prods' is the rowProducts of 'factor_df'.}
+
 \item{pop}{tidyselect variable indicating population ID}
+
+\item{i}{the index of the factrs vector which is being adjusted for (the alpha in P-alpha)}
 
 \item{factrs}{character vector of rate-factors}
 
-\item{df}{dataframe in which rows are populations, column 'factor_df' is a nested dataframe of rate-factors, and column 'pop_prods' is the rowProducts of 'factor_df'.}
+\item{ratefunction}{allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").}
 }
 \description{
 Inner function called by DasGupt_2pop and DasGupt_Npop

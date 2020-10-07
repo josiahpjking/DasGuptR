@@ -13,11 +13,10 @@ DG_2pop(df, pop, factrs, ratefunction = NULL)
 \item{pop}{tidyselect variable indicating population ID}
 
 \item{factrs}{character vector of rate-factors}
+
+\item{ratefunction}{allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").}
 }
 \description{
 Standardisation and decomposition of rates over P rate-factors and 2 populations.
 Outputs a ? object
-}
-\examples{
-......
 }
