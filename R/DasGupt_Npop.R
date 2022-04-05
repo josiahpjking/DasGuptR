@@ -29,7 +29,7 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
     #let's change the names to ensure we keep track of which pairwise standardisations are which
     #okay, so start by applying dasgupt2pop to each pairwise combination
     print("Standardising and decomposing for all pairwise comparisons...")
-    map(pairwise_pops,~dplyr::filter(df,year %in% .x) %>% mutate(
+    map(pairwise_pops,~dplyr::filter(df,{{pop}} %in% .x) %>% mutate(
       orderedpop=factor({{pop}},c(.x[[1]],.x[[2]])))) %>%
       map(.,~DG_2pop(.,orderedpop,factrs,ratefunction)) -> dg2p_res
 
@@ -77,5 +77,5 @@ DasGupt_Npop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL){
      #id_vars=enquo(id_vars)
      map(DG_OUT, ~bind_cols(df %>% select({{id_vars}}) %>% distinct,.)) %>%
        map2_dfr(.,names(.),~mutate(.x,factor=.y))
-  }else{return(DG_OUT)}
+  }else{return(enframe(DG_OUT) %>% unnest(value) %>% rename(factor=name))}
 }
