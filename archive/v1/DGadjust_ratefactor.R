@@ -70,10 +70,10 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
   #Now we map the rate function (user defined) onto the data.
   allperms %>% mutate(
     data_rn = map(data,colClean),
-    rfunct = map_dbl(data_rn,~mutate(.,rf=eval(parse(text=ratefunction))) %>% pull(rf)),
+    rfunct = map(data_rn,~mutate(.,rf=eval(parse(text=ratefunction))) %>% pull(rf)),
 
     data1_rn = map(data1,colClean),
-    rfunct1 = map_dbl(data1_rn,~mutate(.,rf=eval(parse(text=ratefunction))) %>% pull(rf))
+    rfunct1 = map(data1_rn,~mutate(.,rf=eval(parse(text=ratefunction))) %>% pull(rf))
   ) %>% select(-c(data,data_rn,cMs,data1,data1_rn)) -> allperms
 
 
@@ -83,14 +83,16 @@ DGadjust_ratefactor<-function(df2,pop,i,factrs,ratefunction){
 
   eq_parts %>%
     mutate(
-      top_part = map_dbl(F_eqs, ~select(feq_data,.) %>% rowSums),
-      top_part1 = map_dbl(F_eqs, ~select(feq_data1,.) %>% rowSums),
+      top_part = map(F_eqs, ~select(feq_data,.) %>% rowSums),
+      top_part1 = map(F_eqs, ~select(feq_data1,.) %>% rowSums),
       bottom_part = eqp,
-      eq = top_part/bottom_part,
-      eq1 = top_part1/bottom_part
+      eq = map2(top_part,bottom_part,~(.x/.y)),
+      eq1 = map2(top_part1,bottom_part,~(.x/.y))
     ) -> eq_parts
-  pop1=eq_parts %>% pull(eq1) %>% sum()
-  pop2=eq_parts %>% pull(eq) %>% sum()
+  # pop1=eq_parts[["eq1"]][[1]] %>% sum()
+  # pop2=eq_parts[["eq"]][[1]] %>% sum()
+  pop1=eq_parts %>% select(eq) %>% unlist(recursive = F) %>% as_tibble() %>% rowSums
+  pop2=eq_parts %>% select(eq1) %>% unlist(recursive = F) %>% as_tibble() %>% rowSums
   diff=pop1-pop2
 
   tibble(

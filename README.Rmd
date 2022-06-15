@@ -265,10 +265,10 @@ reconv <-
   filter(year %in% 2004:2007) #the output is pretty cumbersome, so lets keep it at 4 years for now
 
 #standardize and decompose!
-reconv_DG <- DasGupt_Npop(df=reconv,
+reconv_DG <- dgnpop(df=reconv,
                           pop=year,
                           prevalence, pop_str,
-                          id_vars=c(Age,Sex),
+                          id_vars=c("Age","Sex"),
                           ratefunction="prevalence*pop_str")
                           # the default ratefunction calculates rate as the product of all specified factors
                           # in theory this function works with any function you like.
@@ -287,7 +287,7 @@ The returning rates and decomposition effects are age-sex specific (i.e., they a
 We can extract these population rates with the **DasGupt_rates()** function, which simply groups by $\alpha$ (the factor not being adjusted for), sums, and reshapes.  
   
 ```{r getrates}
-DasGupt_rates(reconv_DG)
+dg_rates(reconv_DG)
 ```
   
 Here the output is somewhat counterintuitive. It is important to remembe that the 'factor' column here represents the **$\alpha$ and not the P** in the expression "P-$\alpha$ adjusted rate". It can become mightily confusing, for instance, that to investigate the "age/sex adjusted rates", requires looking at the rates where `factor=="prevalence"`.  
@@ -304,7 +304,7 @@ crude_rates <-
     factor="crude"
   )
 
-DasGupt_rates(reconv_DG) %>%
+dg_rates(reconv_DG) %>%
   mutate(year=as.numeric(population)) %>%
   bind_rows(., crude_rates) %>%  
   ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
@@ -315,7 +315,7 @@ DasGupt_rates(reconv_DG) %>%
 We can then compare the change in the adjusted rates to the change in the crude rates, to give what equates to an effect size:  
 ```{r}
 bind_rows(
-  DasGupt_table(reconv_DG,2004,2007),
+  dg_table(reconv_DG,2004,2007),
   crude_rates %>% filter(year %in% c(2004,2007)) %>%
     spread(year,rate) %>% mutate(difference=`2004`-`2007`)
 ) %>%
@@ -344,9 +344,9 @@ reconv <-
     pop_str = offenders/convicted_population
   ) 
 
-reconv_DG <- DasGupt_Npop(df=reconv,
+reconv_DG <- dgnpop(df=reconv,
                           pop=year,prevalence, pop_str,frequency,
-                          id_vars=c(Age,Sex),ratefunction="prevalence*pop_str*frequency")
+                          id_vars=c("Age","Sex"),ratefunction="prevalence*pop_str*frequency")
 
 crude_rates <-
   reconv %>%
@@ -357,7 +357,7 @@ crude_rates <-
     factor="crude"
   )
 
-DasGupt_rates(reconv_DG) %>%
+dg_rates(reconv_DG) %>%
   mutate(year=as.numeric(population)) %>%
   bind_rows(., crude_rates) %>%  
   ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
@@ -367,3 +367,63 @@ DasGupt_rates(reconv_DG) %>%
        x = "Year")
 
 ```
+
+# Other examples from Das Gupta 1993
+
+```{r}
+# The case of 2 factors (2 populations)
+eg2.1 <- data.frame(
+   pop = c("black","white"),
+   avg_earnings = c(10930, 16591),
+   earner_prop = c(.717892, .825974)
+)
+dgnpop(eg2.1, pop=pop, avg_earnings, earner_prop)
+
+# The case of 3 factors (2 populations)
+eg2.3 <- data.frame(
+   pop = c("austria","chile"),
+   birthsw1549 = c(51.78746, 84.90502),
+   propw1549 = c(.45919, .75756),
+   propw = c(.52638, .51065)
+)
+dgnpop(eg2.3, pop=pop, birthsw1549, propw1549, propw)
+
+# The case of 4 factors (2 populations)
+eg2.5 <- data.frame(
+   pop = c(1971, 1979),
+   birth_preg = c(25.3, 32.7),
+   preg_actw = c(.214, .290),
+   actw_prop = c(.279, .473),
+   w_prop = c(.949, .986)
+)
+dgnpop(eg2.5, pop=pop, birth_preg, preg_actw, actw_prop, w_prop)
+
+# The case of 5 factors (2 populations)
+eg2.7 <- data.frame(
+   pop = c(1970, 1980),
+   prop_m = c(.58, .72),
+   noncontr = c(.76, .97),
+   abort = c(.84, .97),
+   lact = c(.66, .56),
+   fecund = c(16.573, 16.158)
+)
+dgnpop(eg2.7, pop=pop, prop_m, noncontr, abort, lact, fecund)
+
+# The case of 3 vector factors (2 populations)
+eg4.5 <- data.frame(
+   agegroup = rep(1:7, 2),
+   pop = rep(c(1970, 1960), e = 7),
+   bm = c(488, 452, 338, 156, 63, 22, 3,
+          393, 407, 369, 274, 184, 90, 16),
+   mw = c(.082, .527, .866, .941, .942, .923, .876,
+          .122, .622, .903, .930, .916, .873, .800),
+   wp = c(.056, .038, .032, .030, .026, .023, .019,
+          .043, .041, .036, .032, .026, .020, .018)
+)
+dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
+# getting back the population level a-adjusted rates
+dg_rates(dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup")))
+
+```
+
+
