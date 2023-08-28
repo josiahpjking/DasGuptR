@@ -64,7 +64,7 @@
 #' dg_rates(dgout)
 dgnpop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL, quietly = TRUE){
 
-  factrs_names = map_chr(enquos(...),quo_name)
+  factrs_names = purrr::map_chr(enquos(...),quo_name)
   nfact = length(factrs_names)
   tmpdf = df
   tmpdf$pop = factor(tmpdf %>% pull({{pop}}))
