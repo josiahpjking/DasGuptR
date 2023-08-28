@@ -62,8 +62,6 @@
 #' dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
 #' dgout <- dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
 #' dg_rates(dgout)
-
-
 dgnpop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL, quietly = TRUE){
 
   factrs_names = map_chr(enquos(...),quo_name)
@@ -72,20 +70,18 @@ dgnpop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL, quietl
   tmpdf$pop = factor(tmpdf %>% pull({{pop}}))
   tmpdf = tmpdf %>% dplyr::arrange(pop, vars(id_vars))
 
-  names(tmpdf)[which(names(tmpdf) %in% sort(factrs_names))] <-
-    paste0("fact",letters[1:nfact])
-
-  fctname_map = data.frame(fct_name = sort(factrs_names), factor = paste0("fact",letters[1:nfact]))
+  fctname_map = data.frame(fct_name = names(tmpdf)[names(tmpdf) %in% factrs_names], factor = paste0("fact",letters[1:nfact]))
   if(!is.null(ratefunction)){
     for(i in 1:nfact){
       ratefunction = gsub(sort(factrs_names)[i], paste0("fact",letters[i]), ratefunction)
     }
   }
+  names(tmpdf)[names(tmpdf) %in% factrs_names] <-
+    paste0("fact",letters[1:nfact])
 
 
   factrs = paste0("fact",letters[1:nfact])
   allpops = unique(tmpdf$pop)
-
 
   ##########
   #THE DAS GUPTA METHOD

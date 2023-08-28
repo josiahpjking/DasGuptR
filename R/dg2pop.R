@@ -4,7 +4,6 @@
 #' @param factrs character vector of rate-factors
 #' @param ratefunction allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").
 #' @export
-#' @examples
 dg2pop<-function(pw,factrs,ratefunction=NULL,quietly=TRUE){
 
   nfact=length(factrs)
