@@ -62,107 +62,121 @@
 #' dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
 #' dgout <- dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
 #' dg_rates(dgout)
-dgnpop<-function(df,pop,...,baseline=NULL,id_vars=NULL,ratefunction=NULL, quietly = TRUE){
 
-  factrs_names = purrr::map_chr(enquos(...),quo_name)
-  nfact = length(factrs_names)
-  tmpdf = df
-  tmpdf$pop = factor(tmpdf %>% pull({{pop}}))
-  tmpdf = tmpdf %>% dplyr::arrange(pop, vars(id_vars))
-
-  fctname_map = data.frame(fct_name = names(tmpdf)[names(tmpdf) %in% factrs_names], factor = paste0("fact",letters[1:nfact]))
-  if(!is.null(ratefunction)){
-    for(i in 1:nfact){
-      ratefunction = gsub(sort(factrs_names)[i], paste0("fact",letters[i]), ratefunction)
-    }
-  }
-  names(tmpdf)[names(tmpdf) %in% factrs_names] <-
-    paste0("fact",letters[1:nfact])
+dgnpop<-function(df,pop,factors,baseline=NULL,id_vars=NULL,ratefunction=NULL, quietly = TRUE){
 
 
-  factrs = paste0("fact",letters[1:nfact])
-  allpops = unique(tmpdf$pop)
+  tmpdf = as.data.frame(df)
+  tmpdf[[pop]] = factor(tmpdf[[pop]])
+
+  allpops = unique(tmpdf[[pop]])
+  nfact = length(factors)
 
   ##########
   #THE DAS GUPTA METHOD
   ##########
-  tmpdf$subpop = gsub(" ","",apply(as.data.frame(tmpdf[,id_vars]), 1, function(x) paste0(x, collapse="")))
+  if(!is.null(id_vars)){
+    subpop = interaction(tmpdf[,id_vars])
+  } else {
+    subpop = rep(1,nrow(tmpdf))
+  }
+
   dgo = list()
 
-  for(g in unique(tmpdf$subpop)){
-    tmpdf2 = tmpdf[tmpdf$subpop==g, ]
+  for(g in unique(subpop)){
+    #g = unique(subpop)[1]
+    tmpdf2 = tmpdf[subpop==g, ]
+
+    .makepopdf <- function(x){
+      popdf = tmpdf2[tmpdf2[[pop]] %in% x, ]
+      popdf[[pop]] = factor(popdf[[pop]], levels = x, ordered =T)
+      popdf
+    }
+
+    pairwise_pops = combn(as.character(allpops), 2)
+
+    pairwise_est = apply(pairwise_pops, 2, \(x) .makepopdf(x))
+
 
     if(length(allpops)<=2){
-        # ONLY 2 populations, use dg2pop directly.
-        pairwise_pops = combn(as.character(allpops), 2)
-
-        pairwise_est = apply(pairwise_pops, 2, function(x)
-          dplyr::filter(tmpdf2, pop %in% x) %>%
-            mutate(pop = factor(pop, levels=x, ordered=T)))
-
-        DG_OUT = dg2pop(pairwise_est[[1]], factrs, ratefunction, quietly=quietly)
-
+      # ONLY 2 populations, use dg2pop directly.
+      DG_OUT = dg2pop(pairwise_est[[1]],
+                      pop=pop,factors=factors,
+                      ratefunction=ratefunction, quietly=quietly)
+      DG_OUT = do.call(rbind, DG_OUT)
+      if(!is.null(id_vars)){
+        DG_OUT = merge(DG_OUT, unique(tmpdf[subpop==g, id_vars, drop = FALSE]))
+      }
     } else {
       ##### N population standardisation
       if(!quietly){print("Standardising and decomposing for all pairwise comparisons...")}
 
-      pairwise_pops = combn(as.character(allpops), 2)
+      if(!is.null(baseline)){
+        pairwise_est = pairwise_est[ sapply(pairwise_est, \(x) baseline %in% x[[pop]]) ]
+      }
 
-      pairwise_est = apply(pairwise_pops, 2, function(x)
-          dplyr::filter(tmpdf2, pop %in% x) %>%
-            mutate(pop = factor(pop, levels=x,ordered=T)))
 
-      dg2p_res2 = lapply(pairwise_est, function(x) dg2pop(x, factrs, ratefunction, quietly=quietly))
-      dg2p_res2 = lapply(dg2p_res2, function(x) unlist(x, recursive = F))
-      dg2p_res2 = enframe(unlist(dg2p_res2))
+      dg2p_res = lapply(pairwise_est, \(x)
+                         dg2pop(x, pop, factors,
+                                ratefunction, quietly=quietly))
+
+      dg2p_res = lapply(dg2p_res, \(x) do.call(rbind,x))
+      dg2p_res = do.call(rbind, dg2p_res)
+      row.names(dg2p_res) <- NULL
 
       DG_OUT = list()
 
-      for(f in factrs){
-        dg2p_rates2 = dg2p_res2[grepl(f,dg2p_res2$name) & !grepl(".diff_",dg2p_res2$name), ]
-        dg2p_rates2 = dg2p_rates2[!duplicated(dg2p_rates2),]
-        dg2p_facteffs2 = dg2p_res2[grepl(paste0(f,".diff"),dg2p_res2$name), ]
+      for(f in factors){
+
+        dg2p_rates = dg2p_res[dg2p_res$factor == f, ]
 
         if(!is.null(baseline)){
-            standardized_rates2 = dg2p_rates2[grepl(paste0(".adj",baseline), dg2p_rates2$name),]
-            difference_effects2 = dg2p_facteffs2[grepl(paste0(".diff_",baseline), dg2p_facteffs2$name),]
+            standardized_rates = dg2p_rates[dg2p_rates$adj.set == baseline, ]
+            difference_effects = data.frame()
         } else {
           #std_rates
           if(!quietly){print(paste0("Standardizing P-",f," across N pops..."))}
           #these are the standardized rate for factor f in each year, stnadardixed over all Ys.
-          standardized_rates = lapply(allpops, function(x) dg611(dg2p_rates2, allpops, as.character(x),f))
-          standardized_rates = enframe(unlist(standardized_rates))
+          standardized_rates = lapply(allpops, \(x) dg611(dg2p_rates, allpops, x, f))
+          standardized_rates = do.call(rbind, standardized_rates)
 
           if(!quietly){print(paste0("Getting decomposition effects for P-",f," standardised rates..."))}
           pairwise_pops = combn(allpops, 2, simplify = F)
-          difference_effects = lapply(pairwise_pops, function(x) dg612(dg2p_facteffs2, allpops, x, f))
-          difference_effects = enframe(unlist(difference_effects))
+          difference_effects = lapply(pairwise_pops, \(x) dg612(dg2p_rates, allpops, x, f))
+
         }
         DG_OUT[[f]]=bind_rows(standardized_rates,difference_effects)
       }
+
+      DG_OUT = lapply(DG_OUT, \(x) merge(x, unique(tmpdf[subpop==g, id_vars, drop = FALSE])))
+      DG_OUT = do.call(rbind, DG_OUT)
     }
     dgo[[g]]=DG_OUT
   }
 
-  # tidy output
-  if(is.null(id_vars)){
-    dgo = enframe(unlist(dgo,recursive = F)) %>% unnest(value, names_repair = "universal")
-    names(dgo)[1] = "factor"
-  }else{
-    dgo = enframe(unlist(dgo,recursive = F)) %>% unnest(value, names_repair = "unique") %>%
-      separate(1, into=c("subpop","factor"),"\\.",fill = "right")
-  }
-  if("name...2" %in% names(dgo)){
-    dgo =
-      dgo %>%
-      separate(name...2, into=c("ff","pop","ff2"), "\\.") %>%
-      select(-ff,-ff2) %>%
-      pivot_wider(names_from="pop",values_from="value") %>%
-      arrange(factor)
-  }
-  dgo = merge(fctname_map, dgo)
-  dgo = dgo[,-which(names(dgo)=="factor")]
-  names(dgo)[which(names(dgo)=="fct_name")] <- "factor"
+  # # tidy output
+  # if(is.null(id_vars)){
+  #   dgo = enframe(unlist(dgo,recursive = F)) %>% unnest(value, names_repair = "universal")
+  #   names(dgo)[1] = "factor"
+  # }else{
+  #   # dgo = do.call(rbind, dgo)
+  #   dgo = enframe(unlist(dgo,recursive = F)) %>% unnest(value, names_repair = "unique") %>%
+  #     separate(1, into=c("subpop","factor"),"\\.",fill = "right")
+  # }
+  # if("name...2" %in% names(dgo)){
+  #   dgo =
+  #     dgo %>%
+  #     separate(name...2, into=c("ff","pop","ff2"), "\\.") %>%
+  #     select(-ff,-ff2) %>%
+  #     pivot_wider(names_from="pop",values_from="value") %>%
+  #     arrange(factor)
+  # }
+  # #dgo = merge(fctname_map, dgo)
+  # dgo = dgo[,-which(names(dgo)=="factor")]
+  # names(dgo)[which(names(dgo)=="fct_name")] <- "factor"
+  # tidy
+  dgo = do.call(rbind, dgo)
+  row.names(dgo) = NULL
   return(dgo)
 }
 

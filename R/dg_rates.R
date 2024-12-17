@@ -18,9 +18,5 @@
 #' dgout <- dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
 #' dg_rates(dgout)
 dg_rates<-function(df){
-  df %>%
-    group_by(factor) %>%
-    summarise_at(vars(starts_with("pop")),sum) %>%
-    gather(population,rate,starts_with("pop")) %>%
-    mutate(population=gsub("pop|pop_","",population))
+  aggregate(adj.rate ~ factor + pop, data = df, sum)
 }

@@ -12,45 +12,75 @@ dg354<-function(df2,i,factrs,ratefunction,quietly=TRUE){
   nfact=length(factrs)
   #this is the one we're interested in right now
   facti=factrs[i]
-  pops = levels(df2 %>% droplevels %>% pull(pop))
+  facti=i
+  pops = unique(names(df2))
+
   # message
-  if(!quietly){print(paste0("comparing populations ",distinct(df2,pop) %>% pull(pop) %>% paste(collapse=" and ")," . Factor = ",facti))}
+  if(!quietly){print(paste0("comparing populations ",paste(unique(names(df2)), collapse=" and ")," . Factor = ",facti))}
 
   #these are all the population factors (for both populations), spread.
-  pop_facts =
-    df2 %>% dplyr::select(pop,factor_df) %>%
-    tidyr::pivot_wider(names_from=pop,values_from=factor_df) %>%
-    tidyr::unnest(tidyselect::everything(),names_sep="_")
-  allfacts = names(pop_facts)
+  # pop_facts =
+  #   df2 %>% dplyr::select(pop,factor_df) %>%
+  #   tidyr::pivot_wider(names_from=pop,values_from=factor_df) %>%
+  #   tidyr::unnest(tidyselect::everything(),names_sep="_")
+  pop_facts = do.call(rbind,df2)
+
+
+
+  allfacts = paste0(rep(pops,e=nfact),
+                    rep(names(pop_facts),2))
+
   allfactsA = allfacts[1:nfact]
   allfactsB = allfacts[(nfact+1):length(allfacts)]
-
   #these are the all the combinations of P-1 factors from 2 populations
-  allperms = t(combn(allfacts[!grepl(facti,allfacts)],length(allfacts)/2-1))
+  allperms = t(combn(allfacts[!allfacts %in% paste0(pops,facti)],length(allfacts)/2-1))
 
   #because we need to distinguish between sets by how many are from pop1 and how many from pop2:
   countBs = apply(allperms, 1, function(x) length(which(x %in% allfactsB)))
   countBs = ifelse(countBs %in% c(0,(length(allfacts)/2-1)),0,countBs)
 
   # we also need to remove any sets in which factors come up twice (e.g. age_str and age_str1)
-  countfacts = sapply(factrs, function(y) apply(allperms, 1, function(x) sum(grepl(y,x))))
+  countfacts = sapply(factrs, \(y) apply(gsub(paste0(pops,collapse="|"),"",allperms), 1, \(x) sum(x==y)))
+
   countdup = rowSums(countfacts == 2)
+
 
   #these are denominators for the 3.54 eq
   eqp = sapply(countBs, function(x) nfact*max(dim(combn(nfact-1,x))))
   eqp = eqp[countdup==0]
 
+  #here is all the factor data:
   relperms = allperms[countdup==0,]
   if(is.null(dim(relperms))){relperms = as.array(relperms)}
-  # factor data
-  fdata = apply(relperms, 1, function(x) pop_facts[x])
-  fdata_clean = lapply(fdata, function(x)
-    dplyr::rename_with(x,.fn = ~gsub(paste0(pops,"_", collapse="|"), "",.),
-                       .cols = tidyselect::everything()))
+
+  fdata =
+    apply(t(relperms),2,
+        function(x)
+          sapply(x,
+                 function(y)
+                   pop_facts[
+                     gsub(paste0(factrs,collapse="|"),"",y),
+                     gsub(paste0(pops,collapse="|"),"",y)
+                   ]
+                 )
+    )
+
+
+  if(is.vector(fdata)){ fdata = matrix(fdata, nrow=1) }
+
+  fdata_clean = vector(mode="list",length=dim(fdata)[2])
+
+  for(l in 1:length(fdata_clean)){
+    fdata_clean[[l]] = fdata[,l]
+    names(fdata_clean[[l]]) = gsub(paste0(pops,collapse="|"),"",t(relperms))[,l]
+  }
+
 
   # rates / Aa
-  rfunct = sapply(fdata_clean, function(x) dplyr::mutate(x, rf = eval(parse(text=gsub(facti,"1",ratefunction))))
-         %>% pull(rf))
+  tmp_ratefunction = gsub(paste0("\\b",facti,"\\b"),"1",ratefunction)
+
+  rfunct = sapply(fdata_clean, function(x) eval(parse(text = tmp_ratefunction), envir = as.list(x)))
+
 
   if(is.null(dim(rfunct))){
     eq354 = aggregate(rfunct, by = list(eqp), FUN = sum)
@@ -60,17 +90,20 @@ dg354<-function(df2,i,factrs,ratefunction,quietly=TRUE){
     QAa = sapply(eq354, function(x) sum(x[,2]/x[,1]))
   }
 
-
-
-  popAi = pop_facts[[paste0(pops[1],"_",facti)]]*QAa
-  popBi = pop_facts[[paste0(pops[2],"_",facti)]]*QAa
+  popAi = pop_facts[pops[1],facti]*QAa
+  popBi = pop_facts[pops[2],facti]*QAa
   diff=popBi-popAi
 
   res = data.frame(
-    popAi=popAi,
-    popBi=popBi,
-    factoreffect=diff
+    adj.rate=c(popAi,popBi),
+    pop=pops,
+    adj.set=rev(pops),
+    diff=c(diff,-diff),
+    diff.calc=c(paste0(pops,collapse="-"),
+           paste0(rev(pops),collapse="-")
+    ),
+    factor=facti
   )
-  names(res) = c(paste0("pop_",pops,".adj",rev(pops)), paste0("diff_",paste0(pops,collapse="")))
+
   return(res)
 }

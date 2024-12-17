@@ -5,14 +5,14 @@
 \title{The full Das Gupta 6.12 equation for a factor-effect between 2 populations
 Outputs a tibble object specifying the factor-effect standardised across all populations}
 \usage{
-dg612(factoreffs2, all_p, ps, fctr)
+dg612(srates, all_p, ps, factor)
 }
 \arguments{
+\item{srates}{a dataframe output from dg2p}
+
 \item{all_p}{character or numeric vector of all N populations}
 
 \item{ps}{vector of length 2 specifying a possible pairwise comparison of populations}
-
-\item{factoreffs}{a dataframe/tibble object of ?? can't remember!!!}
 }
 \description{
 The full Das Gupta 6.12 equation for a factor-effect between 2 populations

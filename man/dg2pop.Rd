@@ -5,14 +5,14 @@
 \title{Standardisation and decomposition of rates over P rate-factors and 2 populations.
 For simplicity, suggest using dgnpop, which will default to dg2pop in the case of 2 populations.}
 \usage{
-dg2pop(pw, factrs, ratefunction = NULL, quietly = TRUE)
+dg2pop(pw, pop, factors, ratefunction = NULL, quietly = TRUE)
 }
 \arguments{
-\item{factrs}{character vector of rate-factors}
-
 \item{ratefunction}{allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").}
 
 \item{df}{dataframe or tibble object, with columns specifying 1) population and 2) each rate-factor to be considered. must have column named "pop" indicating the population ID.}
+
+\item{factrs}{character vector of rate-factors}
 }
 \description{
 Standardisation and decomposition of rates over P rate-factors and 2 populations.

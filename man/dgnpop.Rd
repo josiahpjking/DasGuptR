@@ -8,7 +8,7 @@ Outputs a ? object}
 dgnpop(
   df,
   pop,
-  ...,
+  factors,
   baseline = NULL,
   id_vars = NULL,
   ratefunction = NULL,
@@ -20,13 +20,13 @@ dgnpop(
 
 \item{pop}{tidyselect variable indicating population ID}
 
-\item{...}{tidyselect variables indicating rate-factors}
-
 \item{baseline}{baseline population to standardise against. if NULL then will do Das Gupta's full N-population standardisation.}
 
 \item{id_vars}{character vector of variable names in dataframe to attach back to output (useful if analysing sub-population specific rates)}
 
 \item{ratefunction}{allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").}
+
+\item{...}{tidyselect variables indicating rate-factors}
 }
 \description{
 Standardisation and decomposition of rates over P rate-factors and N populations.
