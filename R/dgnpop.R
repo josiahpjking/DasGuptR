@@ -15,7 +15,7 @@
 #'   avg_earnings = c(10930, 16591),
 #'   earner_prop = c(.717892, .825974)
 #' )
-#' dgnpop(eg2.1, pop=pop, avg_earnings, earner_prop)
+#' dgnpop(eg2.1, pop="pop", factors=c("avg_earnings", "earner_prop"))
 #'
 #' # The case of 3 factors (2 populations)
 #' eg2.3 <- data.frame(
@@ -24,7 +24,7 @@
 #'   propw1549 = c(.45919, .75756),
 #'   propw = c(.52638, .51065)
 #' )
-#' dgnpop(eg2.3, pop=pop, birthsw1549, propw1549, propw)
+#' dgnpop(eg2.3, pop="pop", factors=c("birthsw1549", "propw1549", "propw"))
 #'
 #' # The case of 4 factors (2 populations)
 #' eg2.5 <- data.frame(
@@ -34,7 +34,7 @@
 #'   actw_prop = c(.279, .473),
 #'   w_prop = c(.949, .986)
 #' )
-#' dgnpop(eg2.5, pop=pop, birth_preg, preg_actw, actw_prop, w_prop)
+#' dgnpop(eg2.5, pop="pop", factors=c("birth_preg", "preg_actw", "actw_prop", "w_prop"))
 #'
 #' # The case of 5 factors (2 populations)
 #' eg2.7 <- data.frame(
@@ -46,7 +46,7 @@
 #'   fecund = c(16.573, 16.158)
 #' )
 #'
-#' dgnpop(eg2.7, pop=pop, prop_m, noncontr, abort, lact, fecund)
+#' dgnpop(eg2.7, pop="pop", factors=c("prop_m", "noncontr", "abort", "lact", "fecund"))
 #'
 #' # The case of 3 vector factors (2 populations)
 #' eg4.5 <- data.frame(
@@ -59,8 +59,7 @@
 #'   wp = c(.056, .038, .032, .030, .026, .023, .019,
 #'          .043, .041, .036, .032, .026, .020, .018)
 #' )
-#' dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
-#' dgout <- dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
+#' dgout <- dgnpop(eg4.5, pop="pop", factors=c("bm", "mw", "wp"), id_vars=c("agegroup"))
 #' dg_rates(dgout)
 
 dgnpop<-function(df,pop,factors,baseline=NULL,id_vars=NULL,ratefunction=NULL, quietly = TRUE){

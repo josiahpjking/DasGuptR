@@ -1,17 +1,17 @@
 #' Inner function called by dg2pop
 #' @param df2 dataframe in which rows are populations, column 'factor_df' is a nested dataframe of rate-factors, and column 'pop_prods' is the rowProducts of 'factor_df'.
-#' @param i the index of the factrs vector which is being adjusted for (the alpha in P-alpha)
-#' @param factrs character vector of rate-factors
+#' @param i the index of the factors vector which is being adjusted for (the alpha in P-alpha)
+#' @param factors character vector of rate-factors
 #' @param ratefunction allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").
 #' @export
 #' @examples
 #' ......
 #'
-dg354<-function(df2,i,factrs,ratefunction,quietly=TRUE){
+dg354<-function(df2,i,factors,ratefunction,quietly=TRUE){
   #how many factors?
-  nfact=length(factrs)
+  nfact=length(factors)
   #this is the one we're interested in right now
-  facti=factrs[i]
+  facti=factors[i]
   facti=i
   pops = unique(names(df2))
 
@@ -28,7 +28,7 @@ dg354<-function(df2,i,factrs,ratefunction,quietly=TRUE){
 
 
   allfacts = paste0(rep(pops,e=nfact),
-                    rep(names(pop_facts),2))
+                    rep(factors,2))
 
   allfactsA = allfacts[1:nfact]
   allfactsB = allfacts[(nfact+1):length(allfacts)]
@@ -40,7 +40,7 @@ dg354<-function(df2,i,factrs,ratefunction,quietly=TRUE){
   countBs = ifelse(countBs %in% c(0,(length(allfacts)/2-1)),0,countBs)
 
   # we also need to remove any sets in which factors come up twice (e.g. age_str and age_str1)
-  countfacts = sapply(factrs, \(y) apply(gsub(paste0(pops,collapse="|"),"",allperms), 1, \(x) sum(x==y)))
+  countfacts = sapply(factors, \(y) apply(gsub(paste0(pops,collapse="|"),"",allperms), 1, \(x) sum(x==y)))
 
   countdup = rowSums(countfacts == 2)
 
@@ -59,12 +59,11 @@ dg354<-function(df2,i,factrs,ratefunction,quietly=TRUE){
           sapply(x,
                  function(y)
                    pop_facts[
-                     gsub(paste0(factrs,collapse="|"),"",y),
+                     gsub(paste0(factors,collapse="|"),"",y),
                      gsub(paste0(pops,collapse="|"),"",y)
                    ]
                  )
     )
-
 
   if(is.vector(fdata)){ fdata = matrix(fdata, nrow=1) }
 
@@ -73,25 +72,33 @@ dg354<-function(df2,i,factrs,ratefunction,quietly=TRUE){
   for(l in 1:length(fdata_clean)){
     fdata_clean[[l]] = fdata[,l]
     names(fdata_clean[[l]]) = gsub(paste0(pops,collapse="|"),"",t(relperms))[,l]
+    fdata_clean[[l]] = c(fdata_clean[[l]], set_names(NA,facti))
   }
 
-
-  # rates / Aa
-  tmp_ratefunction = gsub(paste0("\\b",facti,"\\b"),"1",ratefunction)
-
-  rfunct = sapply(fdata_clean, function(x) eval(parse(text = tmp_ratefunction), envir = as.list(x)))
-
-
-  if(is.null(dim(rfunct))){
-    eq354 = aggregate(rfunct, by = list(eqp), FUN = sum)
-    QAa = sum(eq354[,2]/eq354[,1])
-  }else{
-    eq354 = apply(rfunct, 1, function(x) aggregate(x, by = list(eqp), FUN = sum))
-    QAa = sapply(eq354, function(x) sum(x[,2]/x[,1]))
+  # rates A/a
+  .calcRF <- function(a){
+    # sub in each pop rate for A/a
+    fdata_cleanRF = fdata_clean
+    for(l in 1:length(fdata_cleanRF)){
+      fdata_cleanRF[[l]][facti] = list(a)
+    }
+    # calc F(a,...)
+    rfunct = sapply(fdata_cleanRF, function(x) eval(parse(text = ratefunction), envir = as.list(x)))
+    # calc QA/Qa
+    if(is.null(dim(rfunct))){
+      eq354 = aggregate(rfunct, by = list(eqp), FUN = sum)
+      QAa = sum(eq354[,2]/eq354[,1])
+    }else{
+      eq354 = apply(rfunct, 1, function(x) aggregate(x, by = list(eqp), FUN = sum))
+      QAa = sapply(eq354, function(x) sum(x[,2]/x[,1]))
+    }
+    return(QAa)
   }
 
-  popAi = pop_facts[pops[1],facti]*QAa
-  popBi = pop_facts[pops[2],facti]*QAa
+  # popA/a rates
+  popAi = .calcRF(pop_facts[pops[1],facti])
+  popBi = .calcRF(pop_facts[pops[2],facti])
+  # a-effect
   diff=popBi-popAi
 
   res = data.frame(

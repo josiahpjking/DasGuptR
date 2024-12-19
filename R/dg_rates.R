@@ -17,6 +17,10 @@
 #' dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
 #' dgout <- dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
 #' dg_rates(dgout)
-dg_rates<-function(df){
-  aggregate(adj.rate ~ factor + pop, data = df, sum)
+dg_rates<-function(df, std = NULL){
+  if(is.null(std)){
+    aggregate(adj.rate ~ factor + pop, data = df, sum)
+  }else{
+    aggregate(adj.rate ~ factor + pop, data = df[df$factor==std, ], sum)
+  }
 }

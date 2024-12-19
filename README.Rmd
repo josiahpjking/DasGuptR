@@ -39,25 +39,112 @@ Standardization and decomposition are widely used analytic techniques to adjust 
 
 * _Decomposition_: Gives us the percentage of the difference in rates between two years attributable to each of the factors we have included in the standardization.  
 
-The _DasGuptR_ package provides an implementation of Prithwith Das Gupta's specification of these two techniques.  
-  
-Below we provide a brief background, and a worked an example of using the DasGuptR package to explore patterns of reconvictions in Scotland.  
+As a very simple example, consider: 
+TODO
+```{r}
+eg.dg <- data.frame(
+  pop = c("lw","up"),
+  facA = c(4, 5),
+  facB = c(.6,.9) 
+)
+eg.dg$crude <- with(eg.dg, facA*facB)
+eg.dg
+```
+
+
+
+
+When such rates are composed of many factors, and/or we are considering many populations, this becomes somewhat more challenging. The _DasGuptR_ package provides an implementation of Prithwith Das Gupta's specification of these two techniques.  Details of the method can be found below, along with a worked example to explore patterns of reconvictions in Scotland.  
 
   
 # The Das Gupta Method  
 
 Das Gupta's methodologies of standardisation and decomposition are explained in full in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_
 
-#### P factors, 2 populations  
+#### 2 factors, 2 populations  
 
 The essence of Das Gupta's method is that, given a set of P factors and 2 populations, one can calculate the rates adjusted for each combination of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).  
-We can interpret the P-$\alpha$ adjusted rate as 'what the crude rate would look like if only $\alpha$ had changed (all else being equal)'.  
-  
-  
-Neatly, crude rates can be decomposed into Das Gupta's adjusted rates such that changes in the P-$\alpha$ adjusted rate are proportional to changes in crude rates. For instance, if the crude rate decreases by 1.2, and the P-$\alpha$ adjusted rate decreases by .6, we can say that 50% of the change in crude rate is attributable to changes in $\alpha$[^caus].  
-The change in the P-$\alpha$ adjusted rate is known as a _decomposition effect_ (in this case the *$\alpha$-effect*).
 
-[^caus]: Importantly, this analysis is not causal as the different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
+In the simplest case, a rate $R$ that is calculated as the product of two factors $\alpha$ and $\beta$. Das Gupta 1993 uses latin script with upper/lower case to indicate population, e.g: $A$, $B$, $a$, and $b$ to denote $\alpha$ and $\beta$ in 2 populations respectively --- i.e.:  
+
+
+| population | $\alpha$ | $\beta$ | crude rate R |
+| ---------- | -------- | ------- | ------------ |
+| 1          |   $A$      |   $B$     |   $AB$         |
+| 2          |   $a$      |   $b$     |   $ab$         |
+
+
+In this simple 2-factor, 2-population case, the $(P-\alpha)$ standardised rates for each population can be expressed as:  
+
+$$
+(P-\alpha)\text{ standardised rate for population 1} = \frac{b + B}{2}A \\
+(P-\alpha)\text{ standardised rate for population 2} = \frac{b + B}{2}a \\
+$$
+In this specific case of 2 factors where the set of $P$ factors = $\{\alpha, \beta\}$, then $P-\alpha=\beta$, and we can also call this the "$\beta$-standardised rate". This is what Das Gupta 1993 does throughout, and in the event of 4 factors refers to "$\beta\gamma\delta$-standardised rates". We prefer for ease to use "$P-\alpha$".  
+
+We can interpret the $(P-\alpha)$ standardised rate as 'what the crude rate would look like if only $\alpha$ had changed (all else being equal)'.  
+
+TODO example:  
+```{r}
+library(DasGuptR)
+dgnpop(eg.dg, pop="pop", factors=c("facA","facB")) |>
+  dg_rates(std="facA")
+```
+
+The change in the $(P-\alpha)$ standardised rate is known as a _decomposition effect_ (in this case the *$\alpha$-effect*), named due to the fact that changes in crude rates $R_2 - R_1$ can be decomposed into changes in all the $(P-p)$ standardised rates. This means that, for instance, if the crude rate decreases by 1.2, and the $P-\alpha$ adjusted rate decreases by .6, we can say that 50% of the change in crude rate is attributable to changes in $\alpha$[^caus].  
+
+[^caus]: Importantly, the use of "attributable" has a very narrow sense of 'numerically attributable', and it is important to stress the lack of any causal interpretation here - different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
+  
+  
+TODO example
+```{r}
+dgnpop(eg.dg, pop="pop", factors=c("facA","facB")) |>
+  dg_rates() |>
+  dg_table(pop1="lw",pop2="up") |>
+  rbind(c(eg.dg$crude, diff(eg.dg$crude)))
+
+```
+  
+  
+#### Rates as vector-factors
+
+- note for ours all of this is arithmetic functions only  
+
+
+
+- done a different way to DG.
+- he does F(A,B) where A and B are vectors
+- i do: f(A_1,B_1),f(A_2,B_2), ..., f(A_k,B_k)
+- presumably i could shift it wide and then specify the rate function as f(a1,a2,..ak,b1,b2,...,bk)  
+- will need to check against chapter 4.
+- actually.. maybe this doesn't work. because then it would be p-a1-std rates etc. but we want p-A-std
+
+- suggestion = pass through vectors into dg354, unnest in fdata_cleanRF and then calc...
+
+
+
+
+
+  
+#### Rates as functions
+
+
+| population | $\alpha$ | $\beta$ | crude rate R | $(P-\alpha)$ standardised rate  |
+| ---------- | -------- | ------- | ------------ | ----------------------------- |
+| 1          |   $A$      |   $B$     |   $AB$ | $\frac{b + B}{2}A$  |
+| 2          |   $a$      |   $b$     |   $ab$ | $\frac{b + B}{2}a$ | 
+
+| population | $\alpha$ | $\beta$ | crude rate R | $(P-\alpha)$ standardised rate  |
+| ---------- | -------- | ------- | ------------ | ----------------------------- |
+| 1          |   $A$      |   $B$     |   $f(A,B)$ |  $\frac{f(A,b) + f(A,B)}{2}$ |
+| 2          |   $a$      |   $b$     |   $f(a,b)$ |  $\frac{f(a,b) + f(a,B)}{2}$ |
+
+
+
+#### P-factors, 2 populations
+
+
+  
   
   
 #### P factors, N populations  
@@ -70,6 +157,12 @@ This process involves first calculating the P-1 adjusted rates and decomposition
   
 * **A:** there is only one P-$\alpha$ adjusted rate per population (as opposed to N-1)  
 * **B:** the *$\alpha$-effect* from populations 1 and 2 and the *$\alpha$-effect* from populations 2 and 3 now sum to the *$\alpha$-effect* from populations 1 and 3.  
+
+
+
+
+
+
 
 # Reconviction data  
   
@@ -90,8 +183,6 @@ Below, we discuss two measures produced by Scottish Government:
 [^dat]: Data was extracted from [Scottish Government's 2016/17 reconviction bulletin and accompanying tables (published June 2019)](https://www.gov.scot/publications/reconviction-rates-scotland-2016-17-offender-cohort/). Mid-year population estimates were taken from the [National Records of Scotland time series data](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/population-estimates-time-series-data).
 
 ```{r packages}
-library(tidyverse)
-library(DasGuptR)
 data(reconv)
 str(reconv)
 ```
