@@ -72,7 +72,7 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
   for(l in 1:length(fdata_clean)){
     fdata_clean[[l]] = fdata[[l]]
     names(fdata_clean[[l]]) = gsub(paste0(pops,collapse="|"),"",t(relperms))[,l]
-    fdata_clean[[l]] = c(fdata_clean[[l]], set_names(NA,facti))
+    fdata_clean[[l]] = c(fdata_clean[[l]], setNames(NA,facti))
   }
 
   # rates A/a
