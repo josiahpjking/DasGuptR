@@ -2,21 +2,27 @@
 % Please edit documentation in R/dg354.R
 \name{dg354}
 \alias{dg354}
-\title{Inner function called by dg2pop}
+\title{internal function called by dg2pop}
 \usage{
-dg354(df2, i, factrs, ratefunction, quietly = TRUE)
+dg354(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE)
 }
 \arguments{
-\item{df2}{dataframe in which rows are populations, column 'factor_df' is a nested dataframe of rate-factors, and column 'pop_prods' is the rowProducts of 'factor_df'.}
+\item{df2}{list of 2 population dataframes, in which each one contains data for all factors for the relevant population, along with variables indicating population and subpopulations}
 
-\item{i}{the index of the factrs vector which is being adjusted for (the alpha in P-alpha)}
+\item{i}{the index of the factors vector which is not being adjusted for (the alpha in "P-alpha standardised rates")}
 
-\item{factrs}{character vector of rate-factors}
+\item{pop}{name (character string) of variable indicating population}
 
-\item{ratefunction}{allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").}
+\item{factors}{names (character vector) of variables indicating compositional factors}
+
+\item{id_vars}{character vector of variables indicating sub-populations}
+
+\item{ratefunction}{user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors.}
+
+\item{quietly}{logical indicating whether interim messages should be outputted indicating progress}
 }
 \description{
-Inner function called by dg2pop
+internal function called by dg2pop
 }
 \examples{
 ......

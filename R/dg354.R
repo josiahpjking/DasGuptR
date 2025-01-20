@@ -103,9 +103,9 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
   diff=popBi-popAi
 
   res = data.frame(
-    adj.rate=c(popAi,popBi),
+    rate=c(popAi,popBi),
     pop=pops,
-    adj.set=rev(pops),
+    std.set=rev(pops),
     diff=c(diff,-diff),
     diff.calc=c(paste0(pops,collapse="-"),
                 paste0(rev(pops),collapse="-")

@@ -5,7 +5,7 @@
 \title{Das Gupta extract adjusted rates from the output of dgnpop.
 This is useful for when the standardisation is conducted on subpopulations like age/sex combinations (or "vector factors" as DG uses).}
 \usage{
-dg_rates(df)
+dg_rates(df, std = NULL)
 }
 \arguments{
 \item{df}{DG output}

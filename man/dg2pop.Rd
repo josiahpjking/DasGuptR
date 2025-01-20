@@ -3,18 +3,24 @@
 \name{dg2pop}
 \alias{dg2pop}
 \title{Standardisation and decomposition of rates over P rate-factors and 2 populations.
-For simplicity, suggest using dgnpop, which will default to dg2pop in the case of 2 populations.}
+We suggest using dgnpop, which will internall call this function.}
 \usage{
-dg2pop(pw, pop, factors, ratefunction = NULL, quietly = TRUE)
+dg2pop(pw, pop, factors, id_vars, ratefunction = NULL, quietly = TRUE)
 }
 \arguments{
-\item{ratefunction}{allows user to define rate as a specific function F of factors. This should be a character string of the r syntax, with the factor names. Defaults to the product (e.g., "a*b").}
+\item{pw}{dataframe containing two populations worth of factor data, with columns specifying 1) population and 2) each rate-factor to be considered. must have column named "pop" indicating the population ID.}
 
-\item{df}{dataframe or tibble object, with columns specifying 1) population and 2) each rate-factor to be considered. must have column named "pop" indicating the population ID.}
+\item{pop}{name (character string) of variable indicating population}
 
-\item{factrs}{character vector of rate-factors}
+\item{factors}{names (character vector) of variables indicating compositional factors}
+
+\item{id_vars}{character vector of variables indicating sub-populations}
+
+\item{ratefunction}{user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors.}
+
+\item{quietly}{logical indicating whether interim messages should be outputted indicating progress through the P factors}
 }
 \description{
 Standardisation and decomposition of rates over P rate-factors and 2 populations.
-For simplicity, suggest using dgnpop, which will default to dg2pop in the case of 2 populations.
+We suggest using dgnpop, which will internall call this function.
 }

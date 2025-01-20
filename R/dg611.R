@@ -13,23 +13,23 @@ dg611<-function(srates,all_p,y,factor){
   n = length(all_p)
 
   # EQ 6.11
-  eq6.11.a = mean(srates[srates$pop==y, "adj.rate"])
+  eq6.11.a = mean(srates[srates$pop==y, "rate"])
 
-  srates[srates$pop!=y | srates$adj.set!=y, "adj.rate"]
+  srates[srates$pop!=y | srates$std.set!=y, "rate"]
 
   eq6.11.b =
     sum(
       sapply(all_p[all_p!=y], \(x)
-         sum(srates[srates$pop == x & srates$adj.set != y, "adj.rate"]) -
-           ((n-2) * srates[srates$pop == x & srates$adj.set == y, "adj.rate"])
+         sum(srates[srates$pop == x & srates$std.set != y, "rate"]) -
+           ((n-2) * srates[srates$pop == x & srates$std.set == y, "rate"])
       )
     ) / (n * (n-1))
 
 
   res = data.frame(
-    adj.rate=eq6.11.a + eq6.11.b,
+    rate=eq6.11.a + eq6.11.b,
     pop=y,
-    adj.set=paste0(all_p[all_p!=y],collapse="."),
+    std.set=paste0(all_p[all_p!=y],collapse="."),
     factor=factor
   )
   return(res)

@@ -4,10 +4,10 @@
 \alias{dg_table}
 \title{Creates a small table of Das Gupta extract adjusted rates & difference effects for 2 specified populations.}
 \usage{
-dg_table(df, pop1, pop2)
+dg_table(dgo, pop1 = NULL, pop2 = NULL)
 }
 \arguments{
-\item{df}{DG output}
+\item{dgo}{DG output}
 
 \item{pop1}{population 1 (character/numeric)}
 

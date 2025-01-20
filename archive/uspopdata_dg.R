@@ -140,8 +140,12 @@ ratedata <-
     pop_str=thous/totalpop
   ) |> ungroup()
 
-
-
+ratedata <- read_csv("archive/uspop_dg.csv") |>
+  group_by(year) |>
+  mutate(
+    totalpop = sum(thous),
+    pop_str=thous/totalpop
+  ) |> ungroup()
 
 
 rates_crude <-
@@ -159,6 +163,7 @@ dres.all <-
     ratedata,
     pop="year",
     factors=c("birthrate","pop_str"),
+    ratefunction="sum(birthrate*pop_str)",
     id_vars=c("agebin"),
     quietly=FALSE
   )

@@ -33,6 +33,11 @@ tmpdf2 = tmpdf[subpop==g, ]
   popdf[[pop]] = factor(popdf[[pop]], levels = x, ordered =T)
   popdf
 }
+
+
+
+
+
 pairwise_pops = combn(as.character(allpops), 2)
 pw = apply(pairwise_pops, 2, \(x) .makepopdf(x))[[1]]
 #nest data and extract factors
@@ -42,6 +47,10 @@ pw = apply(pairwise_pops, 2, \(x) .makepopdf(x))[[1]]
 df_nested <- lapply(unique(pw[[pop]]), \(x) pw[pw[[pop]]==x, c(factors,id_vars,pop)])
 names(df_nested) = unique(pw[[pop]])
 df_nested
+
+
+## crude rates
+
 
 #lapply(factors, function(x) dg354(df_nested,x,factors,"xx*yy"))
 facti=factors[1]
