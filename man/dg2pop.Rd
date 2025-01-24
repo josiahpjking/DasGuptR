@@ -3,7 +3,7 @@
 \name{dg2pop}
 \alias{dg2pop}
 \title{Standardisation and decomposition of rates over P rate-factors and 2 populations.
-We suggest using dgnpop, which will internall call this function.}
+We suggest using dgnpop, which will internally call this function.}
 \usage{
 dg2pop(pw, pop, factors, id_vars, ratefunction = NULL, quietly = TRUE)
 }
@@ -22,5 +22,5 @@ dg2pop(pw, pop, factors, id_vars, ratefunction = NULL, quietly = TRUE)
 }
 \description{
 Standardisation and decomposition of rates over P rate-factors and 2 populations.
-We suggest using dgnpop, which will internall call this function.
+We suggest using dgnpop, which will internally call this function.
 }

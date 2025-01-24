@@ -1,5 +1,5 @@
 #' Standardisation and decomposition of rates over P rate-factors and 2 populations.
-#' We suggest using dgnpop, which will internall call this function.
+#' We suggest using dgnpop, which will internally call this function.
 #' @param pw dataframe containing two populations worth of factor data, with columns specifying 1) population and 2) each rate-factor to be considered. must have column named "pop" indicating the population ID.
 #' @param pop name (character string) of variable indicating population
 #' @param factors names (character vector) of variables indicating compositional factors

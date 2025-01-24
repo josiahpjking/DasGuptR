@@ -1,1 +1,6 @@
 exportPattern("^[[:alpha:]]+")
+
+importFrom("grDevices", "rainbow")
+importFrom("graphics", "axis", "legend", "lines", "points")
+importFrom("stats", "addmargins", "aggregate", "setNames", "xtabs")
+importFrom("utils", "combn")

@@ -12,8 +12,6 @@ dg612<-function(srates, all_p, ps, factor){
   y1 = ps[1]
   y2 = ps[2]
 
-  # eq.612.a = factoreffs$value[grepl(paste0("diff_",paste0(ps,collapse="")), factoreffs$name)]
-
   eq.612.a = srates[srates$pop == y1 & srates$std.set == y2, "diff"]
 
   eq.612.b = sum(

@@ -21,10 +21,6 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
   if(!quietly){print(paste0("comparing populations ",paste(unique(names(df2)), collapse=" and ")," . Factor = ",facti))}
 
   #these are all the population factors (for both populations), spread.
-  # pop_facts =
-  #   df2 %>% dplyr::select(pop,factor_df) %>%
-  #   tidyr::pivot_wider(names_from=pop,values_from=factor_df) %>%
-  #   tidyr::unnest(tidyselect::everything(),names_sep="_")
   pop_facts = do.call(rbind,df2)
 
   allfacts = paste0(rep(pops,e=nfact),
@@ -112,6 +108,5 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
     ),
     factor=facti
   )
-  #res = cbind(res, pop_facts[,id_vars,drop=FALSE])
   return(res)
 }

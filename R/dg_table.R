@@ -1,4 +1,4 @@
-#' Creates a small table of Das Gupta extract adjusted rates & difference effects for 2 specified populations.
+#' Creates a small table of Das Gupta adjusted rates. If no populations are specified, rates will be shown for all available populations. If only two populations (or if two particular populations are specified), then difference effects are calculated and presented.
 #' @param dgo DG output
 #' @param pop1 population 1 (character/numeric)
 #' @param pop2 population 2 (character/numeric)
@@ -13,14 +13,21 @@ dg_table<-function(dgo,pop1=NULL,pop2=NULL){
 
   if(is.null(pop1) & is.null(pop2)){
     if(npops>2){
-      xtabs(rate ~ factor + pop, dgo)
+      dgt <- xtabs(rate ~ factor + pop, dgo) |>
+        as.data.frame.matrix()
     }else{
-      xtabs(rate ~ factor + pop, dgo) |>
-        addmargins(margin = 2, FUN = diff)
+      dgt <- xtabs(rate ~ factor + pop, dgo) |>
+        addmargins(margin = 2, FUN = diff) |>
+          as.data.frame.matrix()
+      dgt$decomp <- round(dgt[['diff']]/dgt[row.names(dgt)=="crude",'diff']*100,2)
     }
   }else{
-    droplevels(dgo[dgo[["pop"]] %in% c(pop1, pop2), ]) |>
+    dgt <- droplevels(dgo[dgo[["pop"]] %in% c(pop1, pop2), ]) |>
       xtabs(rate ~ factor + pop, data = _) |>
-        addmargins(margin = 2, FUN = diff)
+        addmargins(margin = 2, FUN = diff) |>
+          as.data.frame.matrix()
+    dgt$decomp <- round(dgt[['diff']]/dgt[row.names(dgt)=="crude",'diff']*100,2)
   }
+  return(dgt)
+
 }

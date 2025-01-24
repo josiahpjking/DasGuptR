@@ -85,8 +85,8 @@ eg4.5 <- data.frame(
   wp = c(.058, .038, .032, .030, .026, .023, .019,
          .043, .041, .036, .032, .026, .020, .018)
 )
-dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"),
-       id_vars=c("agegroup"),ratefunction = "sum(bm*mw*wp)") |>
+dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
+       ratefunction = "sum(bm*mw*wp)") |>
   #print() |>
   dg_table()
 
@@ -281,6 +281,12 @@ eg6.6 |> group_by(pop) |>
   )
 
 dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
+       ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
+  dg_plot()
+
+
+
+dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
        ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates  |> select(-std.set) |>
   pivot_wider(names_from=pop,values_from=rate)
 
@@ -290,7 +296,7 @@ dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
   pivot_wider(values_from=diff,names_from=diff.calc)
 
 
-
+library(tidyverse)
 eg6.12 <- read_csv("archive/uspop_dg.csv") |>
   group_by(year) |>
   mutate(
@@ -301,5 +307,17 @@ eg6.12 <- read_csv("archive/uspop_dg.csv") |>
 dd <- dgnpop(eg6.12, pop="year",factors=c("pop_str","birthrate"),
        ratefunction = "sum(pop_str*birthrate)",
        id_vars="agebin")
+
+dg_plot(dd$rates)
+
 dd$rates |> select(-adj.set) |>
   pivot_wider(values_from=rate,names_from=factor)
+
+
+
+
+ratedata <- read.csv("archive/uspop_dg.csv")
+dgous <- dgnpop(ratedata, pop="year",factors=c("birthrate"),id_vars="agebin",
+                crossclassified="thous",ratefunction="birthrate")
+dg_plot(dgous$rates)
+

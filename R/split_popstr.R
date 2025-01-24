@@ -1,4 +1,8 @@
-
+#' Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.
+#' @param df dataframe consisting of one population, including variables indicating cross-classified structure, and a variable indicating size of each cell
+#' @param id_vars character vector of variables indicating cross-classified structure.
+#' @param nvar variable name (character string) containing cell sizes
+#' @export
 split_popstr <- function(df,id_vars,nvar){
 
   np = length(id_vars)
@@ -22,11 +26,18 @@ split_popstr <- function(df,id_vars,nvar){
   }
 
 
-  pop_str <-
-    lapply(id_vars, \(ix)
-         sapply(1:nrow(df), \(rw) .onerow(df,rw,id_vars,ix, nvar)))
-  names(pop_str) <- id_vars
-  return(as.data.frame(pop_str))
+
+  if(np==1){
+    pop_str <- data.frame(df[[nvar]]/sum(df[[nvar]]))
+    names(pop_str) <- id_vars
+  } else {
+    pop_str <-
+      lapply(id_vars, \(ix)
+             sapply(1:nrow(df), \(rw) .onerow(df,rw,id_vars,ix,nvar)))
+    names(pop_str) <- id_vars
+    pop_str <- as.data.frame(pop_str)
+  }
+  return(pop_str)
 }
 
 
