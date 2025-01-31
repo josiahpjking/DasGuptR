@@ -161,7 +161,12 @@ dgnpop<-function(df,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=N
 
   tmpdf = as.data.frame(df)
 
-
+  # Create rate function if not specified
+  user_RF <- TRUE
+  if(is.null(ratefunction)){
+    user_RF <- FALSE
+    ratefunction=paste(factors,collapse="*")
+  }
 
 
   if(!is.null(crossclassified)){
@@ -172,31 +177,35 @@ dgnpop<-function(df,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=N
     # add structure variables:
     for(p in unique(tmpdf[[pop]])){
       str_vars = split_popstr(tmpdf[tmpdf[[pop]]==p, ], id_vars = id_vars, nvar = crossclassified)
-      names(str_vars) = paste0(names(str_vars),"_struct")
       tmpdf[tmpdf[[pop]]==p, names(str_vars)] <- str_vars
     }
     # add variables to list of compositional factors
     factors <- c(factors, paste0(id_vars,"_struct"))
     # rate function
-    ratefunction <- paste0(
-      "sum((",
-      paste0(factors, collapse="*"),")/",
-      "sum(",paste0(paste0(id_vars,"_struct"), collapse="*"),"))")
-
-  }
-
-
-  # Create rate function if not specified
-  if(is.null(ratefunction)){
-    ratefunction=paste(factors,collapse="*")
-  }
-  # Check ratefunction when id_vars given
-  if(!is.null(id_vars)){
-    if(length(eval(parse(text = ratefunction), envir = as.list(tmpdf)))>1){
-      stop("when id_vars are specified, the ratefunction must be appropriate for a vector-factor.\ni.e. it must summarise to a single value such as sum(A*B*C)")
+    if(!user_RF){
+      ratefunction <- paste0(
+        "sum((",
+        paste0(factors, collapse="*"),")/",
+        "sum(",paste0(paste0(id_vars,"_struct"), collapse="*"),"))")
+    }else{
+      if(length(eval(parse(text = ratefunction), envir = as.list(tmpdf)))>1){
+        ratefunction <- paste0("sum((",
+          paste0(paste0(id_vars,"_struct"), collapse="*"),"*",
+          ratefunction,
+          ")/sum(",paste0(paste0(id_vars,"_struct"), collapse="*"),"))")
+      }
     }
   }
 
+
+  # Check ratefunction when id_vars given
+  output_agg <- TRUE
+  if(!is.null(id_vars)){
+    if(length(eval(parse(text = ratefunction), envir = as.list(tmpdf)))>1){
+      message("when id_vars are specified, the ratefunction should be appropriate for a vector-factor and summarise over the sub-populations into a single value such as sum(A*B*C)\nIf not, individual sub-population specific standardised rates are returned.")
+      output_agg <- FALSE
+    }
+  }
 
   # population names mustn't be contained in factor names
   while( sapply(tmpdf[[pop]], \(x) grepl(x,factors)) |> any() |
@@ -210,9 +219,18 @@ dgnpop<-function(df,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=N
   nfact = length(factors)
 
 
+
   ##########
   #THE DAS GUPTA METHOD
   ##########
+  if(output_agg){message(
+    paste0("\nDG decomposition being conducted with R = ",ratefunction,"\n")
+  )}
+  if(!output_agg){message(
+    paste0("\nDG decomposition being conducted with R_i = ",ratefunction,"\n")
+  )}
+
+
   .makepopdf <- function(x){
     popdf = tmpdf[tmpdf[[pop]] %in% x, ]
     popdf[[pop]] = factor(popdf[[pop]], levels = x, ordered =T)
@@ -220,14 +238,17 @@ dgnpop<-function(df,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=N
   }
 
   ## crude rates
-  cr_dat = lapply(allpops, \(x) .makepopdf(x))
-  crude = data.frame(
-    rate = sapply(cr_dat, \(x)
-      eval(parse(text = ratefunction), envir = as.list(x))),
-    pop=allpops,
-    std.set = NA,
-    factor="crude"
-  )
+  if(output_agg){
+    cr_dat = lapply(allpops, \(x) .makepopdf(x))
+    crude = data.frame(
+      rate = sapply(cr_dat, \(x)
+                    eval(parse(text = ratefunction), envir = as.list(x))),
+      pop=allpops,
+      std.set = NA,
+      factor="crude"
+    )
+  }
+
 
 
 
@@ -242,10 +263,13 @@ dgnpop<-function(df,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=N
                     pop=pop,factors=factors,id_vars=id_vars,
                     ratefunction=ratefunction, quietly=quietly)
     DG_OUT = do.call(rbind, DG_OUT)
-    # remove diff for 2-pop only
-    DG_OUT = DG_OUT[ ,c("rate","pop","std.set","factor")]
-    # add crude
-    DG_OUT = rbind(crude,DG_OUT)
+    # remove diff for 2-pop only, add crude if agg
+    if(output_agg){
+      DG_OUT = DG_OUT[ ,c("rate","pop","std.set","factor")]
+      DG_OUT = rbind(crude,DG_OUT)
+    } else{
+      DG_OUT = DG_OUT[ ,c("rate","pop","std.set","factor",id_vars)]
+    }
     row.names(DG_OUT) <- NULL
     # final output
     dgo = DG_OUT
@@ -274,8 +298,10 @@ dgnpop<-function(df,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=N
 
       dgNp_rates = dgNp_res[dgNp_res$factor == f, ]
       if(!is.null(baseline)){
-        standardized_rates = dgNp_rates[dgNp_rates$std.set == baseline, ]
-        difference_effects = data.frame()
+        standardized_rates = dgNp_rates[dgNp_rates$std.set == baseline,
+                                        c("rate","pop","std.set","factor")]
+        difference_effects = dgNp_rates[dgNp_rates$std.set == baseline,
+                   c("diff","pop","diff.calc","factor")]
       } else {
 
         #std_rates

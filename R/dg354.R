@@ -100,13 +100,15 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
 
   res = data.frame(
     rate=c(popAi,popBi),
-    pop=pops,
-    std.set=rev(pops),
+    pop=rep(pops,e=length(popAi)),
+    std.set=rep(rev(pops),e=length(popAi)),
     diff=c(diff,-diff),
-    diff.calc=c(paste0(pops,collapse="-"),
-                paste0(rev(pops),collapse="-")
-    ),
+    diff.calc=rep(c(paste0(pops,collapse="-"),
+                paste0(rev(pops),collapse="-")),e=length(popAi)),
     factor=facti
   )
+  if(!is.null(id_vars) & length(popAi)>2){
+    res <- as.data.frame(cbind(res, pop_facts[,id_vars,drop=FALSE]))
+  }
   return(res)
 }

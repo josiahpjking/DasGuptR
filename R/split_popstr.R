@@ -29,12 +29,12 @@ split_popstr <- function(df,id_vars,nvar){
 
   if(np==1){
     pop_str <- data.frame(df[[nvar]]/sum(df[[nvar]]))
-    names(pop_str) <- id_vars
+    names(pop_str) <- paste0(id_vars,"_struct")
   } else {
     pop_str <-
       lapply(id_vars, \(ix)
              sapply(1:nrow(df), \(rw) .onerow(df,rw,id_vars,ix,nvar)))
-    names(pop_str) <- id_vars
+    names(pop_str) <- paste0(id_vars,"_struct")
     pop_str <- as.data.frame(pop_str)
   }
   return(pop_str)

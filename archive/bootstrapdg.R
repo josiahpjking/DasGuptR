@@ -3,7 +3,7 @@ df <- DasGuptR::reconv |>
   janitor::clean_names() |>
   transmute(
     pop = year, sex, age,
-    rate = reconvicted/offenders,
+    rate = prev_rate,
     size = offenders,
     r1 = rate*size,
     r0 = (1-rate)*size
@@ -61,8 +61,8 @@ bsamps |> mutate(
   unnest() |>
   mutate(pop=as.character(pop)) |>
   ggplot(aes(x = pop, y = rate, col = factor)) +
-  geom_path(aes(group=interaction(factor,k)),alpha=1/20)+
-  geom_path(data=est,aes(group=factor))
+  geom_path(aes(group=interaction(factor,k)),alpha=1/10)+
+  geom_path(data=est,aes(group=factor),lwd=1)
 
 
 

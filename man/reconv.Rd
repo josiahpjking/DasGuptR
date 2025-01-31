@@ -3,25 +3,19 @@
 \docType{data}
 \name{reconv}
 \alias{reconv}
-\title{Arabidopsis QTL data on gravitropism}
+\title{Scottish Reconvictions data 2004-2016}
 \format{
-An object of class \code{"cross"}; see \code{\link[qtl]{read.cross}}.
-}
-\source{
-\href{https://phenome.jax.org/projects/Moore1b}{QTL Archive}
+An object of class \code{data.frame} with 130 rows and 8 columns.
 }
 \usage{
 data(reconv)
 }
 \description{
-Data from a QTL experiment on gravitropism in
-Arabidopsis, with data on 162 recombinant inbred lines (Ler x
-Cvi). The outcome is the root tip angle (in degrees) at two-minute
-increments over eight hours.
+Scottish Reconvictions data 2004-2016
 }
 \examples{
 data(reconv)
-dg_data <- DasGupt_Npop(reconv,pop=year,prev,age_str,id_vars=c(Age,Gender))
+dgnpop(reconv, pop="year", factors=c("prev_rate"), id_vars=c("Sex","Age"), crossclassified="offenders") |> dg_plot()
 
 }
 \references{

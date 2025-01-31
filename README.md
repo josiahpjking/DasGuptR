@@ -31,10 +31,11 @@ adjust for the impact of compositional factors on rates.
   in the standardization.
 
 In the simplest example, consider a case where the rate is taken as the
-product of two factors $\alpha$ and $\beta$ — $R = \alpha\beta$.
-Throughout Das Gupta’s work, greek letters are used to indicate the
-different compositional factors, and upper and lower case latin letters
-are used to denote specific population values of these:
+product of two factors $\alpha$ and $\beta$, which we will write as
+$R = \alpha\beta$. Throughout Das Gupta’s work, greek letters are used
+to indicate the different compositional factors, and upper and lower
+case latin letters are used to denote specific population values of
+these:
 
 |            | pop1 | pop2 |
 |------------|------|------|
@@ -76,12 +77,10 @@ factors were held equal”.
 The *difference* in the adjusted (or ‘standardised’) rates is known as a
 **decomposition effect**, named due to the fact that differences in the
 crude rates can be decomposed into differences in adjusted rates:
-
-$$
-\Delta R_{crude} = \Delta R_{-\alpha} + \Delta R_{-\beta}
-$$ This decomposition allows us to quantify how much of the difference
-between two crude rates is due to differences in $\alpha$, differences
-in $\beta$, and so on. [^2]
+$\Delta R_{crude} = \Delta R_{-\alpha} + \Delta R_{-\beta}$. This
+decomposition allows us to quantify how much of the difference between
+two crude rates is due to differences in $\alpha$, differences in
+$\beta$, and so on. [^2]
 
 ## DasGuptR functionality
 
@@ -112,12 +111,10 @@ data.frame(
   Rcrude = c(.6*.5, .3*.55),
   R_alpha = c(.6,.3) * ((.5+.45)/2),
   R_beta = ((.6+.3)/2) * c(.5,.45)
-) |> t()
-#>         [,1]     [,2]    
-#> pop     "pop1"   "pop2"  
-#> Rcrude  "0.300"  "0.165" 
-#> R_alpha "0.2850" "0.1425"
-#> R_beta  "0.2250" "0.2025"
+)
+#>    pop Rcrude R_alpha R_beta
+#> 1 pop1  0.300  0.2850 0.2250
+#> 2 pop2  0.165  0.1425 0.2025
 ```
 
 The workhorse of the DasGuptR package is `dgnpop()` which computes the
@@ -136,7 +133,9 @@ dgnpop(eg.dg, pop = "pop", factors=c("alpha","beta"))
 ```
 
 These can be quickly turned into a wide table in the style of Das Gupta
-using `dg_table()`. This also provides the difference in rates
+using `dg_table()`. When working with just two populations, this also
+provides the difference in rates, also expressed as the percentage of
+the crude rate difference:
 
 ``` r
 dgnpop(eg.dg, pop = "pop", factors=c("alpha","beta")) |>
@@ -147,7 +146,8 @@ dgnpop(eg.dg, pop = "pop", factors=c("alpha","beta")) |>
 #> crude 0.300 0.1350 -0.1650 100.00
 ```
 
-Or plotted (this is far more useful for time series data)
+`dg_plot()` will plot these (although this is really only useful when
+working with many populations, such as with time series data)
 
 ``` r
 dgnpop(eg.dg, pop = "pop", factors=c("alpha","beta")) |>
@@ -162,7 +162,7 @@ Rates may be composed of many factors, and they may not be calculated as
 a simple product. Additionally, we may desire to standardise across many
 populations — such as in a time series — or we may have be interested in
 how the compositional structure of populations contributes to the
-differences in these rates. TODO add in expl of cross classified
+differences in these rates.
 
 The full explanation of Das Gupta’s methodology for standardisation and
 decomposition are explained in full in his 1993 book *[Standardization
@@ -259,19 +259,18 @@ dgnpop(eg2.7, pop="pop",
 #> crude    4.050102 6.129875  2.0797729 100.00
 ```
 
-### vector factors & rates as functions
+### vector factors
 
 Often, we may have data for each compositional factor on a set of
 sub-populations, and the crude rates for the population are the
 aggregated cell-specific rates.  
 In these cases, `dgnpop()` requires the user to provide both the
 variable(s) indicating the sub-populations, and an appropriate rate
-function that aggregates up to a summary value for each population. For
-instance, in the example below, the cell-specific rates are calculated
-as the product of 3 factors, and the population rate is the sum of the
-cell-specific rates, so the user would specify
-`ratefunction="sum(a*b*c)"`. They also would be required to specify the
-variable indicating the sub-population in `id_vars` argument.
+function that aggregates up to a summary value for each population.  
+For instance, in the example below, the cell-specific rates are
+calculated as the product of 3 factors, and the population rate is the
+sum of the cell-specific rates, so the user would specify
+`ratefunction="sum(a*b*c)"`.
 
 #### 3 vector factors, 2 populations, R=sum(abc)
 
@@ -296,13 +295,91 @@ dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
 #> crude 38.77463 27.20318 -11.571446 100.00
 ```
 
-In this simple case where we have just one variable indicating a single
-set of sub-populations (e.g., different age groups), then we could
-equivalently run `dgnpop()` on each sub-population individually, and
-aggregate up:
+Note that for most purposes, working with vector factors would require
+the rate function to aggregate up to a summary, population-level value,
+e.g., using `"sum(a*b*c)"`. If this is not provided, then `dgnpop()`
+will return an array of standardised sub-population rates, of the same
+length as the number of sub-populations. In order to do this, the user
+is also required to specify the variable indicating the sub-population
+in `id_vars` argument.
+
+``` r
+dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
+       ratefunction = "bm*mw*wp")
+#>          rate  pop std.set factor agegroup
+#> 1   2.4892880 1970    1960     bm        1
+#> 2  10.2678580 1970    1960     bm        2
+#> 3  10.1688427 1970    1960     bm        3
+#> 4   4.5237920 1970    1960     bm        4
+#> 5   1.5217020 1970    1960     bm        5
+#> 6   0.4250290 1970    1960     bm        6
+#> 7   0.0465280 1970    1960     bm        7
+#> 8   2.0046930 1960    1970     bm        1
+#> 9   9.2456155 1960    1970     bm        2
+#> 10 11.1014880 1960    1970     bm        3
+#> 11  7.9456347 1960    1970     bm        4
+#> 12  4.4443360 1960    1970     bm        5
+#> 13  1.7387550 1960    1970     bm        6
+#> 14  0.2481493 1960    1970     bm        7
+#> 15  1.8338480 1970    1960     mw        1
+#> 16  8.9347580 1970    1960     mw        2
+#> 17 10.4174027 1970    1960     mw        3
+#> 18  6.2902713 1970    1960     mw        4
+#> 19  3.0247620 1970    1960     mw        5
+#> 20  1.0956010 1970    1960     mw        6
+#> 21  0.1530080 1970    1960     mw        7
+#> 22  2.7284080 1960    1970     mw        1
+#> 23 10.5453880 1960    1970     mw        2
+#> 24 10.8624880 1960    1970     mw        3
+#> 25  6.2167400 1960    1970     mw        4
+#> 26  2.9412760 1960    1970     mw        5
+#> 27  1.0362510 1960    1970     mw        6
+#> 28  0.1397333 1960    1970     mw        7
+#> 29  2.5876313 1970    1960     wp        1
+#> 30  9.3628770 1970    1960     wp        2
+#> 31 10.0085227 1970    1960     wp        3
+#> 32  6.0307300 1970    1960     wp        4
+#> 33  2.9762027 1970    1960     wp        5
+#> 34  1.1501073 1970    1960     wp        6
+#> 35  0.1496947 1970    1960     wp        7
+#> 36  1.9184163 1960    1970     wp        1
+#> 37 10.1020515 1960    1970     wp        2
+#> 38 11.2595880 1960    1970     wp        3
+#> 39  6.4327787 1960    1970     wp        4
+#> 40  2.9762027 1960    1970     wp        5
+#> 41  1.0000933 1960    1970     wp        6
+#> 42  0.1418160 1960    1970     wp        7
+```
+
+In this case, we can retrieve the population rates by summing up:
 
 ``` r
 library(tidyverse)
+
+dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
+       ratefunction = "bm*mw*wp") |>
+  group_by(pop,factor) |>
+  summarise(
+    rate = sum(rate)
+  )
+#> # A tibble: 6 × 3
+#> # Groups:   pop [2]
+#>   pop   factor  rate
+#>   <chr> <chr>  <dbl>
+#> 1 1960  bm      36.7
+#> 2 1960  mw      34.5
+#> 3 1960  wp      33.8
+#> 4 1970  bm      29.4
+#> 5 1970  mw      31.7
+#> 6 1970  wp      32.3
+```
+
+Or equivalently, in this simple case where we have just one variable
+indicating a single set of sub-populations (e.g., different age groups),
+then we could run `dgnpop()` on each sub-population individually, and
+aggregate up:
+
+``` r
 eg4.5 |> 
   nest(data=-agegroup) |>
   mutate(
@@ -319,6 +396,8 @@ eg4.5 |>
 #> wp    33.83095 32.26577  -1.565181  13.53
 #> crude 38.77463 27.20318 -11.571446 100.00
 ```
+
+### rates as functions
 
 The `ratefunction` argument of `dgnpop()` essentially allows the user to
 define a custom rate function. This may be as simple as
@@ -677,7 +756,7 @@ dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
   dg_plot()
 ```
 
-<img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
 
 ``` r
 
@@ -727,7 +806,7 @@ dgous <- dgnpop(ratedata, pop="year",factors=c("birthrate"),id_vars="agebin",
 dg_plot(dgous$rates)
 ```
 
-<img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-28-1.png" width="100%" />
 
 ## scottish reconviction data
 
@@ -751,7 +830,7 @@ dg_rec <- dgnpop(reconv, pop="year",
 dg_plot(dg_rec$rates)
 ```
 
-<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" />
 
 [^1]: As set out in his 1993 book *[Standardization and decomposition of
     rates: A user’s
