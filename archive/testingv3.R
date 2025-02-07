@@ -216,7 +216,10 @@ dgnpop(eg5.1, pop="pop",factors=c("age_str","rate"), id_vars = "age_group",
 
 
 dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group",
-       crossclassified = "size") |>
+       ratefunction="rate") |>
+  dg_table()
+dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group",
+       crossclassified = "size", ratefunction="rate") |>
   dg_table()
 
 

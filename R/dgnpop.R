@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Population rates are often composed of various different compositional factors. For example, Das Gupta 1992 expressed the birth rate as the product of the fertility rate, proportion of women who are of childbearing ages, and the proportion of women in the population. Comparisons of crude rates between populations can be misleading as different compositional factors may be contributing to different extents on any observed differences in the crude rate. Standardisation of rates ... TODO finish this description
-#' @param df dataframe or tibble object, with columns specifying 1) population, 2) each rate-factor to be considered, and (optionally) 3) variables indicating underlying subpopulations
+#' @param x dataframe or tibble object, with columns specifying 1) population, 2) each rate-factor to be considered, and (optionally) 3) variables indicating underlying subpopulations
 #' @param pop name (character string) of variable indicating population
 #' @param factors names (character vector) of variables indicating compositional factors
 #' @param id_vars character vector of variables indicating sub-populations
@@ -157,9 +157,9 @@
 #'        ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
 #'   dplyr::select(-std.set) |>
 #'   tidyr::pivot_wider(names_from=pop,values_from=rate)
-dgnpop<-function(df,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=NULL,baseline=NULL,quietly = TRUE){
+dgnpop<-function(x,pop,factors,id_vars=NULL,crossclassified=NULL,ratefunction=NULL,baseline=NULL,quietly = TRUE){
 
-  tmpdf = as.data.frame(df)
+  tmpdf = as.data.frame(x)
 
   # Create rate function if not specified
   user_RF <- TRUE

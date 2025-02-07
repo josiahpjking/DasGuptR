@@ -128,13 +128,13 @@ Rates may be composed of many factors, and they may not be calculated as a simpl
 
 The full explanation of Das Gupta's methodology for standardisation and decomposition are explained in full in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_ 
 
-Below are various examples taken from Das Gupta's 1993 work 
+Below are various examples taken from Das Gupta's 1993 work, following his exposition by building up the number of factors, vectorisation, generalising to different rate functions, compositional structures of populations, and finally extending the process to more than just two populations.  
 
 
 ### P factors
 
 The addition of factors into the make up of a population rate is handled in `dgnpop()` by simply adding the variable name into the `factors` argument.  
-The default behaviour will be to take the rate to be the product of all factors specified.  
+The default behaviour will take the rate to be the product of all factors specified.  
 
 #### 2 factors, 2 populations, R=ab
 
@@ -214,7 +214,7 @@ eg4.5 <- data.frame(
   wp = c(.058, .038, .032, .030, .026, .023, .019,
          .043, .041, .036, .032, .026, .020, .018)
 )
-dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
+dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"),
        ratefunction = "sum(bm*mw*wp)") |>
   dg_table()
 ```
@@ -237,7 +237,7 @@ dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
   )
 ```
 
-Or equivalently, in this simple case where we have just one variable indicating a single set of sub-populations (e.g., different age groups), then we could run `dgnpop()` on each sub-population individually, and aggregate up:  
+Equivalently, in this simple case where we have just one variable indicating a single set of sub-populations (e.g., different age groups), then we could run `dgnpop()` on each sub-population individually, and aggregate up post-hoc:  
 ```{r}
 eg4.5 |> 
   nest(data=-agegroup) |>
@@ -267,7 +267,7 @@ dgnpop(eg3.1, pop="pop",c("crude_birth","crude_death"),
   dg_table()
 ```
 
-However, it may be something more complex. For instance, when working with vector factors, we might define the rate as in various ways that include aggregating over sub-populations in multiple combinations of factors (e.g., `sum(a*b)/sum(a*b*c)`).  
+However, it may be something more complex. For instance, when working with vector factors, we might define the rate as in various ways that include aggregating over sub-populations in different combinations of factors (e.g., `sum(a*b)/sum(a*b*c)`).  
 
 The example below shows once such example:  
 ```{r}
@@ -291,6 +291,7 @@ dgnpop(eg4.4, pop="pop",factors=c("A","B","C","D"), id_vars = "agegroup",
 ```
 
 The `ratefunction` argument can be given any string that, when parsed and evaluated, will return a summary value for a rate. At the point at which the string is evaluated, each factor (or vector-factor) is stored in a named list, meaning the function must simply refer to those factors by name.  
+
 It is possible, for instance, to define a custom function in the user's environment, and provide a call to that function to the `ratefunction` argument of `dgnpop()`:  
 ```{r}
 myratef <- function(a,b,c,d){
@@ -298,7 +299,8 @@ myratef <- function(a,b,c,d){
 }
 
 dgnpop(eg4.4, pop="pop",factors=c("A","B","C","D"), id_vars = "agegroup",
-       ratefunction="myratef(A,B,C,D)")
+       ratefunction="myratef(A,B,C,D)") |>
+  dg_table()
 ```
 
 The upshot of this is that there is not really any limit of the complexity to the rate function the user wishes to specify. Das Gupta provides one such example in which the rate is obtained iteratively via Newton-Raphson:  
@@ -338,14 +340,15 @@ RF4.1(A = eg4.1$Lx[10:18], B = eg4.1$mx[10:18])
 
 # decomposition: 
 dgnpop(eg4.1, pop="pop",factors=c("Lx","mx"), id_vars = "age_group",
-       ratefunction="RF4.1(Lx,mx)")
+       ratefunction="RF4.1(Lx,mx)") |>
+  dg_table()
 ```
 
 ### population structures and cross-classified data  
 
-Very often, the splitting up a population into various sub-populations is because we are interested in separating out how much the population rate differences are due to difference in the compositional structure of the population vs differences in the cell-specific rates.  
+Very often, the splitting up of a population into various sub-populations is done because we are interested in separating out how much the population rate differences are due to difference in the compositional structure of the population vs differences in the cell-specific rates.  
 
-To do this, we require data on the sizes of each sub-population. The simplest case here would be to disagreggate into a single set of sub-populations (e.g., age-groups), and simply have cell-specific rates themselves. The crude rates for the population are therefore simply the sum of all the cell-specific rates weighted by the relative size of the cell.  
+To do this, we require data on the sizes (or relative sizes) of each sub-population. The simplest case here would be to disagreggate into a single set of sub-populations (e.g., age-groups), and simply have cell-specific rates themselves. The crude rates for the population are therefore simply the sum of all the cell-specific rates weighted by the relative size of the cell.  
 
 In the example below, the relative size of each cell is provided as a percentage in the `size` column.  
 ```{r}
@@ -373,16 +376,16 @@ dgnpop(eg5.1, pop="pop",factors=c("age_str","rate"), id_vars = "age_group",
   dg_table() 
 ```
 
-2. We could alternatively simply include the conversion to proportion in the rate function:  
+2. We could alternatively simply include the conversion to proportion in the rate function. The inputs to the rate function here are the set of vector factors for each population, so internal calls to `sum(size)` will give us the total population size:  
 ```{r}
 dgnpop(eg5.1, pop="pop",factors=c("size","rate"), id_vars = "age_group",
        ratefunction="sum( (size/sum(size))*rate )") |>
   dg_table()
 ```
 
-3. In addition, we can provide the variable indicating the size of each sub-population into the `crossclassified` argument of `dgnpop()`. 
+3. Finally, we can instead provide the variable indicating the size of each sub-population into the `crossclassified` argument of `dgnpop()`. 
 ```{r}
-dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group",
+dgnpop(eg5.1, pop="pop", factors=c("rate"), id_vars = "age_group",
        crossclassified = "size") |>
   dg_table() 
 ```
@@ -423,6 +426,8 @@ dgnpop(eg5.3, pop = "pop", factors=c("rate"), id_vars = c("race","age"),
 
 
 
+
+
 ::: {.callout-tip collapse="true"}
 #### re-expression of population structures:
 
@@ -441,7 +446,7 @@ eg5.3a <- eg5.3 |>
   )
 head(eg5.3a)
 
-split_popstr(eg5.3[eg5.3$pop==1985,], id_vars=c("age","race"),nvar="size") |>
+dgcc(eg5.3, "pop", id_vars=c("age","race"), crossclassified ="size") |>
   head()
 
 dgnpop(eg5.3a, pop = "pop", factors=c("A","B","rate"), id_vars = c("race","age"),

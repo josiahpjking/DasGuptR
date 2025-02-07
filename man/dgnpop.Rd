@@ -5,7 +5,7 @@
 \title{Prithwis Das Gupta's 1993 standardisation and decomposition of rates over P rate-factors and N populations.}
 \usage{
 dgnpop(
-  df,
+  x,
   pop,
   factors,
   id_vars = NULL,
@@ -16,7 +16,7 @@ dgnpop(
 )
 }
 \arguments{
-\item{df}{dataframe or tibble object, with columns specifying 1) population, 2) each rate-factor to be considered, and (optionally) 3) variables indicating underlying subpopulations}
+\item{x}{dataframe or tibble object, with columns specifying 1) population, 2) each rate-factor to be considered, and (optionally) 3) variables indicating underlying subpopulations}
 
 \item{pop}{name (character string) of variable indicating population}
 

@@ -38,16 +38,19 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
   # we also need to remove any sets in which factors come up twice (e.g. age_str and age_str1)
   countfacts = sapply(factors, \(y) apply(gsub(paste0(pops,collapse="|"),"",allperms), 1, \(x) sum(x==y)))
 
-  countdup = rowSums(countfacts == 2)
-
+  if(nfact == 1){
+    allperms = allfacts
+    countdup = 0
+    relperms = allperms
+  }else{
+    countdup = rowSums(countfacts == 2)
+    #here is all the factor data:
+    relperms = allperms[countdup==0,]
+  }
 
   #these are denominators for the 3.54 eq
   eqp = sapply(countBs, function(x) nfact*max(dim(combn(nfact-1,x))))
   eqp = eqp[countdup==0]
-
-  #here is all the factor data:
-  relperms = allperms[countdup==0,]
-  if(is.null(dim(relperms))){relperms = as.array(relperms)}
 
   fdata =
     apply(t(relperms),2,
@@ -93,8 +96,14 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
   }
 
   # popA/a rates
-  popAi = .calcRF(  pop_facts[pop_facts[[pop]]==pops[1], facti]  )
-  popBi = .calcRF(  pop_facts[pop_facts[[pop]]==pops[2], facti]  )
+  if(nfact == 1){
+    popAi = pop_facts[pop_facts[[pop]]==pops[1], facti]
+    popBi = pop_facts[pop_facts[[pop]]==pops[2], facti]
+  }else {
+    popAi = .calcRF(  pop_facts[pop_facts[[pop]]==pops[1], facti]  )
+    popBi = .calcRF(  pop_facts[pop_facts[[pop]]==pops[2], facti]  )
+  }
+
   # a-effect
   diff=popBi-popAi
 
