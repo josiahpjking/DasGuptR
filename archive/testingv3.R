@@ -241,8 +241,10 @@ dgnpop(eg5.3, pop = "pop", factors=c("size","rate"), id_vars = c("race","age"),
        ratefunction = "sum( size/sum(size)*rate)") |>
   dg_table()
 
-dgnpop(eg5.3, pop = "pop", factors=c("rate"), id_vars = c("race","age"),
-       crossclassified = "size") |>
+eg5.3$r2=2
+
+dgnpop(eg5.3, pop = "pop", factors=c("rate","r2"), id_vars = c("race","age"),
+       crossclassified = "size", ratefunction="rate/r2") |>
   dg_table()
 
 

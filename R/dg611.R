@@ -1,5 +1,5 @@
 #' Das Gupta equation 6.11: Standardises rates across populations
-#' Outputs a tibble object of the rate factor F in population Y, standardised across all populations
+#' Outputs a dataframe object of the rate factor F in population Y, standardised across all populations
 #' @param srates a dataframe/tibble object of standardised rates from dg2pop
 #' @param all_p character or numeric vector of all N populations
 #' @param y character/numeric indicating a single population

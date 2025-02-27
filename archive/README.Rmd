@@ -20,9 +20,7 @@ require(kableExtra)
 ```
 # DasGuptR
 
-The goal of the DasGuptR package is to provide an implementation of Prithwith Das Gupta's specification of *standardization* and *decomposition* of rates[^7].
-
-[^7]: As set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.    
+The goal of the DasGuptR package is to provide an implementation of Prithwith Das Gupta's specification of *standardization* and *decomposition* of rates, as set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.    
   
 ## Installation
 
@@ -57,19 +55,17 @@ In this simple case, we can standardise across the two populations, calculating 
 | $\alpha$ | $A$ | $a$ |
 | $\beta$ | $B$ | $b$ |
 | crude rate <br> $R_{crude}$ | $AB$ | $ab$ |
-$\beta$-adjusted <br> $R_{-alpha}$ | $A\frac{B+b}{2}$ | $a\frac{B+b}{2}$ | 
+$\beta$-adjusted <br> $R_{-\alpha}$ | $A\frac{B+b}{2}$ | $a\frac{B+b}{2}$ | 
 $\alpha$-adjusted <br> $R_{-\beta}$ | $\frac{A+a}{2}B$ |  $\frac{A+a}{2}b$ |
-
-
 
 
 These $\alpha$-adjusted rate can be interpreted as "what the crude rate would look like if $\alpha$ was held equal" (and analogously for $\beta$). 
 In cases involving multiple factors, this can quickly become unwieldy, as the standardisation process takes each factor in turn and produces an adjusted rate where "all other factors are held equal". For instance, in the case of a rate as the product of four factors $R = \alpha\beta\gamma\delta$, we get out four sets of adjusted rates: the $\alpha\beta\gamma$-adjusted, $\beta\gamma\delta$-adjusted, $\alpha\gamma\delta$-adjusted, and $\alpha\beta\delta$-adjusted.  
 
-For this reason, we opt to refer to these rates as, e.g., $P-\alpha$, where $P$ is the set of all compositional factors. This is reflected in the table above, where we have used $R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote the crude, the $P-\alpha$-adjusted (or $\beta$-adjusted), and the $P-\beta$-adjusted (or $\alpha$-adjusted) rates. The $P-\alpha$-adjusted rate can therefore be interpreted as "what the crude rate would look like if $\alpha$ changed but all other factors were held equal". 
+For this reason, we opt to refer to these rates as, e.g., $P-\alpha$, where $P$ is the set of all compositional factors. This is reflected in the table above, where we have used $R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote, respectively, the crude rate, the $P-\alpha$-adjusted rate (or "$\beta$-adjusted"), and the $P-\beta$-adjusted (or "$\alpha$-adjusted") rate. The $P-\alpha$-adjusted rate can therefore be interpreted as "what the crude rate would look like if $\alpha$ changed but all other factors were held equal". 
 
 The _difference_ in the adjusted (or 'standardised') rates is known as a __decomposition effect__, named due to the fact that differences in the crude rates can be decomposed into differences in adjusted rates: $\Delta R_{crude} = \Delta R_{-\alpha} + \Delta R_{-\beta}$. 
-This decomposition allows us to quantify how much of the difference between two crude rates is due to differences in $\alpha$, differences in $\beta$, and so on. [^caus]
+This decomposition allows us to quantify how much of the difference between two crude rates is attributable to differences in $\alpha$, differences in $\beta$, and so on. [^caus]
 
 [^caus]: Importantly, the use of "attributable" has a very narrow sense of 'numerically attributable', and it is important to stress the lack of any causal interpretation here - different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
 
@@ -107,14 +103,14 @@ dgnpop(eg.dg, pop = "pop", factors=c("alpha","beta"))
 ```
 
 These can be quickly turned into a wide table in the style of Das Gupta using `dg_table()`. 
-When working with just two populations, this also provides the difference in rates, also expressed as the percentage of the crude rate difference:  
+When working with just two populations, this also provides the difference in rates, and expresses them as the percentage of the crude rate difference:  
 
 ```{r}
 dgnpop(eg.dg, pop = "pop", factors=c("alpha","beta")) |>
   dg_table()
 ```
 
-`dg_plot()` will plot these (although this is really only useful when working with many populations, such as with time series data)
+In addition to the tabular form, `dg_plot()` will create a rough plot of the standardised rates, although this is really only useful when working with many populations, such as with time series data.  
 ```{r}
 dgnpop(eg.dg, pop = "pop", factors=c("alpha","beta")) |>
   dg_plot()
@@ -198,7 +194,7 @@ dgnpop(eg2.7, pop="pop",
 ### vector factors   
 
 Often, we may have data for each compositional factor on a set of sub-populations, and the crude rates for the population are the aggregated cell-specific rates.  
-In these cases, `dgnpop()` requires the user to provide both the variable(s) indicating the sub-populations, and an appropriate rate function that aggregates up to a summary value for each population.  
+In these cases, `dgnpop()` requires the user to provide an appropriate rate function that aggregates up to a summary value for each population.  
 For instance, in the example below, the cell-specific rates are calculated as the product of 3 factors, and the population rate is the sum of the cell-specific rates, so the user would specify `ratefunction="sum(a*b*c)"`. 
 
 #### 3 vector factors, 2 populations, R=sum(abc)
@@ -219,7 +215,8 @@ dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"),
   dg_table()
 ```
 
-Note that for most purposes, working with vector factors would require the rate function to aggregate up to a summary, population-level value, e.g., using `"sum(a*b*c)"`. If this is not provided, then `dgnpop()` will return an array of standardised sub-population rates, of the same length as the number of sub-populations. In order to do this, the user is also required to specify the variable indicating the sub-population in `id_vars` argument.  
+Note that for most purposes when working with vector factors, the population-level rates are what is desired and so users will provide appropriate rate function. If the rate function provided does _not_ aggregate up to a summary value, then `dgnpop()` will return an array of standardised sub-population rates of the same length as the number of sub-populations. In order to do this, the user is also required to specify the variable indicating the sub-population in `id_vars` argument.  
+
 ```{r}
 dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
        ratefunction = "bm*mw*wp")
@@ -237,7 +234,9 @@ dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
   )
 ```
 
-Equivalently, in this simple case where we have just one variable indicating a single set of sub-populations (e.g., different age groups), then we could run `dgnpop()` on each sub-population individually, and aggregate up post-hoc:  
+Returning the array of standardised sub-population rates may be desired should we be looking to calculate *category effects* as in [Chevin & Sutherland](){target="_blank"}, to examine the amount to which differences in rates is attributable to differences in specific sub-populations (see [associated vignette](){target=_blank})
+
+Equivalent to this, in this simple case where we have just one variable indicating a single set of sub-populations (e.g., different age groups), then we could run `dgnpop()` on data for each sub-population individually, and aggregate up post-hoc:  
 ```{r}
 eg4.5 |> 
   nest(data=-agegroup) |>
@@ -303,7 +302,7 @@ dgnpop(eg4.4, pop="pop",factors=c("A","B","C","D"), id_vars = "agegroup",
   dg_table()
 ```
 
-The upshot of this is that there is not really any limit of the complexity to the rate function the user wishes to specify. Das Gupta provides one such example in which the rate is obtained iteratively via Newton-Raphson:  
+The upshot of this is that there is not really any limit to the complexity of the rate function the user wishes to specify. Das Gupta provides one such example in which the rate is obtained iteratively via Newton-Raphson:  
 
 ```{r}
 eg4.1 <- data.frame(
@@ -348,7 +347,7 @@ dgnpop(eg4.1, pop="pop",factors=c("Lx","mx"), id_vars = "age_group",
 
 Very often, the splitting up of a population into various sub-populations is done because we are interested in separating out how much the population rate differences are due to difference in the compositional structure of the population vs differences in the cell-specific rates.  
 
-To do this, we require data on the sizes (or relative sizes) of each sub-population. The simplest case here would be to disagreggate into a single set of sub-populations (e.g., age-groups), and simply have cell-specific rates themselves. The crude rates for the population are therefore simply the sum of all the cell-specific rates weighted by the relative size of the cell.  
+To do this, we require data on the sizes (or relative sizes) of each sub-population. The simplest case here would be to disaggregate into a single set of sub-populations (e.g., age-groups), and simply have cell-specific rates themselves. The crude rates for the population are therefore simply the sum of all the cell-specific rates weighted by the relative size of the cell.  
 
 In the example below, the relative size of each cell is provided as a percentage in the `size` column.  
 ```{r}

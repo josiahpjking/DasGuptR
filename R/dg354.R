@@ -1,4 +1,4 @@
-#' internal function called by dg2pop
+#' internal function called by dg2pop that implements equation 3.54 in Das Gupta 1993
 #' @param df2 list of 2 population dataframes, in which each one contains data for all factors for the relevant population, along with variables indicating population and subpopulations
 #' @param i the index of the factors vector which is not being adjusted for (the alpha in "P-alpha standardised rates")
 #' @param pop name (character string) of variable indicating population

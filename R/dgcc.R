@@ -15,6 +15,7 @@ dgcc<-function(x,pop,id_vars,crossclassified){
     tmpdf[tmpdf[[pop]]==p, names(str_vars)] <- str_vars
 
   }
+
   return(tmpdf)
 
 }

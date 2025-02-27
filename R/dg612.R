@@ -1,8 +1,9 @@
-#' The full Das Gupta 6.12 equation for a factor-effect between 2 populations
-#' Outputs a tibble object specifying the factor-effect standardised across all populations
+#' The full Das Gupta 6.12 equation for a factor-effect between 2 populations when standardised across N populations.
+#' Outputs a dataframe object specifying the factor-effect standardised across all populations
 #' @param srates a dataframe output from dg2p
 #' @param all_p character or numeric vector of all N populations
 #' @param ps vector of length 2 specifying a possible pairwise comparison of populations
+#' @param factor character string indicating name of factor
 #' @export
 #' @examples
 #' ......

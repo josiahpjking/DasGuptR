@@ -1,0 +1,209 @@
+---
+title: "Bootstrapping standardized rates and decomposition effects"
+output: 
+  rmarkdown::html_vignette:
+    df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Bootstrapping standardized rates and decomposition effects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+The basic premise of bootstrapping Das Gupta's rate decomposition can be thought of as expanding out to unit-level data, re-sampling, then aggregating back up. 
+
+Data from [Wang 2000](https://doi.org/10.3758/BF03207806):  
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(DasGuptR)
+
+eg.wang2000 <- data.frame(
+  pop = rep(c("male","female"), e = 12),
+  ethnicity = rep(1:3, e = 4),
+  age_group = rep(1:4, 3),
+  size = c(
+    130,1305,1539,316,211,697,334,48,105,475,424,49,
+    70,604,428,43,55,127,44,9,72,178,103,12
+  ),
+  rate = c(
+    12.31,34.90,52.91,44.44,16.67,36.40,51.20,41.67,12.38,19.20,21.23,12.50,
+    17.14,35.55,48.71,55.81,14.55,39.37,32.56,55.56,22.22,20.34,13.59,8.33
+  )
+)
+```
+
+To do this with the DasGuptR package, we must first create a function to essentially "uncount" data into individual level data (where nrow = size of total population), then re-sample with replacement, then aggregate back up to the level of the original data.  
+
+```{r}
+getBS <- function(){
+  # expand out
+  exp <- eg.wang2000 |> 
+    mutate(
+      r1 = (rate/100)*size,
+      r0 = (1-(rate/100))*size
+    ) |>
+    select(pop,ethnicity,age_group,r0:r1) |>
+    pivot_longer(r0:r1, names_to="r",values_to = "n") |>
+    mutate(n = as.integer(n)) |>
+    uncount(n)
+  
+  # sample for each pop
+  bs <- lapply(unique(eg.wang2000$pop), \(p)
+               slice_sample(exp[exp$pop==p,],
+                            prop=1,replace = TRUE) |>
+                 group_by(ethnicity,age_group) |>
+                 reframe(
+                   pop = p,
+                   size = n(),
+                   rate = mean(r=="r1")*100
+                 ) |> ungroup())
+  
+  do.call(rbind,bs)
+}
+```
+
+Take 500 resamples:  
+
+```{r}
+bsamps <-
+  tibble(
+    k = 1:500,
+    i = map(1:500, ~getBS())
+  )
+```
+
+and apply the standardisation to each resample:  
+
+```{r}
+#| message: false
+#| warning: false
+bsamps <- bsamps |>
+  mutate(
+    dgo = map(i, ~dgnpop(., pop = "pop", factors = "rate",
+                         id_vars = c("ethnicity","age_group"),
+                         crossclassified = "size"))
+  )
+```
+
+Here are the original difference effects:  
+```{r}
+#| message: false
+dgnpop(eg.wang2000, 
+       pop = "pop", factors  ="rate",
+       id_vars = c("ethnicity","age_group"),
+       crossclassified = "size") |> 
+  dg_table()
+```
+
+And here are the standard errors:  
+
+```{r}
+bsamps |> 
+  select(k,dgo) |> unnest(dgo) |>
+  group_by(k, factor) |>
+  reframe( diff = rate[pop=="female"]-rate[pop=="male"] ) |> 
+  group_by(factor) |>
+  reframe( se = sd(diff) )
+```
+
+Which we can take as a proportion of the crude rate difference:  
+
+```{r}
+#| echo: false
+#| message: false
+dd <- dgnpop(eg.wang2000, 
+       pop = "pop", factors  ="rate",
+       id_vars = c("ethnicity","age_group"),
+       crossclassified = "size") |> dg_table() |>
+       rownames_to_column(var="factor")
+
+library(ggdist)
+theme_set(theme_ggdist())
+bsamps |> 
+  select(k,dgo) |> unnest(dgo) |>
+  group_by(k, factor) |>
+  reframe( decomp = ( rate[pop=="male"]-rate[pop=="female"] )/ dd$diff[4]*100 ) |> 
+  filter(factor != "crude") |>
+  ggplot(aes(x=decomp, y=factor, fill=factor))+
+  stat_halfeye()+
+  scale_fill_viridis_d(option="C", begin = 0.5, end = .9)+
+  guides(fill="none")
+  
+```
+
+
+### Uncertainty in rates
+
+We can use this same approach to estimate uncertainty in adjusted rates. For instance, using the Scottish Reconvictions data:  
+
+```{r}
+#| eval: false
+data(reconv)
+
+src <- reconv |>
+  transmute(
+    pop = year, sex=Sex, age=Age,
+    rate = prev_rate,
+    size = offenders,
+    r1 = rate*size,
+    r0 = (1-rate)*size
+  )
+
+getBS <- function(){
+  # expand out
+  exp <- src |>
+    select(pop,sex,age,r0,r1) |>
+    pivot_longer(r0:r1, names_to="r",values_to = "n") |>
+    mutate(n = as.integer(n)) |>
+    uncount(n)
+
+  # sample for each pop
+  bs <- lapply(unique(src$pop), \(p)
+               slice_sample(exp[exp$pop==p,],
+                            prop=1,replace = TRUE) |>
+                 group_by(sex,age) |>
+                 reframe(
+                   pop = p,
+                   size = n(),
+                   rate = mean(r=="r1")
+                 ) |> ungroup())
+
+  do.call(rbind,bs)
+}
+
+
+# 500 resamples
+bsamps <-
+  tibble(
+    k = 1:500,
+    i = map(1:500, ~getBS())
+  )
+
+# apply DG on each resample
+bsamps <- bsamps |>
+  mutate(
+    dgo = map(i, ~dgnpop(., pop="pop",factors="rate",
+                         id_vars=c("age","sex"),
+                         crossclassified="size"))
+  )
+```
+```{r}
+#| echo: false
+bsamps <- readRDS("bsamps500.RDS")
+bsamps |> transmute(rates = map(dgo,"rates")) |>
+  unnest(rates) |>
+  mutate(pop=as.numeric(as.character(pop))) |>
+  #group_by(pop,factor) |>
+  #median_qi(rate, .width = c(.5,.8,.95)) |>
+  #ggplot(aes(x = pop, y = rate, ymin = .lower, ymax = .upper)) +
+  #geom_lineribbon(aes(group=factor)) + 
+  ggplot(aes(x = pop, y = rate, group = factor, fill = after_stat(.width))) +
+  stat_lineribbon(.width = ppoints(50))+
+  facet_wrap(~factor)+
+  scale_fill_distiller()+
+  guides(fill="none")
+```
+
+

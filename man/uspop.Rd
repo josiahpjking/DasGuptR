@@ -15,6 +15,8 @@ US population data 1940-1990
 }
 \examples{
 data(uspop)
+dgnpop(uspop, pop = "year", factors = c("birthrate"), id_vars = "agebin", crossclassified = "thous") |>
+dg_plot()
 
 }
 \keyword{datasets}

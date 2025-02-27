@@ -22,7 +22,7 @@ split_popstr <- function(x,id_vars,nvar){
                     prod(apply(combn(setdiff(id_vars, i), length(id_vars)-y), 2,
                                \(x) .findn(ddf, tr, c(i, x), sizevar)/.findn(ddf, tr, c(x), sizevar))))
 
-    pp = .findn(ddf,tr,i,sizevar)/sum(df[[sizevar]])
+    pp = .findn(ddf,tr,i,sizevar)/sum(ddf[[sizevar]])
 
     prod(sapply(1:np, \(x) c(p1,p2_pm1,pp)[x]^(1/powers[x])))
   }

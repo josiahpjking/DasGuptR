@@ -8,5 +8,7 @@
 #'
 #' @examples
 #' data(uspop)
+#' dgnpop(uspop, pop = "year", factors = c("birthrate"), id_vars = "agebin", crossclassified = "thous") |>
+#' dg_plot()
 #'
 "uspop"
