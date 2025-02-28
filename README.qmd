@@ -577,7 +577,7 @@ tibble(
   `1963 v 1968` = p12$diff,
   `1968 v 1973` = p23$diff,
   `1963 v 1973` = p13$diff
-) |> gt::gt()
+) |> knitr::kable()
 
 ```
 
