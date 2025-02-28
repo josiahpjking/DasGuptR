@@ -2,8 +2,8 @@
 % Please edit documentation in R/dg612.R
 \name{dg612}
 \alias{dg612}
-\title{The full Das Gupta 6.12 equation for a factor-effect between 2 populations
-Outputs a tibble object specifying the factor-effect standardised across all populations}
+\title{The full Das Gupta 6.12 equation for a factor-effect between 2 populations when standardised across N populations.
+Outputs a dataframe object specifying the factor-effect standardised across all populations}
 \usage{
 dg612(srates, all_p, ps, factor)
 }
@@ -13,10 +13,12 @@ dg612(srates, all_p, ps, factor)
 \item{all_p}{character or numeric vector of all N populations}
 
 \item{ps}{vector of length 2 specifying a possible pairwise comparison of populations}
+
+\item{factor}{character string indicating name of factor}
 }
 \description{
-The full Das Gupta 6.12 equation for a factor-effect between 2 populations
-Outputs a tibble object specifying the factor-effect standardised across all populations
+The full Das Gupta 6.12 equation for a factor-effect between 2 populations when standardised across N populations.
+Outputs a dataframe object specifying the factor-effect standardised across all populations
 }
 \examples{
 ......

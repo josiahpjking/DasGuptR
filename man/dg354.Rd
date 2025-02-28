@@ -2,7 +2,7 @@
 % Please edit documentation in R/dg354.R
 \name{dg354}
 \alias{dg354}
-\title{internal function called by dg2pop}
+\title{internal function called by dg2pop that implements equation 3.54 in Das Gupta 1993}
 \usage{
 dg354(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE)
 }
@@ -22,7 +22,7 @@ dg354(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE)
 \item{quietly}{logical indicating whether interim messages should be outputted indicating progress}
 }
 \description{
-internal function called by dg2pop
+internal function called by dg2pop that implements equation 3.54 in Das Gupta 1993
 }
 \examples{
 ......

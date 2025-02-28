@@ -7,8 +7,8 @@ split_popstr <- function(x,id_vars,nvar){
 
   tmpdf <- as.data.frame(x)
 
-  np = length(id_vars)
-  powers = c(np, sapply(1:(np-1), \(x) (np*choose(np-1,x))))
+  np <- length(id_vars)
+  powers <- c(np, sapply(1:(np-1), \(x) (np*choose(np-1,x))))
 
   .findn <- function(ddf,tr,ii,sizevar){
     sum(ddf[ apply(ddf[, ii, drop=FALSE], 1, \(x) all(x == ddf[tr, ii, drop=FALSE])), sizevar])

@@ -97,23 +97,27 @@ dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
 
   # popA/a rates
   if(nfact == 1){
-    popAi = pop_facts[pop_facts[[pop]]==pops[1], facti]
-    popBi = pop_facts[pop_facts[[pop]]==pops[2], facti]
+    popAi = eval(parse(text = ratefunction), envir = setNames(list(pop_facts[pop_facts[[pop]]==pops[1], facti]),facti))
+    popBi = eval(parse(text = ratefunction), envir = setNames(list(pop_facts[pop_facts[[pop]]==pops[2], facti]),facti))
+    # popAi = pop_facts[pop_facts[[pop]]==pops[1], facti]
+    # popBi = pop_facts[pop_facts[[pop]]==pops[2], facti]
   }else {
     popAi = .calcRF(  pop_facts[pop_facts[[pop]]==pops[1], facti]  )
     popBi = .calcRF(  pop_facts[pop_facts[[pop]]==pops[2], facti]  )
   }
 
   # a-effect
-  diff=popBi-popAi
+  diff=popAi-popBi
 
   res = data.frame(
     rate=c(popAi,popBi),
     pop=rep(pops,e=length(popAi)),
     std.set=rep(rev(pops),e=length(popAi)),
+    # STILL NEEDED FOR CROSS CLASSIFIED for calculating (rate+(rate+diff))/2
     diff=c(diff,-diff),
     diff.calc=rep(c(paste0(pops,collapse="-"),
                 paste0(rev(pops),collapse="-")),e=length(popAi)),
+
     factor=facti
   )
   if(!is.null(id_vars) & length(popAi)>2){

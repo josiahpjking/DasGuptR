@@ -395,7 +395,7 @@ dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"),
 
 Returning the array of adjusted sub-population rates may be desired for
 those looking to calculate *category effects* as detailed in
-<a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevin
+<a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevan
 &amp; Sutherland 2009</a> to examine the amount to which a difference in
 rates is attributable to differences in *specific* sub-populations (see
 <a href="TODO" target="_blank">associated vignette</a>).
@@ -694,8 +694,8 @@ dgnpop(eg5.1, pop = "pop", factors = c("rate"),
        crossclassified = "size") |>
   dg_table() 
 #>                     1970    1985   diff decomp
-#> rate             45.3309 47.0712 1.7403  58.65
 #> age_group_struct 45.5876 46.8145 1.2269  41.35
+#> rate             45.3309 47.0712 1.7403  58.65
 #> crude            44.7268 47.6940 2.9672 100.00
 ```
 
@@ -750,11 +750,11 @@ dgnpop(eg5.3, pop = "pop", factors = c("rate"),
        id_vars = c("race","age"),
        crossclassified = "size") |>
   dg_table() 
-#>                  1970     1985        diff  decomp
-#> rate        10.259580 8.031414 -2.22816617  324.70
-#> race_struct  9.117098 9.137096  0.01999804   -2.91
-#> age_struct   8.383320 9.905272  1.52195237 -221.79
-#> crude        9.421833 8.735618 -0.68621576  100.00
+#>                  1970     1985       diff  decomp
+#> age_struct   8.385332 9.907067  1.5217347 -221.76
+#> race_struct  9.136312 9.156087  0.0197749   -2.88
+#> rate        10.257368 8.029643 -2.2277254  324.64
+#> crude        9.421833 8.735618 -0.6862158  100.00
 ```
 
 ## N populations
@@ -807,20 +807,20 @@ eg6.5 <- data.frame(
 As an illustration, running the standardisation on separate pairs of
 populations above returns decomposition effects below.
 
-<div id="nhddzjqqgq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#nhddzjqqgq table {
+<div id="qqaglvaaoz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qqaglvaaoz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-&#10;#nhddzjqqgq thead, #nhddzjqqgq tbody, #nhddzjqqgq tfoot, #nhddzjqqgq tr, #nhddzjqqgq td, #nhddzjqqgq th {
+&#10;#qqaglvaaoz thead, #qqaglvaaoz tbody, #qqaglvaaoz tfoot, #qqaglvaaoz tr, #qqaglvaaoz td, #qqaglvaaoz th {
   border-style: none;
 }
-&#10;#nhddzjqqgq p {
+&#10;#qqaglvaaoz p {
   margin: 0;
   padding: 0;
 }
-&#10;#nhddzjqqgq .gt_table {
+&#10;#qqaglvaaoz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -845,11 +845,11 @@ populations above returns decomposition effects below.
   border-left-width: 2px;
   border-left-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_caption {
+&#10;#qqaglvaaoz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
-&#10;#nhddzjqqgq .gt_title {
+&#10;#qqaglvaaoz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -860,7 +860,7 @@ populations above returns decomposition effects below.
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
-&#10;#nhddzjqqgq .gt_subtitle {
+&#10;#qqaglvaaoz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -871,7 +871,7 @@ populations above returns decomposition effects below.
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
-&#10;#nhddzjqqgq .gt_heading {
+&#10;#qqaglvaaoz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -882,12 +882,12 @@ populations above returns decomposition effects below.
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_bottom_border {
+&#10;#qqaglvaaoz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_col_headings {
+&#10;#qqaglvaaoz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -901,7 +901,7 @@ populations above returns decomposition effects below.
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_col_heading {
+&#10;#qqaglvaaoz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -920,7 +920,7 @@ populations above returns decomposition effects below.
   padding-right: 5px;
   overflow-x: hidden;
 }
-&#10;#nhddzjqqgq .gt_column_spanner_outer {
+&#10;#qqaglvaaoz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -931,13 +931,13 @@ populations above returns decomposition effects below.
   padding-left: 4px;
   padding-right: 4px;
 }
-&#10;#nhddzjqqgq .gt_column_spanner_outer:first-child {
+&#10;#qqaglvaaoz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
-&#10;#nhddzjqqgq .gt_column_spanner_outer:last-child {
+&#10;#qqaglvaaoz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
-&#10;#nhddzjqqgq .gt_column_spanner {
+&#10;#qqaglvaaoz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -948,10 +948,10 @@ populations above returns decomposition effects below.
   display: inline-block;
   width: 100%;
 }
-&#10;#nhddzjqqgq .gt_spanner_row {
+&#10;#qqaglvaaoz .gt_spanner_row {
   border-bottom-style: hidden;
 }
-&#10;#nhddzjqqgq .gt_group_heading {
+&#10;#qqaglvaaoz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -976,7 +976,7 @@ populations above returns decomposition effects below.
   vertical-align: middle;
   text-align: left;
 }
-&#10;#nhddzjqqgq .gt_empty_group_heading {
+&#10;#qqaglvaaoz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -990,13 +990,13 @@ populations above returns decomposition effects below.
   border-bottom-color: #D3D3D3;
   vertical-align: middle;
 }
-&#10;#nhddzjqqgq .gt_from_md > :first-child {
+&#10;#qqaglvaaoz .gt_from_md > :first-child {
   margin-top: 0;
 }
-&#10;#nhddzjqqgq .gt_from_md > :last-child {
+&#10;#qqaglvaaoz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
-&#10;#nhddzjqqgq .gt_row {
+&#10;#qqaglvaaoz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1014,7 +1014,7 @@ populations above returns decomposition effects below.
   vertical-align: middle;
   overflow-x: hidden;
 }
-&#10;#nhddzjqqgq .gt_stub {
+&#10;#qqaglvaaoz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1026,7 +1026,7 @@ populations above returns decomposition effects below.
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#nhddzjqqgq .gt_stub_row_group {
+&#10;#qqaglvaaoz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1039,13 +1039,13 @@ populations above returns decomposition effects below.
   padding-right: 5px;
   vertical-align: top;
 }
-&#10;#nhddzjqqgq .gt_row_group_first td {
+&#10;#qqaglvaaoz .gt_row_group_first td {
   border-top-width: 2px;
 }
-&#10;#nhddzjqqgq .gt_row_group_first th {
+&#10;#qqaglvaaoz .gt_row_group_first th {
   border-top-width: 2px;
 }
-&#10;#nhddzjqqgq .gt_summary_row {
+&#10;#qqaglvaaoz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1054,14 +1054,14 @@ populations above returns decomposition effects below.
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#nhddzjqqgq .gt_first_summary_row {
+&#10;#qqaglvaaoz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_first_summary_row.thick {
+&#10;#qqaglvaaoz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
-&#10;#nhddzjqqgq .gt_last_summary_row {
+&#10;#qqaglvaaoz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1070,7 +1070,7 @@ populations above returns decomposition effects below.
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_grand_summary_row {
+&#10;#qqaglvaaoz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1079,7 +1079,7 @@ populations above returns decomposition effects below.
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#nhddzjqqgq .gt_first_grand_summary_row {
+&#10;#qqaglvaaoz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1088,7 +1088,7 @@ populations above returns decomposition effects below.
   border-top-width: 6px;
   border-top-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_last_grand_summary_row_top {
+&#10;#qqaglvaaoz .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1097,10 +1097,10 @@ populations above returns decomposition effects below.
   border-bottom-width: 6px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_striped {
+&#10;#qqaglvaaoz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
-&#10;#nhddzjqqgq .gt_table_body {
+&#10;#qqaglvaaoz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1108,7 +1108,7 @@ populations above returns decomposition effects below.
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_footnotes {
+&#10;#qqaglvaaoz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1121,7 +1121,7 @@ populations above returns decomposition effects below.
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_footnote {
+&#10;#qqaglvaaoz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1129,7 +1129,7 @@ populations above returns decomposition effects below.
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#nhddzjqqgq .gt_sourcenotes {
+&#10;#qqaglvaaoz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1142,64 +1142,64 @@ populations above returns decomposition effects below.
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#nhddzjqqgq .gt_sourcenote {
+&#10;#qqaglvaaoz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#nhddzjqqgq .gt_left {
+&#10;#qqaglvaaoz .gt_left {
   text-align: left;
 }
-&#10;#nhddzjqqgq .gt_center {
+&#10;#qqaglvaaoz .gt_center {
   text-align: center;
 }
-&#10;#nhddzjqqgq .gt_right {
+&#10;#qqaglvaaoz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-&#10;#nhddzjqqgq .gt_font_normal {
+&#10;#qqaglvaaoz .gt_font_normal {
   font-weight: normal;
 }
-&#10;#nhddzjqqgq .gt_font_bold {
+&#10;#qqaglvaaoz .gt_font_bold {
   font-weight: bold;
 }
-&#10;#nhddzjqqgq .gt_font_italic {
+&#10;#qqaglvaaoz .gt_font_italic {
   font-style: italic;
 }
-&#10;#nhddzjqqgq .gt_super {
+&#10;#qqaglvaaoz .gt_super {
   font-size: 65%;
 }
-&#10;#nhddzjqqgq .gt_footnote_marks {
+&#10;#qqaglvaaoz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
-&#10;#nhddzjqqgq .gt_asterisk {
+&#10;#qqaglvaaoz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
-&#10;#nhddzjqqgq .gt_indent_1 {
+&#10;#qqaglvaaoz .gt_indent_1 {
   text-indent: 5px;
 }
-&#10;#nhddzjqqgq .gt_indent_2 {
+&#10;#qqaglvaaoz .gt_indent_2 {
   text-indent: 10px;
 }
-&#10;#nhddzjqqgq .gt_indent_3 {
+&#10;#qqaglvaaoz .gt_indent_3 {
   text-indent: 15px;
 }
-&#10;#nhddzjqqgq .gt_indent_4 {
+&#10;#qqaglvaaoz .gt_indent_4 {
   text-indent: 20px;
 }
-&#10;#nhddzjqqgq .gt_indent_5 {
+&#10;#qqaglvaaoz .gt_indent_5 {
   text-indent: 25px;
 }
-&#10;#nhddzjqqgq .katex-display {
+&#10;#qqaglvaaoz .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
-&#10;#nhddzjqqgq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+&#10;#qqaglvaaoz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1258,47 +1258,6 @@ the `diffs` entry:
 dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
        id_vars = "agegroup",
        ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$diffs
-#>           diff  pop diff.calc        std.set factor
-#> 1    1.8822361 1963 1963-1968 1973.1978.1983      A
-#> 2    1.0659408 1963 1963-1973 1968.1978.1983      A
-#> 3   -1.4102979 1963 1963-1978 1968.1973.1983      A
-#> 4   -8.1697336 1963 1963-1983 1968.1973.1978      A
-#> 5   -0.8162953 1968 1968-1973 1963.1978.1983      A
-#> 6   -3.2925340 1968 1968-1978 1963.1973.1983      A
-#> 7  -10.0519697 1968 1968-1983 1963.1973.1978      A
-#> 8   -2.4762387 1973 1973-1978 1963.1968.1983      A
-#> 9   -9.2356745 1973 1973-1983 1963.1968.1978      A
-#> 10  -6.7594357 1978 1978-1983 1963.1968.1973      A
-#> 11   3.3496060 1963 1963-1968 1973.1978.1983      B
-#> 12   6.2471650 1963 1963-1973 1968.1978.1983      B
-#> 13  26.2150757 1963 1963-1978 1968.1973.1983      B
-#> 14  51.1047313 1963 1963-1983 1968.1973.1978      B
-#> 15   2.8975589 1968 1968-1973 1963.1978.1983      B
-#> 16  22.8654697 1968 1968-1978 1963.1973.1983      B
-#> 17  47.7551253 1968 1968-1983 1963.1973.1978      B
-#> 18  19.9679108 1973 1973-1978 1963.1968.1983      B
-#> 19  44.8575663 1973 1973-1983 1963.1968.1978      B
-#> 20  24.8896556 1978 1978-1983 1963.1968.1973      B
-#> 21   7.4348065 1963 1963-1968 1973.1978.1983      C
-#> 22  -1.6971920 1963 1963-1973 1968.1978.1983      C
-#> 23   6.3646812 1963 1963-1978 1968.1973.1983      C
-#> 24  31.9961016 1963 1963-1983 1968.1973.1978      C
-#> 25  -9.1319984 1968 1968-1973 1963.1978.1983      C
-#> 26  -1.0701252 1968 1968-1978 1963.1973.1983      C
-#> 27  24.5612951 1968 1968-1983 1963.1973.1978      C
-#> 28   8.0618732 1973 1973-1978 1963.1968.1983      C
-#> 29  33.6932935 1973 1973-1983 1963.1968.1978      C
-#> 30  25.6314203 1978 1978-1983 1963.1968.1973      C
-#> 31   9.6046275 1963 1963-1968 1973.1978.1983      D
-#> 32  26.4084234 1963 1963-1973 1968.1978.1983      D
-#> 33  24.7692758 1963 1963-1978 1968.1973.1983      D
-#> 34  19.2939498 1963 1963-1983 1968.1973.1978      D
-#> 35  16.8037959 1968 1968-1973 1963.1978.1983      D
-#> 36  15.1646482 1968 1968-1978 1963.1973.1983      D
-#> 37   9.6893223 1968 1968-1983 1963.1973.1978      D
-#> 38  -1.6391477 1973 1973-1978 1963.1968.1983      D
-#> 39  -7.1144736 1973 1973-1983 1963.1968.1978      D
-#> 40  -5.4753260 1978 1978-1983 1963.1968.1973      D
 #>           diff  pop diff.calc        std.set factor
 #> 1    1.8822361 1963 1963-1968 1973.1978.1983      A
 #> 2    1.0659408 1963 1963-1973 1968.1978.1983      A

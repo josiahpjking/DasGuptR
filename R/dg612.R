@@ -15,6 +15,11 @@ dg612<-function(srates, all_p, ps, factor){
 
   eq.612.a = srates[srates$pop == y1 & srates$std.set == y2, "diff"]
 
+  # eq.612.a = srates[srates$pop == y2 & srates$std.set == y1, 'rate'] -
+  #   srates[srates$pop == y1 & srates$std.set == y2, 'rate'])
+
+
+
   eq.612.b = sum(
     sapply(all_p[!all_p %in% c(y1,y2)], \(yy)
          # a_12

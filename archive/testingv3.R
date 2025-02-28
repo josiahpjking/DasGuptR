@@ -103,11 +103,11 @@ eg4.5 <- data.frame(
          .043, .041, .036, .032, .026, .020, .018)
 )
 dgnpop(eg4.5, pop="pop", c("bm", "mw", "wp"), id_vars=c("agegroup"),
-       ratefunction = "bm*mw*wp") # |>
-  # group_by(pop,factor) |>
-  # summarise(
-  #   rate = sum(rate)
-  # )
+       ratefunction = "bm*mw*wp")  |>
+  group_by(pop,factor) |>
+  summarise(
+    rate = sum(rate)
+  )
 
 
 # in simple cases like this, we can equivalently run DG on each individual subpopulation,
@@ -214,14 +214,17 @@ dgnpop(eg5.1, pop="pop",factors=c("age_str","rate"), id_vars = "age_group",
        ratefunction="sum(age_str*rate)") |>
   dg_table()
 
-
-dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group",
-       ratefunction="rate") |>
+# will return sub-pops
+dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group")
+dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group", ratefunction="rate")
+dgnpop(eg5.1, pop="pop",factors=c("rate","size"), id_vars = "age_group", ratefunction="rate*size/sum(size)")
+# will return pop level:
+dgnpop(eg5.1, pop="pop",factors=c("rate","size"), id_vars = "age_group", ratefunction="sum(rate*size/sum(size))") |>
   dg_table()
 dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group",
-       crossclassified = "size", ratefunction="rate") |>
-  dg_table()
-
+       crossclassified = "size", ratefunction="rate") |> dg_table()
+dgnpop(eg5.1, pop="pop",factors=c("rate"), id_vars = "age_group",
+       crossclassified = "size") |> dg_table()
 
 eg5.3 <- data.frame(
   race = rep(rep(1:2, e=11),2),
@@ -237,14 +240,18 @@ eg5.3 <- data.frame(
            36.993,1.352,0.541,2.040,3.523,6.746,12.967,24.471,45.091,74.902,123.205)
 )
 
+# collapses age and race
 dgnpop(eg5.3, pop = "pop", factors=c("size","rate"), id_vars = c("race","age"),
        ratefunction = "sum( size/sum(size)*rate)") |>
   dg_table()
 
-eg5.3$r2=2
+dgnpop(eg5.3, pop = "pop", factors=c("rate"), id_vars = c("race","age"),
+       crossclassified = "size") |>
+  dg_table()
 
-dgnpop(eg5.3, pop = "pop", factors=c("rate","r2"), id_vars = c("race","age"),
-       crossclassified = "size", ratefunction="rate/r2") |>
+
+dgnpop(eg5.3, pop = "pop", factors=c("rate"), id_vars = c("race","age"),
+       crossclassified = "size", agg = FALSE) |>
   dg_table()
 
 
@@ -264,17 +271,6 @@ eg5.3a <- eg5.3 |>
 dgnpop(eg5.3a, pop = "pop", factors=c("A","B","rate"), id_vars = c("race","age"),
        ratefunction = "sum( (A*B*rate)/sum(A*B) )") |>
   dg_table() |> round(3)
-
-
-split_popstr(eg5.3[eg5.3$pop==1985,], id_vars=c("age","race"),nvar="size") |>
-  head()
-
-dgnpop(eg5.3, pop = "pop", factors=c("rate"), id_vars = c("race","age"),
-       crossclassified = "size") |>
-  dg_table() |> round(3)
-
-
-
 
 
 
@@ -313,7 +309,6 @@ dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
        ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
   dg_plot()
 
-
 dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
        ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
   dg_table("1963","1968")
@@ -326,43 +321,19 @@ dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
        ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$diffs
 
 
-
-
-
-dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
-       ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates  |> select(-std.set) |>
-  pivot_wider(names_from=pop,values_from=rate)
-
-dgnpop(eg6.6, pop="pop",factors=c("A","B","C","D"),id_vars="agegroup",
-       ratefunction="1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$diffs |>
-  select(-pop,-std.set) |>
-  pivot_wider(values_from=diff,names_from=diff.calc)
-
-
-library(tidyverse)
-eg6.12 <- read_csv("archive/uspop_dg.csv") |>
-  group_by(year) |>
-  mutate(
-    totalpop = sum(thous),
-    pop_str=thous/totalpop
-  ) |> ungroup()
-
-dd <- dgnpop(eg6.12, pop="year",factors=c("pop_str","birthrate"),
-       ratefunction = "sum(pop_str*birthrate)",
-       id_vars="agebin")
-
-dg_plot(dd$rates)
-
-dd$rates |> select(-adj.set) |>
-  pivot_wider(values_from=rate,names_from=factor)
-
-
-
+#### FIX
 
 ratedata <- read.csv("archive/uspop_dg.csv")
 dgous <- dgnpop(ratedata, pop="year",factors=c("birthrate"),id_vars="agebin",
                 crossclassified="thous",ratefunction="birthrate")
 dg_plot(dgous$rates)
+
+library(tidyverse)
+ratedata2 <- ratedata |> group_by(year) |> mutate(agst = thous/sum(thous))
+dgous2 <- dgnpop(ratedata2, pop="year",factors=c("agst","birthrate"),id_vars="agebin",
+                ratefunction="sum(agst*birthrate)")
+dg_plot(dgous2$rates)
+
 
 usn <- ratedata |> mutate(pop=year) |> nest(data=-pop)
 usn$base = usn$data[1]
