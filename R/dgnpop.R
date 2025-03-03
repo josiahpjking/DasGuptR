@@ -235,11 +235,10 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
   }
 
   # population names mustn't be contained in factor names
-  while( sapply(tmpdf[[pop]], \(x) grepl(x,factors)) |> any() |
+  while( sapply(tmpdf[[pop]], \(x) grepl(x,c(factors,id_vars))) |> any() |
     sapply(factors, \(x) grepl(x,tmpdf[[pop]])) |> any() ){
       tmpdf[[pop]] <- paste0("pop.",tmpdf[[pop]])
   }
-
 
   tmpdf[[pop]] <- factor(tmpdf[[pop]])
 
@@ -291,6 +290,7 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
       DG_OUT <- ccwrap(pairwise_est[[1]], pop = pop, factors = factors,
                        id_vars = id_vars, crossclassified = crossclassified, agg = output_agg,
                        ratefunction = ratefunction, quietly = quietly)
+
 
       if(output_agg){
         DG_OUT <- DG_OUT[ ,c("rate","pop","std.set","factor")]
