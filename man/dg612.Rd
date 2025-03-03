@@ -20,6 +20,3 @@ dg612(srates, all_p, ps, factor)
 The full Das Gupta 6.12 equation for a factor-effect between 2 populations when standardised across N populations.
 Outputs a dataframe object specifying the factor-effect standardised across all populations
 }
-\examples{
-......
-}

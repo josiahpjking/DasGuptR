@@ -5,8 +5,6 @@
 #' @param y character/numeric indicating a single population
 #' @param factor string indicating rate-factor being standardised.
 #' @export
-#' @examples
-#' ......
 dg611<-function(srates,all_p,y,factor){
 
 

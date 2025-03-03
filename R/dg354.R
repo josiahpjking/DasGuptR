@@ -7,9 +7,6 @@
 #' @param ratefunction user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors.
 #' @param quietly logical indicating whether interim messages should be outputted indicating progress
 #' @export
-#' @examples
-#' ......
-#'
 dg354<-function(df2,i,pop,factors,id_vars,ratefunction,quietly=TRUE){
   #how many factors?
   nfact=length(factors)

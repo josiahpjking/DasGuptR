@@ -45,7 +45,7 @@ getBS <- function(){
       r0 = (1-(rate/100))*size
     ) |>
     select(pop,ethnicity,age_group,r0:r1) |>
-    pivot_longer(r0:r1, names_to="r",values_to = "n") |>
+    pivot_longer(r0:r1, names_to = "r",values_to = "n") |>
     mutate(n = as.integer(n)) |>
     uncount(n)
   
@@ -91,7 +91,7 @@ Here are the original difference effects:
 ```{r}
 #| message: false
 dgnpop(eg.wang2000, 
-       pop = "pop", factors  ="rate",
+       pop = "pop", factors = "rate",
        id_vars = c("ethnicity","age_group"),
        crossclassified = "size") |> 
   dg_table()
@@ -117,7 +117,7 @@ dd <- dgnpop(eg.wang2000,
        pop = "pop", factors  ="rate",
        id_vars = c("ethnicity","age_group"),
        crossclassified = "size") |> dg_table() |>
-       rownames_to_column(var="factor")
+       rownames_to_column(var = "factor")
 
 library(ggdist)
 theme_set(theme_ggdist())

@@ -24,7 +24,3 @@ dg354(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE)
 \description{
 internal function called by dg2pop that implements equation 3.54 in Das Gupta 1993
 }
-\examples{
-......
-
-}

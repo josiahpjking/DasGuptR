@@ -5,8 +5,6 @@
 #' @param ps vector of length 2 specifying a possible pairwise comparison of populations
 #' @param factor character string indicating name of factor
 #' @export
-#' @examples
-#' ......
 dg612<-function(srates, all_p, ps, factor){
 
   n = length(all_p)

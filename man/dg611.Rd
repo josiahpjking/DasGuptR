@@ -20,6 +20,3 @@ dg611(srates, all_p, y, factor)
 Das Gupta equation 6.11: Standardises rates across populations
 Outputs a dataframe object of the rate factor F in population Y, standardised across all populations
 }
-\examples{
-......
-}
