@@ -32,6 +32,7 @@
     structures:](#re-expression-of-population-structures)
   - [Example: US population data](#example-us-population-data)
   - [Example: Scottish Reconvictions](#example-scottish-reconvictions)
+  - [Bootstrapping](#bootstrapping)
 
 # DasGuptR
 
@@ -398,7 +399,8 @@ those looking to calculate *category effects* as detailed in
 <a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevan
 &amp; Sutherland 2009</a> to examine the amount to which a difference in
 rates is attributable to differences in *specific* sub-populations (see
-<a href="TODO" target="_blank">associated vignette</a>).
+associated vignette with
+`vignette("category_effects", package="DasGuptR")`).
 
 If desired, it is simple retrieve the population rates by aggregating
 these post-hoc:
@@ -1006,6 +1008,12 @@ dg_plot(dg_srec$rates)
 
 <img src="man/figures/README-unnamed-chunk-36-1.png"
 style="width:100.0%" />
+
+## Bootstrapping
+
+For bootstrapping SEs of decomposition effects as detailed in [Wang
+2000](https://doi.org/10.3758/BF03207806), see the associated vignette
+with `vignette("bootstrap", package="DasGuptR")`
 
 [^1]: For instance, in the case of a rate as the product of four factors
     $R = \alpha\beta\gamma\delta$, we get out four sets of adjusted

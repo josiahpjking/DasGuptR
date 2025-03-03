@@ -266,7 +266,7 @@ dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"),
 #> ..  ...       ...     ...      ...     ...
 ```
 
-Returning the array of adjusted sub-population rates may be desired for those looking to calculate *category effects* as detailed in [Chevan & Sutherland 2009](https://doi.org/10.1353/dem.0.0060){target="_blank"} to examine the amount to which a difference in rates is attributable to differences in _specific_ sub-populations (see [associated vignette](TODO){target=_blank}). 
+Returning the array of adjusted sub-population rates may be desired for those looking to calculate *category effects* as detailed in [Chevan & Sutherland 2009](https://doi.org/10.1353/dem.0.0060){target="_blank"} to examine the amount to which a difference in rates is attributable to differences in _specific_ sub-populations (see associated vignette with `vignette("category_effects", package="DasGuptR")`). 
 
 If desired, it is simple retrieve the population rates by aggregating these post-hoc:  
 ```{r}
@@ -701,5 +701,7 @@ dg_srec <- dgnpop(reconv, pop = "year", factors = c("prev_rate"),
 dg_plot(dg_srec$rates)
 ```
 
+## Bootstrapping
 
+For bootstrapping SEs of decomposition effects as detailed in [Wang 2000](https://doi.org/10.3758/BF03207806), see the associated vignette with `vignette("bootstrap", package="DasGuptR")`
 
