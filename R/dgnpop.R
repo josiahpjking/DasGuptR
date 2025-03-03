@@ -364,9 +364,29 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
         #std_rates
         if(!quietly){print(paste0("Standardizing P-",f," across N pops..."))}
 
-        #these are the standardized rate for factor f in each year, stnadardixed over all Ys.
-        standardized_rates <- lapply(allpops, \(x) dg611(dgNp_rates, allpops, x, f))
-        standardized_rates <- do.call(rbind, standardized_rates)
+        # these are the standardized rate for factor f in each year, standardized over all Ys.
+
+        # IF NOT AGGREGATED:
+        if(!output_agg){
+          subpops = unique(tmpdf[,id_vars])
+          standardized_rates <- list()
+          for(sp_i in 1:nrow(subpops)){
+            # filter to sub-pop
+            dgNp_rates_sp <- dgNp_rates[apply(dgNp_rates[,id_vars], 1, \(x) all(x == subpops[sp_i,id_vars])), ]
+            # std rates across N
+            sp_std_rates <- lapply(allpops, \(x) dg611(dgNp_rates_sp, allpops, x, f))
+            sp_std_rates <- do.call(rbind, sp_std_rates)
+            sp_std_rates[,id_vars] <- subpops[sp_i,id_vars]
+            standardized_rates[[sp_i]] <- sp_std_rates
+          }
+          standardized_rates <- do.call(rbind, standardized_rates)
+        } else {
+
+          standardized_rates <- lapply(allpops, \(x) dg611(dgNp_rates, allpops, x, f))
+          standardized_rates <- do.call(rbind, standardized_rates)
+
+        }
+
 
         if(!quietly){print(paste0("Getting decomposition effects for P-",f," standardised rates..."))}
 
