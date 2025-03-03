@@ -2,17 +2,17 @@
 % Please edit documentation in R/dg_table.R
 \name{dg_table}
 \alias{dg_table}
-\title{Creates a small table of Das Gupta extract adjusted rates & difference effects for 2 specified populations.}
+\title{Creates a small table of Das Gupta adjusted rates. If no populations are specified, rates will be shown for all available populations. If only two populations (or if two particular populations are specified), then difference effects are calculated and presented.}
 \usage{
-dg_table(df, pop1, pop2)
+dg_table(dgo, pop1 = NULL, pop2 = NULL)
 }
 \arguments{
-\item{df}{DG output}
+\item{dgo}{DG output}
 
-\item{pop1}{population 1 (string or numeric)}
+\item{pop1}{population 1 (character/numeric)}
 
-\item{pop2}{population 2 (string or numeric)}
+\item{pop2}{population 2 (character/numeric)}
 }
 \description{
-Creates a small table of Das Gupta extract adjusted rates & difference effects for 2 specified populations.
+Creates a small table of Das Gupta adjusted rates. If no populations are specified, rates will be shown for all available populations. If only two populations (or if two particular populations are specified), then difference effects are calculated and presented.
 }

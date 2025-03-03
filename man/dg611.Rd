@@ -3,23 +3,20 @@
 \name{dg611}
 \alias{dg611}
 \title{Das Gupta equation 6.11: Standardises rates across populations
-Outputs a tibble object of the rate factor F in population Y, standardised across all populations}
+Outputs a dataframe object of the rate factor F in population Y, standardised across all populations}
 \usage{
-dg611(srates2, all_p, y, fctr)
+dg611(srates, all_p, y, factor)
 }
 \arguments{
-\item{srates2}{a dataframe/tibble object of standardised rates from dg2pop}
+\item{srates}{a dataframe/tibble object of standardised rates from dg2pop}
 
 \item{all_p}{character or numeric vector of all N populations}
 
-\item{y}{character of numeric value indicating a single population}
+\item{y}{character/numeric indicating a single population}
 
-\item{fctr}{string indicating rate-factor being standardised.}
+\item{factor}{string indicating rate-factor being standardised.}
 }
 \description{
 Das Gupta equation 6.11: Standardises rates across populations
-Outputs a tibble object of the rate factor F in population Y, standardised across all populations
-}
-\examples{
-......
+Outputs a dataframe object of the rate factor F in population Y, standardised across all populations
 }

@@ -1,13 +1,45 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+- [DasGuptR](#dasguptr)
+- [Background and worked examples](#background-and-worked-examples)
+- [DasGuptR functionality](#dasguptr-functionality)
+- [Vector factors, Rates as functions, Cross-classified data, and N
+  populations](#vector-factors-rates-as-functions-cross-classified-data-and-n-populations)
+  - [P factors](#p-factors)
+    - [2 factors, 2 populations, R=ab](#2-factors-2-populations-rab)
+    - [3 factors, 2 populations, R=abc](#3-factors-2-populations-rabc)
+    - [4 factors, 2 populations, R=abcd](#4-factors-2-populations-rabcd)
+    - [5 factors, 2 populations,
+      R=abcde](#5-factors-2-populations-rabcde)
+  - [Vector factors](#vector-factors)
+    - [3 vector factors, 2 populations,
+      R=sum(abc)](#3-vector-factors-2-populations-rsumabc)
+  - [Rates as functions](#rates-as-functions)
+    - [4 vector factors, 2 populations,
+      R=f(a,b,c,d)](#4-vector-factors-2-populations-rfabcd)
+    - [2 vector factors, 2 populations,
+      R=f(a,b)](#2-vector-factors-2-populations-rfab)
+  - [Population structures and cross-classified
+    data](#population-structures-and-cross-classified-data)
+    - [population structure as a vector factor, 2 populations,
+      R=sum(w\*r_i)](#population-structure-as-a-vector-factor-2-populations-rsumwr_i)
+    - [cross-classified population structure, 2 populations,
+      R=sum(w\*r_i)](#cross-classified-population-structure-2-populations-rsumwr_i)
+  - [N populations](#n-populations)
+    - [4 vector factors, 5 populations, R =
+      f(a,b,c,d)](#4-vector-factors-5-populations-r--fabcd)
+  - [Re-expression of population
+    structures:](#re-expression-of-population-structures)
+  - [Example: US population data](#example-us-population-data)
+  - [Example: Scottish Reconvictions](#example-scottish-reconvictions)
 
 # DasGuptR
 
-The goal of DasGuptR is to provide an implementation of Prithwith Das
-Gupta’s specification of *standardization* and *decomposition* of
-rates[^1].
-
-## Installation
+The goal of the DasGuptR package is to provide an implementation of
+Prithwith Das Gupta’s specification of *standardization* and
+*decomposition* of rates, as set out in his 1993 book *[Standardization
+and decomposition of rates: A user’s
+manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)*.
 
 You can install DasGuptR from here with:
 
@@ -16,1394 +48,974 @@ You can install DasGuptR from here with:
 devtools::install_github("josiahpjking/DasGuptR")
 ```
 
-## Background and worked examples
+# Background and worked examples
 
 Standardization and decomposition are widely used analytic techniques to
 adjust for the impact of compositional factors on rates.
 
--   *Standardization*: Shows us what a rate would have been under
-    different scenarios - for example, if there was no change in the
-    age/sex structure of the population, or if there was no change in
-    the prevalence of the event we are studying (e.g. reconviction).
+- *Standardization*/*Adjustment*: Shows us what a rate would have been
+  under different scenarios - for example, if there was no difference in
+  the age-structure of the population, or if there was no change in the
+  age-specific rates of the event we are studying.
 
--   *Decomposition*: Gives us the percentage of the difference in rates
-    between two years attributable to each of the factors we have
-    included in the standardization.
+- *Decomposition*: Gives us the percentage of the difference in rates
+  between two years attributable to each of the factors we have included
+  in the standardization.
 
-The *DasGuptR* package provides an implementation of Prithwith Das
-Gupta’s specification of these two techniques.
+In the simplest example, consider a case where the rate is taken as the
+product of two factors $\alpha$ and $\beta$, which we will write as
+$R = \alpha\beta$. Throughout Das Gupta’s work, greek letters are used
+to indicate the different compositional factors, and upper and lower
+case latin letters are used to denote specific population values of
+these:
 
-Below we provide a brief background, and a worked an example of using
-the DasGuptR package to explore patterns of reconvictions in Scotland.
+|            | pop1 | pop2 |
+|------------|------|------|
+| $\alpha$   | $A$  | $a$  |
+| $\beta$    | $B$  | $b$  |
+| crude rate | $AB$ | $ab$ |
 
-# The Das Gupta Method
+In this simple case, we can standardise across the two populations,
+calculating $\alpha$-adjusted (or “$\alpha$-standardised”) rates by
+replacing $A$ and $a$ with $\frac{a+A}{2}$.
 
-Das Gupta’s methodologies of standardisation and decomposition are
-explained in full in his 1993 book *[Standardization and decomposition
-of rates: A user’s
+|                                        | pop1             | pop2             |
+|----------------------------------------|------------------|------------------|
+| $\alpha$                               | $A$              | $a$              |
+| $\beta$                                | $B$              | $b$              |
+| crude rate, $R_{crude}$                | $AB$             | $ab$             |
+| “$\beta$-adjusted rate”, $R_{-\alpha}$ | $A\frac{B+b}{2}$ | $a\frac{B+b}{2}$ |
+| “$\alpha$-adjusted rate”, $R_{-\beta}$ | $\frac{A+a}{2}B$ | $\frac{A+a}{2}b$ |
+
+These $\alpha$-adjusted rates can be interpreted as “what the crude rate
+would look like if $\alpha$ was held equal” (and analogously for
+$\beta$). In cases involving multiple factors, this can quickly become
+unwieldy, requiring listing the $P-1$ factors that are held equal for
+each standardised rate.[^1] For this reason, we opt to refer to these
+rates as, e.g., $P-\alpha$, where $P$ is the set of all compositional
+factors. This is reflected in the table above, where we have used
+$R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote, respectively, the
+crude rate, the $P-\alpha$-adjusted rate (or “$\beta$-adjusted”), and
+the $P-\beta$-adjusted (or “$\alpha$-adjusted”) rate. The
+$P-\alpha$-adjusted rate can therefore be interpreted as “what the crude
+rate would look like if $\alpha$ changed but all other factors were held
+equal”.
+
+The *difference* in the adjusted/standardised rates is known as a
+**decomposition effect**, so named because differences in the crude
+rates can be decomposed into differences in adjusted rates:
+$\Delta R_{crude} = \Delta R_{-\alpha} + \Delta R_{-\beta}$. This
+decomposition allows us to quantify how much of the difference between
+two crude rates is attributable to differences in $\alpha$, differences
+in $\beta$, and so on. [^2]
+
+# DasGuptR functionality
+
+Consider an example of the simple case described above (2 factors, 2
+populations).
+
+DasGuptR requires data to be in long format, with columns for each
+factor, and a single variable denoting the population:
+
+``` r
+eg.dg <- data.frame(
+  pop = c("pop1","pop2"),
+  alpha = c(.6,.3),
+  beta = c(.5,.45)
+)
+eg.dg
+#>    pop alpha beta
+#> 1 pop1   0.6 0.50
+#> 2 pop2   0.3 0.45
+```
+
+In this case, the calculations for the adjusted rates can easily be
+calculated manually:
+
+``` r
+data.frame(
+  pop = c("pop1","pop2"),
+  Rcrude = c(.6*.5, .3*.45),
+  R_alpha = c(.6,.3) * ((.5+.45)/2),
+  R_beta = ((.6+.3)/2) * c(.5,.45)
+)
+#>    pop Rcrude R_alpha R_beta
+#> 1 pop1  0.300  0.2850 0.2250
+#> 2 pop2  0.135  0.1425 0.2025
+```
+
+The workhorse of the DasGuptR package is `dgnpop()`, which computes the
+adjusted rates for $P$ factors across $N$ populations:
+
+``` r
+dgnpop(eg.dg, pop = "pop", factors = c("alpha","beta"))
+#>     rate  pop std.set factor
+#> 1 0.3000 pop1    <NA>  crude
+#> 2 0.1350 pop2    <NA>  crude
+#> 3 0.2850 pop1    pop2  alpha
+#> 4 0.1425 pop2    pop1  alpha
+#> 5 0.2250 pop1    pop2   beta
+#> 6 0.2025 pop2    pop1   beta
+```
+
+These can be quickly turned into a wide table in the style of Das Gupta
+using `dg_table()`. When working with just two populations, this also
+provides the difference in rates, and expresses them as the percentage
+of the crude rate difference:
+
+``` r
+dgnpop(eg.dg, pop = "pop", factors = c("alpha","beta")) |>
+  dg_table()
+#>        pop1   pop2    diff decomp
+#> alpha 0.285 0.1425 -0.1425  86.36
+#> beta  0.225 0.2025 -0.0225  13.64
+#> crude 0.300 0.1350 -0.1650 100.00
+```
+
+In addition to the tabular form, `dg_plot()` will create a rough plot of
+the adjusted rates, although this is really only useful when working
+with many populations, such as with time series data.
+
+``` r
+dgnpop(eg.dg, pop = "pop", factors = c("alpha","beta")) |>
+  dg_plot()
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png"
+style="width:100.0%" />
+
+# Vector factors, Rates as functions, Cross-classified data, and N populations
+
+Rates may be composed of many factors, and they may not be calculated as
+a simple product. Additionally, we may desire to standardise across many
+populations — such as in a time series — or we may have be interested in
+how the compositional structure of populations contributes to the
+differences in these rates.
+
+The full explanation of Das Gupta’s methodology for standardisation and
+decomposition are explained in full in his 1993 book *[Standardization
+and decomposition of rates: A user’s
 manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)*
 
-#### P factors, 2 populations
+Below are various examples taken from Das Gupta’s 1993 work, following
+his exposition by building up the number of factors, vectorisation,
+generalising to different rate functions, compositional structures of
+populations, and finally extending the process to more than just two
+populations.
 
-The essence of Das Gupta’s method is that, given a set of P factors and
-2 populations, one can calculate the rates adjusted for each combination
-of P-1 factors (see Das Gupta 1993, p.32, equation 3.54).  
-We can interpret the
-P-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-adjusted rate as ‘what the crude rate would look like if only
-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-had changed (all else being equal)’.
+## P factors
 
-Neatly, crude rates can be decomposed into Das Gupta’s adjusted rates
-such that changes in the
-P-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-adjusted rate are proportional to changes in crude rates. For instance,
-if the crude rate decreases by 1.2, and the
-P-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-adjusted rate decreases by .6, we can say that 50% of the change in
-crude rate is attributable to changes in
-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")[^2].  
-The change in the
-P-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-adjusted rate is known as a *decomposition effect* (in this case the
-*![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")-effect*).
+The addition of factors into the make up of a population rate is handled
+in `dgnpop()` by simply adding the variable name into the `factors`
+argument. The default behaviour will take the rate to be the product of
+all factors specified.
 
-#### P factors, N populations
+### 2 factors, 2 populations, R=ab
 
-When we extend the standardisation and decomposition methodology to more
-than two populations, the starting point is to apply the same process on
-all pairwise comparisons of two populations at a time. However, the
-results of these pairwise comparisons are not internally consistent: We
-are left with multiple different adjusted rates for a given year, and
-the decomposition effects between populations are not additive.
+- Mean earnings as product of two factors for black males and white
+  males 18 years and over, US 1980
+  - Crude Rate = total earnings / total population
+  - `avg_earnings` = total earnings / persons who earned
+  - `earner_prop` = persons who earned / total population
 
-Das Gupta provides a further process for standardizing the rates and
-decomposition effects across N populations, which can be applied to
-populations at given years for analysis of time series.  
-This process involves first calculating the P-1 adjusted rates and
-decompositions effects for all possible pairwise comparisons of
-populations, and then standardizing these across the N populations (by
-averaging over all possible ways of substituting adjusted rates to
-satisfy the condition B below, see Das Gupta 1993, p.106, equations 6.11
-and 6.12) to obtain a consistent set of rates and effects for which:
+``` r
+eg2.1 <- data.frame(
+  pop = c("black","white"),
+  avg_earnings = c(10930, 16591),
+  earner_prop = c(.717892, .825974)
+)
 
--   **A:** there is only one
-    P-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-    adjusted rate per population (as opposed to N-1)  
--   **B:** the
-    *![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")-effect*
-    from populations 1 and 2 and the
-    *![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")-effect*
-    from populations 2 and 3 now sum to the
-    *![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")-effect*
-    from populations 1 and 3.
+dgnpop(eg2.1, pop = "pop", factors = c("avg_earnings", "earner_prop")) |>
+  dg_table()
+#>                 black    white     diff decomp
+#> avg_earnings 8437.228 12807.14 4369.913  74.61
+#> earner_prop  9878.553 11365.82 1487.262  25.39
+#> crude        7846.560 13703.73 5857.175 100.00
+```
 
-# Reconviction data
+### 3 factors, 2 populations, R=abc
 
-Scottish Government publish an annual statistical bulletin on the
-[Reconviction Rates in
-Scotland](https://www.gov.scot/publications/reconviction-rates-scotland-2016-17-offender-cohort/).
-For the cohort of people convicted in a given year, it provides
-information on the numbers of reconvictions they have received. The
-headline figure in this bulletin is the *reconviction rate*, which is
-simply the percentage of offenders who have been reconvicted within the
-follow-up of one year. The bulletin published in 2019 showed that
-Scotland’s reconviction rate has fallen steadily over the last fifteen
-years.
+- Birth rate as the product of three factors: Austria and Chile, 1981.
+  - Crude Rate = births x 1000 / total population
+  - `birthsw1549` = births x 1000 / women aged 15-49
+  - `propw1549` = women aged 15-49 / total women
+  - `propw` = total women / total population
 
-This sort of measure captures the prevalence of some event (i.e.,
-prevalence of reconviction), but often also reflects underlying changes
-in, for example, the age/sex structure of the population. For example,
-if women over 40, who have a low average reconviction rate, made up a
-larger proportion of all people convicted then the overall reconviction
-rate would go down, even if the reconviction rate itself did not change
-for any age group. Scottish Government mention that the size of the
-under 21 group (relative to the size of the convicted population) has
-dropped over this period, referring to a fall in youth convictions as a
-“significant driver in the reduction in the overall national
-reconviction rate”. Standardisation and decomposition offer a means of
-quantifying the influence of this sort of underlying change.
+``` r
+eg2.2 <- data.frame(
+  pop = c("austria","chile"),
+  birthsw1549 = c(51.78746, 84.90502),
+  propw1549 = c(.45919, .75756),
+  propw = c(.52638, .51065)
+)
 
-The DasGuptR package provides data on the reconviction rates in Scotland
-between 2004 and 2016, by age group and sex[^3]. It includes data on the
-numbers of offenders, reconvictions, and reconvicted offenders in each
-age-sex group for offender cohorts between 2004 to 2016.
+dgnpop(eg2.2, pop = "pop", factors = c("birthsw1549", "propw1549", "propw")) |>
+  dg_table()
+#>              austria    chile       diff decomp
+#> birthsw1549 16.31618 26.75021 10.4340333  51.33
+#> propw1549   16.25309 26.81394 10.5608476  51.95
+#> propw       22.32040 21.65339 -0.6670084  -3.28
+#> crude       12.51747 32.84534 20.3278726 100.00
+```
 
-Below, we discuss two measures produced by Scottish Government:
+### 4 factors, 2 populations, R=abcd
 
--   *reconviction rate* : proportion of offenders who are reconvicted.  
--   *average number of reconvictions per offender* : total number of
-    reconvictions divided by number of offenders
+- Percentage having non-marital live births as the product of four
+  factors for white women aged 15 to 19: US, 1971 and 1979
+  - Crude Rate = non-marital live births x 100 / total women
+  - `birth_preg` = non-marital live births x 100 / non-marital
+    pregnancies
+  - `preg_actw` = non-marital pregnancies / sexually active single women
+  - `actw_prop` = sexually active single women / total single women
+  - `w_prop` = total single women / total women
+
+``` r
+eg2.3 <- data.frame(
+  pop = c(1971, 1979),
+  birth_preg = c(25.3, 32.7),
+  preg_actw = c(.214, .290),
+  actw_prop = c(.279, .473),
+  w_prop = c(.949, .986)
+)
+
+dgnpop(eg2.3, pop = "pop", 
+       factors = c("birth_preg", "preg_actw", "actw_prop", "w_prop")) |>
+  dg_table()
+#>                1971     1979      diff decomp
+#> birth_preg 2.355434 3.044375 0.6889411  23.05
+#> preg_actw  2.287936 3.100474 0.8125381  27.18
+#> actw_prop  1.988818 3.371723 1.3829055  46.26
+#> w_prop     2.686817 2.791572 0.1047547   3.50
+#> crude      1.433523 4.422663 2.9891394 100.00
+```
+
+### 5 factors, 2 populations, R=abcde
+
+- Total fertility rate as product of five factors: South Korea, 1960 and
+  1970
+  - `prop_m` = index of proportion married
+  - `noncontr` = index of noncontraception
+  - `abort` = index of induced abortion
+  - `lact` = index of lactational infecundability
+  - `fecund` = total fecundity rate
+
+``` r
+eg2.4 <- data.frame(
+  pop = c(1970, 1980),
+  prop_m = c(.58, .72),
+  noncontr = c(.76, .97),
+  abort = c(.84, .97),
+  lact = c(.66, .56),
+  fecund = c(16.573, 16.158)
+)
+
+dgnpop(eg2.4, pop = "pop", 
+       factors = c("prop_m", "noncontr", "abort", "lact", "fecund")) |>
+  dg_table()
+#>              1970     1980       diff decomp
+#> prop_m   4.519768 5.610746  1.0909785  52.46
+#> noncontr 4.450863 5.680707  1.2298438  59.13
+#> abort    4.702966 5.430806  0.7278399  35.00
+#> lact     5.543146 4.703276 -0.8398707 -40.38
+#> fecund   5.152352 5.023334 -0.1290187  -6.20
+#> crude    4.050102 6.129875  2.0797729 100.00
+```
+
+## Vector factors
+
+It is often the case that we have data for each compositional factor on
+a set of sub-populations, and the crude rates for the population are the
+aggregated cell-specific rates.
+
+In these cases, `dgnpop()` requires the user to provide an appropriate
+rate function that aggregates up to a summary value for each population.
+For instance, in the example below, the cell-specific rates are
+calculated as the product of 3 factors, and the population rate is the
+sum of the cell-specific rates, so the user would specify
+`ratefunction = "sum(a*b*c)"`.
+
+### 3 vector factors, 2 populations, R=sum(abc)
+
+- Crude birth rate per 1000 as a function of three vector factors:
+  Taiwan, 1960 and 1970
+  - `bm` = number of births in age-group x 1000 / number of married
+    women in age-group
+  - `mw` = number of married women in-age group / total women in
+    age-group
+  - `wp` = total women in age-group / total population
+
+``` r
+eg4.3 <- data.frame(
+  agegroup = rep(1:7, 2),
+  pop = rep(c(1970, 1960), e = 7),
+  bm = c(488, 452, 338, 156, 63, 22, 3,
+         393, 407, 369, 274, 184, 90, 16),
+  mw = c(.082, .527, .866, .941, .942, .923, .876,
+         .122, .622, .903, .930, .916, .873, .800),
+  wp = c(.058, .038, .032, .030, .026, .023, .019,
+         .043, .041, .036, .032, .026, .020, .018)
+)
+
+dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"),
+       ratefunction = "sum(bm*mw*wp)") |>
+  dg_table()
+#>           1960     1970       diff decomp
+#> bm    36.72867 29.44304  -7.285632  62.96
+#> mw    34.47028 31.74965  -2.720633  23.51
+#> wp    33.83095 32.26577  -1.565181  13.53
+#> crude 38.77463 27.20318 -11.571446 100.00
+```
+
+Note that for most purposes when working with vector factors, the
+population-level rates are what is desired and so users will provide
+appropriate rate function. If the rate function provided does *not*
+aggregate up to a summary value, then `dgnpop()` will return an array of
+adjusted sub-population rates of the same length as the number of
+sub-populations. In order to do this, the user is also required to
+specify the variable indicating the sub-population in `id_vars`
+argument.
+
+``` r
+dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"), 
+       id_vars = c("agegroup"),
+       ratefunction = "bm*mw*wp")
+#>          rate  pop std.set factor agegroup
+#> 1   2.4892880 1970    1960     bm        1
+#> 2  10.2678580 1970    1960     bm        2
+#> 3  10.1688427 1970    1960     bm        3
+#> 4   4.5237920 1970    1960     bm        4
+#> 5   1.5217020 1970    1960     bm        5
+#> 6   0.4250290 1970    1960     bm        6
+#> 7   0.0465280 1970    1960     bm        7
+#> 8   2.0046930 1960    1970     bm        1
+#> 9   9.2456155 1960    1970     bm        2
+#> ..  ...       ...     ...      ...     ...
+#> ..  ...       ...     ...      ...     ...
+```
+
+Returning the array of adjusted sub-population rates may be desired for
+those looking to calculate *category effects* as detailed in
+<a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevan
+&amp; Sutherland 2009</a> to examine the amount to which a difference in
+rates is attributable to differences in *specific* sub-populations (see
+<a href="TODO" target="_blank">associated vignette</a>).
+
+If desired, it is simple retrieve the population rates by aggregating
+these post-hoc:
 
 ``` r
 library(tidyverse)
-library(DasGuptR)
-data(reconv)
-str(reconv)
-#> tibble [130 × 7] (S3: tbl_df/tbl/data.frame)
-#>  $ year                : int [1:130] 2004 2004 2004 2004 2004 2004 2004 2004 2004 2004 ...
-#>  $ Sex                 : chr [1:130] "Female" "Female" "Female" "Female" ...
-#>  $ Age                 : chr [1:130] "21 to 25" "26 to 30" "31 to 40" "over 40" ...
-#>  $ convicted_population: num [1:130] 49351 49351 49351 49351 49351 ...
-#>  $ offenders           : num [1:130] 1650 1268 2238 1198 1488 ...
-#>  $ reconvicted         : num [1:130] 576 420 558 212 424 ...
-#>  $ reconvictions       : num [1:130] 1145 786 963 361 858 ...
-```
 
-## Reconviction rate
-
-To adjust the *reconviction rate* for the age/sex structure of the
-convicted population, we need to look at the measure in terms of the
-reconviction rates for the underlying age-sex groups.  
-The overall reconviction rate in a given year is simply the average of
-the reconviction rates for each group, *weighted by the size of the
-group*.
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-Sex
-</th>
-<th style="text-align:right;">
-offenders
-</th>
-<th style="text-align:right;">
-reconvicted
-</th>
-<th style="text-align:right;">
-rate
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Female
-</td>
-<td style="text-align:right;">
-7842
-</td>
-<td style="text-align:right;">
-2190
-</td>
-<td style="text-align:right;">
-0.279
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Male
-</td>
-<td style="text-align:right;">
-41509
-</td>
-<td style="text-align:right;">
-13787
-</td>
-<td style="text-align:right;">
-0.332
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-All
-</td>
-<td style="text-align:right;">
-49351
-</td>
-<td style="text-align:right;">
-15977
-</td>
-<td style="text-align:right;">
-0.324
-</td>
-</tr>
-</tbody>
-</table>
-
-``` r
-weighted.mean(x=c(.279,.332),w=c(7842,41509))
-#> [1] 0.3235782
-```
-
-Alternatively, we can calculate the *reconviction rate* as the product
-of 2 factors
-![A](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;A "A")
-and
-![B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;B "B"),  
-where
-
--   ![A](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;A "A")
-    = reconviction rate for a given age-sex group  
--   ![B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;B "B")
-    = the proportion of convicted population (the ‘offender cohort’) who
-    are in that age-sex group
-
-The overall reconviction rate simply becomes the sum of these sub-group
-rates,
-![\\Sigma(A \\times B)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5CSigma%28A%20%5Ctimes%20B%29 "\Sigma(A \times B)")
-
-The table below (2004 reconviction rates) shows how the sex-specific
-reconviction rates (prop_reconvicted) multiplied by the proportion of
-the population that group makes up (prop_offenders) sum to the overall
-reconviction rate.
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-Sex
-</th>
-<th style="text-align:right;">
-offenders
-</th>
-<th style="text-align:right;">
-reconvicted
-</th>
-<th style="text-align:right;">
-convicted_population
-</th>
-<th style="text-align:right;">
-prop_reconvicted
-</th>
-<th style="text-align:right;">
-prop_offenders
-</th>
-<th style="text-align:right;">
-crude_rate
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Female
-</td>
-<td style="text-align:right;">
-7842
-</td>
-<td style="text-align:right;">
-2190
-</td>
-<td style="text-align:right;">
-49351
-</td>
-<td style="text-align:right;">
-0.28
-</td>
-<td style="text-align:right;">
-0.16
-</td>
-<td style="text-align:right;font-weight: bold;">
-0.04
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Male
-</td>
-<td style="text-align:right;">
-41509
-</td>
-<td style="text-align:right;">
-13787
-</td>
-<td style="text-align:right;">
-49351
-</td>
-<td style="text-align:right;">
-0.33
-</td>
-<td style="text-align:right;">
-0.84
-</td>
-<td style="text-align:right;font-weight: bold;">
-0.28
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #555555 !important;">
-All
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-49351
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-15977
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-49351
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-0.32
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-1.00
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;font-weight: bold;">
-0.32
-</td>
-</tr>
-</tbody>
-</table>
-
-## Average number of reconvictions per offender
-
-A further measure provided by Scottish Government [(previously a
-National
-Indicator)](https://www2.gov.scot/About/Performance/scotPerforms/indicator/reconviction),
-is the *average number of reconvictions per offender*. The measure, as
-well as being influenced by changes in the age-sex structure of the
-population and changes in the prevalence of reconviction, may reflect
-changes in the frequency with offenders are reconvicted.
-
-The *average number of reconvictions per offender* in a given year can
-be written as:
-
-![\\Sigma(A \\times B \\times C)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5CSigma%28A%20%5Ctimes%20B%20%5Ctimes%20C%29 "\Sigma(A \times B \times C)")
-
-where
-
--   ![A](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;A "A")
-    = the frequency with which reconvicted offenders are reconvicted in
-    a given age-sex group  
--   ![B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;B "B")
-    = the proportion of offenders in a given age-sex group who are
-    reconvicted (the reconviction rate for that group)  
--   ![C](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;C "C")
-    = the proportion of convicted population who are in that age-sex
-    group
-
-Again, the sex-specific crude rates in the table below (freq_reconvicted
-![\\times](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctimes "\times")
-prop_reconvicted
-![\\times](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctimes "\times")
-prop_offenders) sum to the overall average number of reconvictions per
-offender. Note that this measure is more easily calculated as simply the
-*number of reconvictions/number of offenders*, but by separating out
-into two factors of prevalence (*number reconvicted/number of
-offenders*) and frequency (*number of reconvictions/number reconvicted*)
-we can investigate the extent to which changes in the *average number of
-reconvictions per offender* are due to a) the percentages of offenders
-who are reconvicted, or b) the frequency with which reconvicted
-offenders are reconvicted.
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-Sex
-</th>
-<th style="text-align:right;">
-reconvicted
-</th>
-<th style="text-align:right;">
-reconvictions
-</th>
-<th style="text-align:right;">
-freq_reconvicted
-</th>
-<th style="text-align:right;">
-prop_reconvicted
-</th>
-<th style="text-align:right;">
-prop_offenders
-</th>
-<th style="text-align:right;">
-crude_rate
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Female
-</td>
-<td style="text-align:right;">
-2190
-</td>
-<td style="text-align:right;">
-4113
-</td>
-<td style="text-align:right;">
-1.88
-</td>
-<td style="text-align:right;font-weight: bold;">
-0.28
-</td>
-<td style="text-align:right;">
-0.16
-</td>
-<td style="text-align:right;">
-0.08
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Male
-</td>
-<td style="text-align:right;">
-13787
-</td>
-<td style="text-align:right;">
-25992
-</td>
-<td style="text-align:right;">
-1.89
-</td>
-<td style="text-align:right;font-weight: bold;">
-0.33
-</td>
-<td style="text-align:right;">
-0.84
-</td>
-<td style="text-align:right;">
-0.53
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #555555 !important;">
-All
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-15977
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-30105
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-1.88
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;font-weight: bold;">
-0.32
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-1.00
-</td>
-<td style="text-align:right;font-weight: bold;color: white !important;background-color: #555555 !important;">
-0.61
-</td>
-</tr>
-</tbody>
-</table>
-
-## Other rates as a function F of factors
-
-While both of the reconviction measures above can be calculated as the
-product of different factors, other rates might be specific functions of
-factors, for example:
-
-Crude rate of natural increase =
-![A-B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;A-B "A-B")
-
--   ![A](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;A "A")
-    = crude birth rate  
--   ![B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;B "B")
-    = crude death rate
-
-Or a more complex example:
-
-Crude birth rate per 1,000 population = *\[AB + C(1-B)\]D*
-
--   ![A](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;A "A")
-    = marital births per 1,000 married women aged 15 to 49  
--   ![B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;B "B")
-    = proportion of married women among all women aged 15 to 49  
--   ![C](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;C "C")
-    = Nonmarital births per 1,000 unmarried women aged 15 to 49  
--   ![D](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;D "D")
-    = proportion of women aged 15 to 49 in the total population
-
-# Standardisation and decomposition with the DasGuptR package
-
-Standardization and decomposition via Das Gupta’s formulae can be
-achieved in R via the **DasGupt_Npop()** function.
-
-Suitable data requires a column specifying the population (e.g., *year*
-in the reconv data), and a column for each of the factors we wish to
-include in the decomposition.  
-For example, if we are interested in decomposing the *average number of
-reconvictions per offender* into the prevalence and frequency of
-reconviction, then the first 3 columns of the following will suffice:
-
-<table>
-<thead>
-<tr>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; color: grey70 !important;padding-right: 4px; padding-left: 4px; background-color: white !important;" colspan="1">
-
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-
-Population
-
-</div>
-
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; color: grey70 !important;padding-right: 4px; padding-left: 4px; background-color: white !important;" colspan="2">
-
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-
-Decomposition Factors
-
-</div>
-
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; color: grey70 !important;padding-right: 4px; padding-left: 4px; background-color: white !important;" colspan="3">
-
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-
-Raw numbers
-
-</div>
-
-</th>
-</tr>
-<tr>
-<th style="text-align:left;">
-year
-</th>
-<th style="text-align:left;">
-prevalence
-</th>
-<th style="text-align:left;">
-frequency
-</th>
-<th style="text-align:left;">
-offenders
-</th>
-<th style="text-align:left;">
-reconvicted
-</th>
-<th style="text-align:left;">
-reconvictions
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2004
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.324
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.884
-</td>
-<td style="text-align:left;color: grey10 !important;">
-49351
-</td>
-<td style="text-align:left;color: grey10 !important;">
-15977
-</td>
-<td style="text-align:left;color: grey10 !important;">
-30105
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2005
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.324
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.849
-</td>
-<td style="text-align:left;color: grey10 !important;">
-50343
-</td>
-<td style="text-align:left;color: grey10 !important;">
-16333
-</td>
-<td style="text-align:left;color: grey10 !important;">
-30202
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2006
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.324
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.842
-</td>
-<td style="text-align:left;color: grey10 !important;">
-53305
-</td>
-<td style="text-align:left;color: grey10 !important;">
-17272
-</td>
-<td style="text-align:left;color: grey10 !important;">
-31816
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2007
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.312
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.834
-</td>
-<td style="text-align:left;color: grey10 !important;">
-53044
-</td>
-<td style="text-align:left;color: grey10 !important;">
-16572
-</td>
-<td style="text-align:left;color: grey10 !important;">
-30385
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2008
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.315
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.896
-</td>
-<td style="text-align:left;color: grey10 !important;">
-49665
-</td>
-<td style="text-align:left;color: grey10 !important;">
-15653
-</td>
-<td style="text-align:left;color: grey10 !important;">
-29682
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2009
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.306
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.831
-</td>
-<td style="text-align:left;color: grey10 !important;">
-47416
-</td>
-<td style="text-align:left;color: grey10 !important;">
-14491
-</td>
-<td style="text-align:left;color: grey10 !important;">
-26539
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;color: grey10 !important;">
-…
-</td>
-<td style="text-align:left;color: grey10 !important;">
-…
-</td>
-<td style="text-align:left;color: grey10 !important;">
-…
-</td>
-</tr>
-</tbody>
-</table>
-
-If we are also interested in including the underlying structure of the
-population (e.g. age and sex sub-groups) in the decomposition, then each
-row should identify the sub-group via a set of id variables (i.e., age
-and sex), with a column specifying the proportion of the population made
-up by that sub-group (the *pop str* variable below):
-
-<table>
-<thead>
-<tr>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; color: grey70 !important;padding-right: 4px; padding-left: 4px; background-color: white !important;" colspan="1">
-
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-
-Population
-
-</div>
-
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; color: grey70 !important;padding-right: 4px; padding-left: 4px; background-color: white !important;" colspan="2">
-
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-
-ID variables
-
-</div>
-
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; color: grey70 !important;padding-right: 4px; padding-left: 4px; background-color: white !important;" colspan="3">
-
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-
-Decomposition factors
-
-</div>
-
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; color: grey70 !important;padding-right: 4px; padding-left: 4px; background-color: white !important;" colspan="3">
-
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-
-Raw numbers
-
-</div>
-
-</th>
-</tr>
-<tr>
-<th style="text-align:left;">
-year
-</th>
-<th style="text-align:left;">
-Sex
-</th>
-<th style="text-align:left;">
-Age
-</th>
-<th style="text-align:left;">
-prevalence
-</th>
-<th style="text-align:left;">
-frequency
-</th>
-<th style="text-align:left;">
-pop_str
-</th>
-<th style="text-align:left;">
-offenders
-</th>
-<th style="text-align:left;">
-reconvicted
-</th>
-<th style="text-align:left;">
-reconvictions
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2004
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-Female
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-21 to 25
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.349
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.988
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.033
-</td>
-<td style="text-align:left;color: grey10 !important;">
-1650
-</td>
-<td style="text-align:left;color: grey10 !important;">
-576
-</td>
-<td style="text-align:left;color: grey10 !important;">
-1145
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2004
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-Female
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-26 to 30
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.331
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.871
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.026
-</td>
-<td style="text-align:left;color: grey10 !important;">
-1268
-</td>
-<td style="text-align:left;color: grey10 !important;">
-420
-</td>
-<td style="text-align:left;color: grey10 !important;">
-786
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2004
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-Female
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-31 to 40
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.249
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.726
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.045
-</td>
-<td style="text-align:left;color: grey10 !important;">
-2238
-</td>
-<td style="text-align:left;color: grey10 !important;">
-558
-</td>
-<td style="text-align:left;color: grey10 !important;">
-963
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2004
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-Female
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-over 40
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.177
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.703
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.024
-</td>
-<td style="text-align:left;color: grey10 !important;">
-1198
-</td>
-<td style="text-align:left;color: grey10 !important;">
-212
-</td>
-<td style="text-align:left;color: grey10 !important;">
-361
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2004
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-Female
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-under 21
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.285
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2.024
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.03
-</td>
-<td style="text-align:left;color: grey10 !important;">
-1488
-</td>
-<td style="text-align:left;color: grey10 !important;">
-424
-</td>
-<td style="text-align:left;color: grey10 !important;">
-858
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-2004
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-Male
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-21 to 25
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.367
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-1.927
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-0.181
-</td>
-<td style="text-align:left;color: grey10 !important;">
-8941
-</td>
-<td style="text-align:left;color: grey10 !important;">
-3285
-</td>
-<td style="text-align:left;color: grey10 !important;">
-6330
-</td>
-</tr>
-<tr>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;">
-…
-</td>
-<td style="text-align:left;color: grey10 !important;">
-…
-</td>
-<td style="text-align:left;color: grey10 !important;">
-…
-</td>
-<td style="text-align:left;color: grey10 !important;">
-…
-</td>
-</tr>
-</tbody>
-</table>
-
-The second thing we require is the function F by which the rate is to be
-calculated from the decomposition factors.  
-In our two examples of the *reconviction rate* and *average number of
-reconvictions per offender*, rates are simply the product of factors.
-
--   reconviction rate = prevalence
-    ![\\times](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctimes "\times")
-    pop_str  
--   avg number reconvs per offender = prevalence
-    ![\\times](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctimes "\times")
-    frequency
-    ![\\times](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctimes "\times")
-    pop_str
-
-(When we’re not disaggregating by population structure, the “pop_str”
-factor remains implicitly present with a value of 1 (thereby having no
-impact).
-
-### Standardizing and decomposing Scotland’s reconviction rate
-
-The code below decomposes the Scotland’s reconviction rates for 2004 to
-2007 into prevalence and age-sex structure of the convicted population.
-We focus initially on this small period of time simply because the
-output becomes cumbersome as the the number of populations increases.
-
-``` r
-# create our decomposition factors
-reconv <- 
-  reconv %>% 
-  mutate(
-    prevalence = reconvicted/offenders,
-    frequency = reconvictions/reconvicted, #not used here
-    pop_str = offenders/convicted_population
-  ) %>% 
-  filter(year %in% 2004:2007) #the output is pretty cumbersome, so lets keep it at 4 years for now
-
-#standardize and decompose!
-reconv_DG <- dgnpop(df=reconv,
-                          pop=year,
-                          prevalence, pop_str,
-                          id_vars=c("Age","Sex"),
-                          ratefunction="prevalence*pop_str")
-                          # the default ratefunction calculates rate as the product of all specified factors
-                          # in theory this function works with any function you like.
-```
-
-The DasGupt_Npop() function returns a tibble with a column for the
-P-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-adjusted rates (“pop”- columns) in each population (see below). The
-‘factor’ column specifies
-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha").
-
-It also returns the standardized decomposition
-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-effects (“diff”- columns) for each pairwise comparison of populations
-(again, the ‘factor’ column specifies
-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha"))
-
-``` r
-str(reconv_DG)
-#> 'data.frame':    20 obs. of  12 variables:
-#>  $ factor       : chr  "pop_str" "pop_str" "pop_str" "pop_str" ...
-#>  $ subpop       : chr  "21to25Female" "26to30Female" "31to40Female" "over40Female" ...
-#>  $ pop_2004     : num  0.01121 0.0087 0.01086 0.00484 0.00904 ...
-#>  $ pop_2005     : num  0.00993 0.00831 0.01045 0.00439 0.00907 ...
-#>  $ pop_2006     : num  0.01015 0.00848 0.01105 0.00481 0.00936 ...
-#>  $ pop_2007     : num  0.00981 0.00803 0.01095 0.00478 0.00914 ...
-#>  $ diff_20042005: num  -1.33e-03 -4.56e-04 -4.35e-04 -4.26e-04 7.08e-06 ...
-#>  $ diff_20042006: num  -0.000993 -0.000205 0.00043 0.000132 0.000416 ...
-#>  $ diff_20042007: num  -1.52e-03 -8.41e-04 2.95e-04 8.19e-05 1.06e-04 ...
-#>  $ diff_20052006: num  -2.81e-04 1.46e-05 6.59e-04 4.02e-04 4.05e-04 ...
-#>  $ diff_20052007: num  -7.56e-04 -6.27e-04 5.17e-04 3.67e-04 8.43e-05 ...
-#>  $ diff_20062007: num  -9.49e-04 -7.64e-04 1.97e-05 -8.06e-06 -1.72e-04 ...
-```
-
-The returning rates and decomposition effects are age-sex specific
-(i.e., they are
-![A \\times B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;A%20%5Ctimes%20B "A \times B")
-for each sub-group). Recalling that
-![B](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;B "B")
-is the proportions of the population that each group constitutes, the
-sum of these age-sex specific rates gives us the overall rates.  
-We can extract these population rates with the **DasGupt_rates()**
-function, which simply groups by
-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-(the factor not being adjusted for), sums, and reshapes.
-
-``` r
-dg_rates(reconv_DG)
-#> # A tibble: 8 × 3
-#>   factor     population  rate
-#>   <chr>      <chr>      <dbl>
-#> 1 pop_str    2004       0.323
-#> 2 prevalence 2004       0.322
-#> 3 pop_str    2005       0.324
-#> 4 prevalence 2005       0.321
-#> 5 pop_str    2006       0.324
-#> 6 prevalence 2006       0.321
-#> 7 pop_str    2007       0.314
-#> 8 prevalence 2007       0.320
-```
-
-Here the output is somewhat counterintuitive. It is important to remembe
-that the ‘factor’ column here represents the
-**![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-and not the P** in the expression
-“P-![\\alpha](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Calpha "\alpha")
-adjusted rate”. It can become mightily confusing, for instance, that to
-investigate the “age/sex adjusted rates”, requires looking at the rates
-where `factor=="prevalence"`.
-
-We can plot the adjusted rates alongside the crude rates…
-
-``` r
-crude_rates <-
-  reconv %>%
-  mutate(rate=prevalence*pop_str) %>%
-  group_by(year) %>% 
-  summarise(
-    rate=sum(rate),
-    factor="crude"
+dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"), 
+       id_vars = c("agegroup"),
+       ratefunction = "bm*mw*wp") |>
+  group_by(pop, factor) |>
+  reframe(
+    rate = sum(rate)
   )
-
-dg_rates(reconv_DG) %>%
-  mutate(year=as.numeric(population)) %>%
-  bind_rows(., crude_rates) %>%  
-  ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
-  ylim(.3,.35)
-```
-
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
-
-We can then compare the change in the adjusted rates to the change in
-the crude rates, to give what equates to an effect size:
-
-``` r
-bind_rows(
-  dg_table(reconv_DG,2004,2007),
-  crude_rates %>% filter(year %in% c(2004,2007)) %>%
-    spread(year,rate) %>% mutate(difference=`2004`-`2007`)
-) %>%
-  mutate(percentage_of_unadjusted=100*(difference/difference[factor=="crude"])) %>%
-  kable(.,digits=3)
-```
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-factor
-</th>
-<th style="text-align:right;">
-2004
-</th>
-<th style="text-align:right;">
-2007
-</th>
-<th style="text-align:right;">
-difference
-</th>
-<th style="text-align:right;">
-percentage_of_unadjusted
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-pop_str
-</td>
-<td style="text-align:right;">
-0.323
-</td>
-<td style="text-align:right;">
-0.314
-</td>
-<td style="text-align:right;">
-0.009
-</td>
-<td style="text-align:right;">
-78.61
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-prevalence
-</td>
-<td style="text-align:right;">
-0.322
-</td>
-<td style="text-align:right;">
-0.320
-</td>
-<td style="text-align:right;">
-0.002
-</td>
-<td style="text-align:right;">
-21.39
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-crude
-</td>
-<td style="text-align:right;">
-0.324
-</td>
-<td style="text-align:right;">
-0.312
-</td>
-<td style="text-align:right;">
-0.011
-</td>
-<td style="text-align:right;">
-100.00
-</td>
-</tr>
-</tbody>
-</table>
-
-From this, we can say that had the prevalence of reconvictions remained
-equal, the changing age-sex structure of the convicted population would
-have resulted in a change in the overall reconviction rate of 21.4% the
-size of the actual change.  
-This is useful because we can now get a measrue of how much changes in
-the overall reconviction rate are due to fewer people being reconvicted
-vs how much is due to the changing age-sex mix of the convicted
-population (e.g., if younger people tend to have higher reconviction
-rates, but are becoming more frequently [diverted from
-prosecution](http://scottishjusticematters.com/wp-content/uploads/Shrinking-YJ-population-SJM_5-1_April2017-18.pdf),
-then younger groups will begin to make up a smaller proportion of the
-convicted population, and so the overall rate at which the population is
-reconvicted will go down even if the rates at which different sub-groups
-are reconvicted do not).
-
-## Standardizing and decomposing the average number of reconvictions per offender
-
-Scottish Government’s second measure, the *average number of
-reconvictions per offender*, also captures changes in the frequency with
-which offenders are reconvicted. It is therefore possible to decompose
-this rate into the prevalence and frequency of reconviction, as well as
-age-sex structure of the population:
-
-``` r
-#reload the data
-data(reconv)
-
-reconv <- 
-  reconv %>% 
-  mutate(
-    prevalence = reconvicted/offenders,
-    frequency = reconvictions/reconvicted,
-    pop_str = offenders/convicted_population
-  ) 
-
-reconv_DG <- dgnpop(df=reconv,
-                          pop=year,prevalence, pop_str,frequency,
-                          id_vars=c("Age","Sex"),ratefunction="prevalence*pop_str*frequency")
-
-crude_rates <-
-  reconv %>%
-  mutate(rate=prevalence*pop_str*frequency) %>%
-  group_by(year) %>% 
-  summarise(
-    rate=sum(rate),
-    factor="crude"
-  )
-
-dg_rates(reconv_DG) %>%
-  mutate(year=as.numeric(population)) %>%
-  bind_rows(., crude_rates) %>%  
-  ggplot(.,aes(x=year,y=rate,col=factor))+geom_path()+theme_bw()+
-  theme(legend.position="bottom",axis.text.x = element_text(angle = 45, hjust = 1)) +
-  guides(colour = guide_legend(nrow = 3, byrow = TRUE)) +
-  labs(y = "avg number reconvs per offender",
-       x = "Year")
-```
-
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
-
-# Other examples from Das Gupta 1993
-
-``` r
-# The case of 2 factors (2 populations)
-eg2.1 <- data.frame(
-   pop = c("black","white"),
-   avg_earnings = c(10930, 16591),
-   earner_prop = c(.717892, .825974)
-)
-dgnpop(eg2.1, pop=pop, avg_earnings, earner_prop)
-#>         factor pop_black.adjwhite pop_white.adjblack diff_blackwhite
-#> 1 avg_earnings           8437.228           12807.14        4369.913
-#> 2  earner_prop           9878.553           11365.82        1487.262
-
-# The case of 3 factors (2 populations)
-eg2.3 <- data.frame(
-   pop = c("austria","chile"),
-   birthsw1549 = c(51.78746, 84.90502),
-   propw1549 = c(.45919, .75756),
-   propw = c(.52638, .51065)
-)
-dgnpop(eg2.3, pop=pop, birthsw1549, propw1549, propw)
-#>        factor pop_austria.adjchile pop_chile.adjaustria diff_austriachile
-#> 1 birthsw1549             16.31618             26.75021        10.4340333
-#> 2       propw             16.25309             26.81394        10.5608476
-#> 3   propw1549             22.32040             21.65339        -0.6670084
-
-# The case of 4 factors (2 populations)
-eg2.5 <- data.frame(
-   pop = c(1971, 1979),
-   birth_preg = c(25.3, 32.7),
-   preg_actw = c(.214, .290),
-   actw_prop = c(.279, .473),
-   w_prop = c(.949, .986)
-)
-dgnpop(eg2.5, pop=pop, birth_preg, preg_actw, actw_prop, w_prop)
-#>       factor pop_1971.adj1979 pop_1979.adj1971 diff_19711979
-#> 1  actw_prop         2.355434         3.044375     0.6889411
-#> 2 birth_preg         2.287936         3.100474     0.8125381
-#> 3  preg_actw         1.988818         3.371723     1.3829055
-#> 4     w_prop         2.686817         2.791572     0.1047547
-
-# The case of 5 factors (2 populations)
-eg2.7 <- data.frame(
-   pop = c(1970, 1980),
-   prop_m = c(.58, .72),
-   noncontr = c(.76, .97),
-   abort = c(.84, .97),
-   lact = c(.66, .56),
-   fecund = c(16.573, 16.158)
-)
-dgnpop(eg2.7, pop=pop, prop_m, noncontr, abort, lact, fecund)
-#>     factor pop_1970.adj1980 pop_1980.adj1970 diff_19701980
-#> 1    abort         4.519768         5.610746     1.0909785
-#> 2   fecund         4.450863         5.680707     1.2298438
-#> 3     lact         4.702966         5.430806     0.7278399
-#> 4 noncontr         5.543146         4.703276    -0.8398707
-#> 5   prop_m         5.152352         5.023334    -0.1290187
-
-# The case of 3 vector factors (2 populations)
-eg4.5 <- data.frame(
-   agegroup = rep(1:7, 2),
-   pop = rep(c(1970, 1960), e = 7),
-   bm = c(488, 452, 338, 156, 63, 22, 3,
-          393, 407, 369, 274, 184, 90, 16),
-   mw = c(.082, .527, .866, .941, .942, .923, .876,
-          .122, .622, .903, .930, .916, .873, .800),
-   wp = c(.056, .038, .032, .030, .026, .023, .019,
-          .043, .041, .036, .032, .026, .020, .018)
-)
-dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup"))
-#>    factor subpop pop_1960.adj1970 pop_1970.adj1960 diff_19601970
-#> 1      bm      1        1.9672270        2.4427653   0.475538333
-#> 2      bm      4        7.9456347        4.5237920  -3.421842667
-#> 3      bm      3       11.1014880       10.1688427  -0.932645333
-#> 4      bm      2        9.2456155       10.2678580   1.022242500
-#> 5      bm      5        4.4443360        1.5217020  -2.922634000
-#> 6      bm      7        0.2481493        0.0465280  -0.201621333
-#> 7      bm      6        1.7387550        0.4250290  -1.313726000
-#> 8      mw      1        2.6727353        1.7964287  -0.876306667
-#> 9      mw      2       10.5453880        8.9347580  -1.610630000
-#> 10     mw      5        2.9412760        3.0247620   0.083486000
-#> 11     mw      4        6.2167400        6.2902713   0.073531333
-#> 12     mw      3       10.8624880       10.4174027  -0.445085333
-#> 13     mw      6        1.0362510        1.0956010   0.059350000
-#> 14     mw      7        0.1397333        0.1530080   0.013274667
-#> 15     wp      2       10.1020515        9.3628770  -0.739174500
-#> 16     wp      1        1.9184163        2.4984027   0.579986333
-#> 17     wp      3       11.2595880       10.0085227  -1.251065333
-#> 18     wp      6        1.0000933        1.1501073   0.150014000
-#> 19     wp      5        2.9762027        2.9762027   0.000000000
-#> 20     wp      4        6.4327787        6.0307300  -0.402048667
-#> 21     wp      7        0.1418160        0.1496947   0.007878667
-# getting back the population level a-adjusted rates
-dg_rates(dgnpop(eg4.5, pop=pop, bm, mw, wp, id_vars=c("agegroup")))
 #> # A tibble: 6 × 3
-#>   factor population    rate
-#>   <chr>  <chr>        <dbl>
-#> 1 bm     1960.adj1970  36.7
-#> 2 mw     1960.adj1970  34.4
-#> 3 wp     1960.adj1970  33.8
-#> 4 bm     1970.adj1960  29.4
-#> 5 mw     1970.adj1960  31.7
-#> 6 wp     1970.adj1960  32.2
+#>   pop   factor  rate
+#>   <chr> <chr>  <dbl>
+#> 1 1960  bm      36.7
+#> 2 1960  mw      34.5
+#> 3 1960  wp      33.8
+#> 4 1970  bm      29.4
+#> 5 1970  mw      31.7
+#> 6 1970  wp      32.3
 ```
 
-[^1]: As set out in his 1993 book *[Standardization and decomposition of
-    rates: A user’s
-    manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)*.
+Equivalently, in the simple case where there is only one variable
+indicating a single set of sub-populations (e.g., different age-groups),
+then running `dgnpop()` on data for each sub-population separately and
+aggregating up will achieve the same goal:
 
-[^2]: Importantly, this analysis is not causal as the different
-    decomposition effects identified by standardization and
-    decomposition may themselves be the products of one (or more)
-    variables not included in the analysis (Das Gupta 1993:4).
+``` r
+eg4.3 |> 
+  nest(data = -agegroup) |>
+  mutate(
+    dg = map(data, ~ dgnpop(., pop = "pop", factors = c("bm","mw","wp")))
+  ) |> 
+  unnest(dg) |>
+  group_by(pop,factor) |>
+  reframe(
+    rate = sum(rate)
+  )
+#> # A tibble: 8 × 3
+#>   pop   factor  rate
+#>   <fct> <chr>  <dbl>
+#> 1 1960  bm      36.7
+#> 2 1960  crude   38.8
+#> 3 1960  mw      34.5
+#> 4 1960  wp      33.8
+#> 5 1970  bm      29.4
+#> 6 1970  crude   27.2
+#> 7 1970  mw      31.7
+#> 8 1970  wp      32.3
+```
 
-[^3]: Data was extracted from [Scottish Government’s 2016/17
-    reconviction bulletin and accompanying tables (published June
-    2019)](https://www.gov.scot/publications/reconviction-rates-scotland-2016-17-offender-cohort/).
-    Mid-year population estimates were taken from the [National Records
-    of Scotland time series
-    data](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-estimates/mid-year-population-estimates/population-estimates-time-series-data).
+## Rates as functions
+
+The `ratefunction` argument of `dgnpop()` essentially allows the user to
+define a custom rate function. This may be as simple as
+$R = \alpha - \beta$ (specified as `ratefunction = "a-b"`):
+
+- Crude rate of natural increase: United States, 1940 and 1960
+  - `crude_birth` = births x 1000 / total population
+  - `crude_death` = deaths x 1000 / total population
+
+``` r
+eg3.1 <- data.frame(
+  pop = c(1940,1960),
+  crude_birth = c(19.4, 23.7),
+  crude_death = c(10.8, 9.5)
+)
+dgnpop(eg3.1, pop = "pop",
+       factors = c("crude_birth","crude_death"),
+       ratefunction = "crude_birth-crude_death") |>
+  dg_table()
+#>              1940  1960 diff decomp
+#> crude_birth  9.25 13.55  4.3  76.79
+#> crude_death 10.75 12.05  1.3  23.21
+#> crude        8.60 14.20  5.6 100.00
+```
+
+However, it may be something more complex. For instance, when working
+with vector factors, we might define the rate in various ways that
+include aggregating over sub-populations in different combinations of
+factors (e.g., `sum(a*b)/sum(a*b*c)`).
+
+The example below shows once such example:
+
+### 4 vector factors, 2 populations, R=f(a,b,c,d)
+
+- Illegitimacy Ratio as a function of four vector factors: United
+  States, 1963 and 1983
+  - `A` = number of women in age-group / total women
+  - `B` = number of unmarried women in age-group / number of women in
+    age-group
+  - `C` = births to unmarried women in age-group / number of unmarried
+    women in age-group
+  - `D` = births to married women in age-group / married women in
+    age-group
+
+``` r
+eg4.4 <- data.frame(
+  pop = rep(c(1963,1983), e = 6),
+  agegroup = c("15-19","20-24","25-29","30-34","35-39","40-44"),
+  A = c(.200,.163,.146,.154,.168,.169,
+        .169,.195,.190,.174,.150,.122),
+  B = c(.866,.325,.119,.099,.099,.121,
+        .931,.563,.311,.216,.199,.191),
+  C = c(.007,.021,.023,.015,.008,.002,
+        .018,.026,.023,.016,.008,.002),
+  D = c(.454,.326,.195,.107,.051,.015,
+        .380,.201,.149,.079,.025,.006)
+)
+
+dgnpop(eg4.4, pop = "pop", factors = c("A","B","C","D"), 
+       id_vars = "agegroup",
+       ratefunction = "sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))") |>
+  dg_table()
+#>             1963       1983        diff decomp
+#> A     0.07770985 0.07150487 -0.00620498  -6.59
+#> B     0.04742107 0.09608261  0.04866154  51.64
+#> C     0.05924498 0.08630419  0.02705922  28.72
+#> D     0.05962676 0.08433604  0.02470928  26.22
+#> crude 0.03094957 0.12517462  0.09422505 100.00
+```
+
+The `ratefunction` argument can be given any string that when parsed and
+evaluated will return a summary value for a rate. At the point at which
+the string is evaluated, each factor (or vector-factor) is stored in a
+named list, meaning the function must simply refer to those factors by
+name.
+
+It is possible, for instance, to define a custom function in the user’s
+environment, and provide a call to that function to the `ratefunction`
+argument of `dgnpop()`:
+
+``` r
+myratef <- function(a,b,c,d){
+  return( sum(a*b*c) / (sum(a*b*c) + sum(a*(1-b)*d))  )
+}
+
+dgnpop(eg4.4, pop = "pop", factors = c("A","B","C","D"), 
+       id_vars = "agegroup",
+       ratefunction = "myratef(A,B,C,D)") |>
+  dg_table()
+#>             1963       1983        diff decomp
+#> A     0.07770985 0.07150487 -0.00620498  -6.59
+#> B     0.04742107 0.09608261  0.04866154  51.64
+#> C     0.05924498 0.08630419  0.02705922  28.72
+#> D     0.05962676 0.08433604  0.02470928  26.22
+#> crude 0.03094957 0.12517462  0.09422505 100.00
+```
+
+The upshot of this is that there is not really any limit to the
+complexity of the rate function the user wishes to specify. Das Gupta
+provides one such example in which the rate is obtained iteratively via
+Newton-Raphson:
+
+### 2 vector factors, 2 populations, R=f(a,b)
+
+- Female intrinsic growth rate per person as a function of two vector
+  factors: United States, 1980 and 1985
+  - `Lx` = stationary female population
+  - `Mx` = fertility rate
+
+``` r
+eg4.1 <- data.frame(
+  age_group = c("10-15","15-20","20-25","25-30","30-35","35-40","40-45","45-50","50-55"),
+  pop = rep(c(1965,1960), e = 9),
+  Lx = c(486446,485454,483929,482046,479522,475844,470419,462351,450468,
+       485434,484410,492905,481001,478485,474911,469528,461368,449349),
+  mx = c(.00041,.03416,.09584,.07915,.04651,.02283,.00631,.00038,.00000,
+       .00040,.04335,.12581,.09641,.05504,.02760,.00756,.00045,.00000)
+)
+
+# rate function:  
+RF4.1 <- function(A,B){
+  idx = 1:length(A)
+  mu0 = sum(A*B/100000)
+  mu1 = sum((5*idx + 7.5)*A*B/100000)
+  r1 = log(mu0) * (mu0/mu1)
+  while(TRUE){
+    Nr1 = 0
+    Dr1 = 0
+    Nr1 = Nr1 + sum(exp(-r1 * (5*idx + 7.5)) * A * (B / 100000))
+    Dr1 = Dr1 - sum((5*idx + 7.5) * exp(-r1 * (5*idx + 7.5)) * A * (B / 100000))
+    r2 = r1 - ((Nr1 - 1)/Dr1)
+    if(abs(r2 - r1)<=.0000001){
+      break
+    }
+    r1 = r2
+  }
+  return(r2)
+}
+
+# crude rates:
+RF4.1(A = eg4.1$Lx[1:9], B = eg4.1$mx[1:9])
+#> [1] 0.01213679
+RF4.1(A = eg4.1$Lx[10:18], B = eg4.1$mx[10:18])
+#> [1] 0.02107187
+
+# decomposition: 
+dgnpop(eg4.1, pop = "pop", factors = c("Lx","mx"), 
+       id_vars = "age_group",
+       ratefunction = "RF4.1(Lx,mx)") |>
+  dg_table()
+#>             1960       1965          diff decomp
+#> Lx    0.01670319 0.01649246 -0.0002107251   2.36
+#> mx    0.02096000 0.01223564 -0.0087243576  97.64
+#> crude 0.02107187 0.01213679 -0.0089350827 100.00
+```
+
+## Population structures and cross-classified data
+
+Very often, the splitting up of a population into various
+sub-populations is done because we are interested in that sub-population
+structure specifically as a compositional factor that could account for
+differences in crude rates, i.e. separating out how much the crude rate
+differences are due to differences in the compositional structure of the
+populations vs differences in the group-specific rates.
+
+To do this, we require data on the sizes (or relative sizes) of each
+sub-population. The simplest case here would be if we had data on a
+single set of sub-populations (e.g., age-groups), and had the
+group-specific rates and group sizes. The crude rates for the population
+would be simply the sum of all the group-specific rates weighted by the
+relative size of the group.
+
+In the example below, the relative size of each group is provided as a
+percentage in the `size` column.
+
+### population structure as a vector factor, 2 populations, R=sum(w\*r_i)
+
+- Household Headship Rates per 100: United States, 1970 and 1985
+  - `size` = number in age-group / total population
+  - `rate` = age-group rate
+
+``` r
+eg5.1 <- data.frame(
+  age_group = rep(c("15-19","20-24","25-29","30-34","35-39",
+                "40-44","45-49","50-54","55-59","60-64",
+                "65-69","70-74","75+"), 2),
+  pop = rep(c(1970,1985), e = 13),
+  size = c(12.9,10.9,9.5,8.0,7.8,8.4,8.6,7.8,7.0,5.9,4.7,3.6,4.9,
+           10.1,11.2,11.6,10.9,9.4,7.7,6.3,6.0,6.3,5.9,5.1,4.0,5.5),
+  rate = c(1.9,25.8,45.7,49.6,51.2,51.6,51.8,54.9,58.7,60.4,62.8,66.6,66.8,
+           2.2,24.3,45.8,52.5,56.1,55.6,56.0,57.4,57.2,61.2,63.9,68.6,72.2)
+)
+```
+
+We can decompose this into the rate-adjusted and age-adjusted rates in
+various ways.
+
+1.  Creating a new column of proportions (rather than percentages) we
+    can include it in the list of factors and do decomposition as
+    previously:
+
+``` r
+eg5.1$age_str <- eg5.1$size/100
+
+dgnpop(eg5.1, pop = "pop", factors = c("age_str","rate"), 
+       id_vars = "age_group",
+       ratefunction = "sum(age_str*rate)") |>
+  dg_table() 
+#>            1970    1985   diff decomp
+#> age_str 45.5876 46.8145 1.2269  41.35
+#> rate    45.3309 47.0712 1.7403  58.65
+#> crude   44.7268 47.6940 2.9672 100.00
+```
+
+2.  We could alternatively simply include the conversion to proportion
+    in the rate function. The inputs to the rate function here are the
+    set of vector factors for each population, so internal calls to
+    `sum(size)` will give us the total population size:
+
+``` r
+dgnpop(eg5.1, pop = "pop", factors = c("size","rate"), 
+       id_vars = "age_group",
+       ratefunction = "sum( (size/sum(size))*rate )") |>
+  dg_table()
+#>          1970    1985   diff decomp
+#> size  45.5876 46.8145 1.2269  41.35
+#> rate  45.3309 47.0712 1.7403  58.65
+#> crude 44.7268 47.6940 2.9672 100.00
+```
+
+3.  Finally, we can instead provide the variable indicating the size of
+    each sub-population into the `crossclassified` argument of
+    `dgnpop()`.
+
+``` r
+dgnpop(eg5.1, pop = "pop", factors = c("rate"), 
+       id_vars = "age_group",
+       crossclassified = "size") |>
+  dg_table() 
+#>                     1970    1985   diff decomp
+#> age_group_struct 45.5876 46.8145 1.2269  41.35
+#> rate             45.3309 47.0712 1.7403  58.65
+#> crude            44.7268 47.6940 2.9672 100.00
+```
+
+This latter approach can be extended to situations in which we have
+cross-classified data - i.e. individual sub-populations are defined by
+the combination of multiple variables such as age and race.
+
+### cross-classified population structure, 2 populations, R=sum(w\*r_i)
+
+- Death rates per 1000: United States, 1970 and 1985
+  - `size` = number of people in age-race-group
+  - `rate` = death rate in age-race-group
+
+``` r
+eg5.3 <- data.frame(
+  race = rep(rep(1:2, e = 11), 2),
+  age = rep(rep(1:11,2), 2),
+  pop = rep(c(1985,1970), e = 22),
+  size = c(3041,11577,27450,32711,35480,27411,19555,19795,15254,8022,2472,
+           707,2692,6473,6841,6547,4352,3034,2540,1749,804,236,
+           2968,11484,34614,30992,21983,20314,20928,16897,11339,5720,1315,
+           535,2162,6120,4781,3096,2718,2363,1767,1149,448,117),
+  rate = c(9.163,0.462,0.248,0.929,1.084,1.810,4.715,12.187,27.728,64.068,157.570,
+           17.208,0.738,0.328,1.103,2.045,3.724,8.052,17.812,34.128,68.276,125.161,
+           18.469,0.751,0.391,1.146,1.287,2.672,6.636,15.691,34.723,79.763,176.837,
+           36.993,1.352,0.541,2.040,3.523,6.746,12.967,24.471,45.091,74.902,123.205)
+)
+```
+
+In these cases, using the sub-population relative sizes as a
+compositional factor straight off the bat will collapse the two
+variables that make up the structure of the population:
+
+``` r
+dgnpop(eg5.3, pop = "pop", factors = c("size","rate"), 
+       id_vars = c("race","age"),
+       ratefunction = "sum( (size/sum(size))*rate)") |>
+  dg_table() 
+#>            1970     1985       diff  decomp
+#> size   8.372751 9.914260  1.5415096 -224.64
+#> rate  10.257368 8.029643 -2.2277254  324.64
+#> crude  9.421833 8.735618 -0.6862158  100.00
+```
+
+Instead, providing the group-specific sizes to the `crossclassified`
+argument will re-express the proportion of the population in a given
+cell as a product of K factors representing each of the structural
+variables. These are then included in the decomposition:
+
+``` r
+dgnpop(eg5.3, pop = "pop", factors = c("rate"), 
+       id_vars = c("race","age"),
+       crossclassified = "size") |>
+  dg_table() 
+#>                  1970     1985       diff  decomp
+#> age_struct   8.385332 9.907067  1.5217347 -221.76
+#> race_struct  9.136312 9.156087  0.0197749   -2.88
+#> rate        10.257368 8.029643 -2.2277254  324.64
+#> crude        9.421833 8.735618 -0.6862158  100.00
+```
+
+## N populations
+
+When standardising across more than two populations, computing the
+decompositions across all pairs of populations returns N-1 sets of
+adjusted rates, and decompositions between populations that are
+internally inconsistent (i.e. differences between populations 1 and 2,
+and 2 and 3, should sum to the difference between 1 and 3).
+
+### 4 vector factors, 5 populations, R = f(a,b,c,d)
+
+- Illegitimacy Ratio as a function of four vector factors: United
+  States, 1963, 1968, 1973, 1978, and 1983
+  - `A` = number of women in age-group / total women
+  - `B` = number of unmarried women in age-group / number of women in
+    age-group
+  - `C` = births to unmarried women in age-group / number of unmarried
+    women in age-group
+  - `D` = births to married women in age-group / married women in
+    age-group
+
+``` r
+eg6.5 <- data.frame(
+  pop=rep(c(1963,1968,1973,1978,1983),e=6),
+  agegroup=c("15-19","20-24","25-29","30-34","35-39","40-44"),
+  A = c(.200,.163,.146,.154,.168,.169,
+        .215,.191,.156,.137,.144,.157,
+        .218,.203,.175,.144,.127,.133,
+        .205,.200,.181,.162,.134,.118,
+        .169,.195,.190,.174,.150,.122),
+  B = c(.866,.325,.119,.099,.099,.121,
+        .891,.373,.124,.100,.107,.127,
+        .870,.396,.158,.125,.113,.129,
+        .900,.484,.243,.176,.155,.168,
+        .931,.563,.311,.216,.199,.191),
+  C = c(.007,.021,.023,.015,.008,.002,
+        .010,.023,.023,.015,.008,.002,
+        .011,.016,.017,.011,.006,.002,
+        .014,.019,.015,.010,.005,.001,
+        .018,.026,.023,.016,.008,.002),
+  D = c(.454,.326,.195,.107,.051,.015,
+        .433,.249,.159,.079,.037,.011,
+        .314,.181,.133,.063,.023,.006,
+        .313,.191,.143,.069,.021,.004,
+        .380,.201,.149,.079,.025,.006)
+)
+```
+
+As an illustration, running the standardisation on separate pairs of
+populations above returns decomposition effects below.
+
+|       | 1963 v 1968 | 1968 v 1973 | 1963 v 1973 |
+|:------|------------:|------------:|------------:|
+| A     |   0.9773438 |   -1.034326 |   0.1688192 |
+| B     |   5.0282497 |    2.917169 |   7.9721514 |
+| C     |   7.1177686 |   -7.392659 |   1.8923635 |
+| D     |   9.1479140 |   15.262878 |  21.9910032 |
+| Crude |  22.2712761 |    9.753061 |  32.0243373 |
+
+Das Gupta provided a secondary standardisation procedure that takes sets
+of pairwise standardised rates and resolves the problems shown above.
+When given more than two populations, `dgnpop()` will undertake this
+procedure. In this case, the function will return a list of length 2.  
+The first entry provides the adjusted rates, standardised across all N
+populations, and can be used as above with `dg_table()` and `dg_plot()`.
+
+``` r
+dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
+       id_vars = "agegroup",
+       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
+  dg_table()
+#>           1963     1968     1973     1978      1983
+#> A     72.77031 74.65254 73.83625 71.36001  64.60057
+#> B     53.28255 56.63216 59.52972 79.49763 104.38728
+#> C     62.17750 69.61231 60.48031 68.54219  94.17361
+#> D     54.83361 64.43823 81.24203 79.60288  74.12756
+#> crude 30.94957 53.22084 62.97390 86.88830 125.17462
+```
+
+Because using `dg_table()` with multiple populations will not return
+standardised rates for each population, it will not return decomposition
+effects unless only two populations are specified:
+
+``` r
+dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
+       id_vars = "agegroup",
+       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
+  dg_table(pop1 = 1963, pop2 = 1968)
+#>           1963     1968      diff decomp
+#> A     72.77031 74.65254  1.882236   8.45
+#> B     53.28255 56.63216  3.349606  15.04
+#> C     62.17750 69.61231  7.434806  33.38
+#> D     54.83361 64.43823  9.604628  43.13
+#> crude 30.94957 53.22084 22.271276 100.00
+```
+
+Alternatively, the decomposition effects are returned by `dgnpop()` in
+the `diffs` entry:
+
+``` r
+dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
+       id_vars = "agegroup",
+       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$diffs
+#>           diff  pop diff.calc        std.set factor
+#> 1    1.8822361 1963 1963-1968 1973.1978.1983      A
+#> 2    1.0659408 1963 1963-1973 1968.1978.1983      A
+#> 3   -1.4102979 1963 1963-1978 1968.1973.1983      A
+#> 4   -8.1697336 1963 1963-1983 1968.1973.1978      A
+#> 5   -0.8162953 1968 1968-1973 1963.1978.1983      A
+#> 6   -3.2925340 1968 1968-1978 1963.1973.1983      A
+#> ...  ...       ...  ...       ...                 .. 
+#> ...  ...       ...  ...       ...                 ..
+```
+
+When working with multiple populations in a time series, we can get
+quick rough and ready plots of the standardised rates using `dg_plot()`:
+
+``` r
+dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
+       id_vars = "agegroup",
+       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
+  dg_plot()
+```
+
+<img src="man/figures/README-unnamed-chunk-31-1.png"
+style="width:100.0%" />
+
+## Re-expression of population structures:
+
+When working with cross-classified data, Das Gupta developed a method of
+specifying group proportions as set of symmetric proportions indicating
+the contribution of each structural variable.
+
+Returning to the example above, we can compute these manually for the
+case of 2 cross-classified variables as so:
+
+``` r
+eg5.3a <- 
+  eg5.3 |>
+  group_by(pop) |> mutate(n_tot = sum(size)) |>
+  group_by(pop,age) |> mutate(n_age = sum(size)) |>
+  group_by(pop,race) |> mutate(n_race = sum(size)) |>
+  ungroup() |>
+  mutate(
+    A = ((size / n_race) * (n_age / n_tot))^(1/2),
+    B = ((size / n_age) * (n_race / n_tot))^(1/2),
+  )
+```
+
+The product of variables `A` and `B` above will return the individual
+group proportions:
+
+``` r
+eg5.3a |> 
+  mutate(
+    AB = A*B,
+    prop = size/n_tot
+  ) |>
+  head()
+#> # A tibble: 6 × 12
+#>    race   age   pop  size  rate  n_tot n_age n_race      A     B     AB   prop
+#>   <int> <int> <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl>  <dbl> <dbl>  <dbl>  <dbl>
+#> 1     1     1  1985  3041 9.16  238743  3748 202768 0.0153 0.830 0.0127 0.0127
+#> 2     1     2  1985 11577 0.462 238743 14269 202768 0.0584 0.830 0.0485 0.0485
+#> 3     1     3  1985 27450 0.248 238743 33923 202768 0.139  0.829 0.115  0.115 
+#> 4     1     4  1985 32711 0.929 238743 39552 202768 0.163  0.838 0.137  0.137 
+#> 5     1     5  1985 35480 1.08  238743 42027 202768 0.176  0.847 0.149  0.149 
+#> 6     1     6  1985 27411 1.81  238743 31763 202768 0.134  0.856 0.115  0.115
+```
+
+Internally, `dgnpop()` will do this provided `id_vars` and
+`crossclassified` are specified as detailed above. However, should users
+wish, this intermediary step in the decomposition can be done using
+`dgcc()`:
+
+``` r
+dgcc(eg5.3, pop = "pop", id_vars = c("age","race"), 
+     crossclassified ="size") |>
+  head()
+#>   race age  pop  size  rate age_struct race_struct
+#> 1    1   1 1985  3041 9.163 0.01534415   0.8301237
+#> 2    1   2 1985 11577 0.462 0.05841572   0.8301100
+#> 3    1   3 1985 27450 0.248 0.13869259   0.8290075
+#> 4    1   4 1985 32711 0.929 0.16348055   0.8381024
+#> 5    1   5 1985 35480 1.084 0.17550560   0.8467632
+#> 6    1   6 1985 27411 1.810 0.13410907   0.8561228
+```
+
+## Example: US population data
+
+- Birthrates by Nina Age-Sex groups: United States, 1940 to 1990
+  - `birthrate` = births per 1000 for age-sex group
+  - `thous` = population in thousands of age-sex group
+
+``` r
+data(uspop)
+head(uspop)
+#>   year agebin thous birthrate
+#> 1 1940  10-14  5777       0.7
+#> 2 1940  15-19  6145      54.1
+#> 3 1940  20-24  5907     135.6
+#> 4 1940  25-29  5665     122.8
+#> 5 1940  30-34  5192      83.4
+#> 6 1940  35-39  4823      46.3
+
+dgo_us <- dgnpop(uspop, pop = "year", factors = c("birthrate"),
+       id_vars = "agebin", crossclassified = "thous")
+
+dg_plot(dgo_us$rates)
+```
+
+<img src="man/figures/README-unnamed-chunk-35-1.png"
+style="width:100.0%" />
+
+## Example: Scottish Reconvictions
+
+- Prevalence of reconvictions by Age and Sex: Scotland, 2004 to 2016
+  - `prev_rate` = number of reconvicted individuals for age-sex group /
+    number of offenders in age-sex group
+  - `offenders` = number of offenders in age-sex group
+  - `convicted_population` = total number of offenders in population
+  - `reconvicted` = number of reconvicted individuals for age-sex group
+  - `reconvictions` = number of reconvictions for age-sex group
+
+``` r
+data(reconv)
+head(reconv)
+#>   year    Sex      Age convicted_population offenders reconvicted reconvictions
+#> 1 2004 Female 21 to 25                49351      1650         576          1145
+#> 2 2004 Female 26 to 30                49351      1268         420           786
+#> 3 2004 Female 31 to 40                49351      2238         558           963
+#> 4 2004 Female  over 40                49351      1198         212           361
+#> 5 2004 Female under 21                49351      1488         424           858
+#> 6 2004   Male 21 to 25                49351      8941        3285          6330
+#>   prev_rate
+#> 1 0.3490909
+#> 2 0.3312303
+#> 3 0.2493298
+#> 4 0.1769616
+#> 5 0.2849462
+#> 6 0.3674086
+
+dg_srec <- dgnpop(reconv, pop = "year", factors = c("prev_rate"), 
+                  id_vars = c("Sex","Age"), crossclassified="offenders")
+
+dg_plot(dg_srec$rates)
+```
+
+<img src="man/figures/README-unnamed-chunk-36-1.png"
+style="width:100.0%" />
+
+[^1]: For instance, in the case of a rate as the product of four factors
+    $R = \alpha\beta\gamma\delta$, we get out four sets of adjusted
+    rates: the $\alpha\beta\gamma$-adjusted,
+    $\beta\gamma\delta$-adjusted, $\alpha\gamma\delta$-adjusted, and
+    $\alpha\beta\delta$-adjusted.
+
+[^2]: Importantly, the use of “attributable” has a very narrow sense of
+    ‘numerically attributable’, and it is important to stress the lack
+    of any causal interpretation here - different decomposition effects
+    identified by standardization and decomposition may themselves be
+    the products of one (or more) variables not included in the analysis
+    (Das Gupta 1993:4).
