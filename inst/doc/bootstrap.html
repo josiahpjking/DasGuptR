@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Bootstrapping standardized rates and decomposition effects</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Bootstrapping standardized rates and
+decomposition effects</h1>
+
+
+
+<p>The basic premise of bootstrapping Das Gupta’s rate decomposition can
+be thought of as expanding out to unit-level data, re-sampling, then
+aggregating back up.</p>
+<p>Data from <a href="https://doi.org/10.3758/BF03207806">Wang
+2000</a>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(DasGuptR)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>eg.wang2000 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">pop =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;male&quot;</span>,<span class="st">&quot;female&quot;</span>), <span class="at">e =</span> <span class="dv">12</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">ethnicity =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">e =</span> <span class="dv">4</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">age_group =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">3</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">c</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="dv">130</span>,<span class="dv">1305</span>,<span class="dv">1539</span>,<span class="dv">316</span>,<span class="dv">211</span>,<span class="dv">697</span>,<span class="dv">334</span>,<span class="dv">48</span>,<span class="dv">105</span>,<span class="dv">475</span>,<span class="dv">424</span>,<span class="dv">49</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="dv">70</span>,<span class="dv">604</span>,<span class="dv">428</span>,<span class="dv">43</span>,<span class="dv">55</span>,<span class="dv">127</span>,<span class="dv">44</span>,<span class="dv">9</span>,<span class="dv">72</span>,<span class="dv">178</span>,<span class="dv">103</span>,<span class="dv">12</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  ),</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="at">rate =</span> <span class="fu">c</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="fl">12.31</span>,<span class="fl">34.90</span>,<span class="fl">52.91</span>,<span class="fl">44.44</span>,<span class="fl">16.67</span>,<span class="fl">36.40</span>,<span class="fl">51.20</span>,<span class="fl">41.67</span>,<span class="fl">12.38</span>,<span class="fl">19.20</span>,<span class="fl">21.23</span>,<span class="fl">12.50</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="fl">17.14</span>,<span class="fl">35.55</span>,<span class="fl">48.71</span>,<span class="fl">55.81</span>,<span class="fl">14.55</span>,<span class="fl">39.37</span>,<span class="fl">32.56</span>,<span class="fl">55.56</span>,<span class="fl">22.22</span>,<span class="fl">20.34</span>,<span class="fl">13.59</span>,<span class="fl">8.33</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  )</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>)</span></code></pre></div>
+<p>To do this with the DasGuptR package, we must first create a function
+to essentially “uncount” data into individual level data (where nrow =
+size of total population), then re-sample with replacement, then
+aggregate back up to the level of the original data.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>getBS <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="co"># expand out</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  exp <span class="ot">&lt;-</span> eg.wang2000 <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>      <span class="at">r1 =</span> (rate<span class="sc">/</span><span class="dv">100</span>)<span class="sc">*</span>size,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>      <span class="at">r0 =</span> (<span class="dv">1</span><span class="sc">-</span>(rate<span class="sc">/</span><span class="dv">100</span>))<span class="sc">*</span>size</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="fu">select</span>(pop,ethnicity,age_group,r0<span class="sc">:</span>r1) <span class="sc">|&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(r0<span class="sc">:</span>r1, <span class="at">names_to =</span> <span class="st">&quot;r&quot;</span>,<span class="at">values_to =</span> <span class="st">&quot;n&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.integer</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="fu">uncount</span>(n)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  </span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="co"># sample for each pop</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  bs <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">unique</span>(eg.wang2000<span class="sc">$</span>pop), \(p)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>               <span class="fu">slice_sample</span>(exp[exp<span class="sc">$</span>pop<span class="sc">==</span>p,],</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>                            <span class="at">prop=</span><span class="dv">1</span>,<span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>                 <span class="fu">group_by</span>(ethnicity,age_group) <span class="sc">|&gt;</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>                 <span class="fu">reframe</span>(</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>                   <span class="at">pop =</span> p,</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>                   <span class="at">size =</span> <span class="fu">n</span>(),</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>                   <span class="at">rate =</span> <span class="fu">mean</span>(r<span class="sc">==</span><span class="st">&quot;r1&quot;</span>)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>                 ) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>())</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>  </span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind,bs)</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>}</span></code></pre></div>
+<p>Take 500 resamples:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>bsamps <span class="ot">&lt;-</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">i =</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>, <span class="sc">~</span><span class="fu">getBS</span>())</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  )</span></code></pre></div>
+<p>and apply the standardisation to each resample:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>bsamps <span class="ot">&lt;-</span> bsamps <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="at">dgo =</span> <span class="fu">map</span>(i, <span class="sc">~</span><span class="fu">dgnpop</span>(., <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                         <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;ethnicity&quot;</span>,<span class="st">&quot;age_group&quot;</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>                         <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Here are the original difference effects:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">dgnpop</span>(eg.wang2000, </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>       <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>       <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;ethnicity&quot;</span>,<span class="st">&quot;age_group&quot;</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>       <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="fu">dg_table</span>()</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">female</th>
+<th align="right">male</th>
+<th align="right">diff</th>
+<th align="right">decomp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">age_group_struct</td>
+<td align="right">34.80709</td>
+<td align="right">36.73462</td>
+<td align="right">1.9275307</td>
+<td align="right">68.93</td>
+</tr>
+<tr class="even">
+<td align="left">ethnicity_struct</td>
+<td align="right">35.79043</td>
+<td align="right">35.75128</td>
+<td align="right">-0.0391490</td>
+<td align="right">-1.40</td>
+</tr>
+<tr class="odd">
+<td align="left">rate</td>
+<td align="right">35.35659</td>
+<td align="right">36.26448</td>
+<td align="right">0.9078896</td>
+<td align="right">32.47</td>
+</tr>
+<tr class="even">
+<td align="left">crude</td>
+<td align="right">34.59755</td>
+<td align="right">37.39382</td>
+<td align="right">2.7962713</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>And here are the standard errors:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>bsamps <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">select</span>(k,dgo) <span class="sc">|&gt;</span> <span class="fu">unnest</span>(dgo) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">group_by</span>(k, factor) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">reframe</span>( <span class="at">diff =</span> rate[pop<span class="sc">==</span><span class="st">&quot;female&quot;</span>]<span class="sc">-</span>rate[pop<span class="sc">==</span><span class="st">&quot;male&quot;</span>] ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="fu">group_by</span>(factor) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="fu">reframe</span>( <span class="at">se =</span> <span class="fu">sd</span>(diff) )</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="left">factor</th>
+<th align="right">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">age_group_struct</td>
+<td align="right">0.3178581</td>
+</tr>
+<tr class="even">
+<td align="left">crude</td>
+<td align="right">1.2693730</td>
+</tr>
+<tr class="odd">
+<td align="left">ethnicity_struct</td>
+<td align="right">0.3330550</td>
+</tr>
+<tr class="even">
+<td align="left">rate</td>
+<td align="right">1.3266997</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Which we can take as a proportion of the crude rate difference:</p>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div id="uncertainty-in-rates" class="section level3">
+<h3>Uncertainty in rates</h3>
+<p>We can use this same approach to estimate uncertainty in adjusted
+rates. For instance, using the Scottish Reconvictions data:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">data</span>(reconv)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>src <span class="ot">&lt;-</span> reconv <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">pop =</span> year, <span class="at">sex=</span>Sex, <span class="at">age=</span>Age,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">rate =</span> prev_rate,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">size =</span> offenders,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="at">r1 =</span> rate<span class="sc">*</span>size,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>    <span class="at">r0 =</span> (<span class="dv">1</span><span class="sc">-</span>rate)<span class="sc">*</span>size</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  )</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>getBS <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="co"># expand out</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  exp <span class="ot">&lt;-</span> src <span class="sc">|&gt;</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    <span class="fu">select</span>(pop,sex,age,r0,r1) <span class="sc">|&gt;</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(r0<span class="sc">:</span>r1, <span class="at">names_to=</span><span class="st">&quot;r&quot;</span>,<span class="at">values_to =</span> <span class="st">&quot;n&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.integer</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>    <span class="fu">uncount</span>(n)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="co"># sample for each pop</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  bs <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">unique</span>(src<span class="sc">$</span>pop), \(p)</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>               <span class="fu">slice_sample</span>(exp[exp<span class="sc">$</span>pop<span class="sc">==</span>p,],</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>                            <span class="at">prop=</span><span class="dv">1</span>,<span class="at">replace =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>                 <span class="fu">group_by</span>(sex,age) <span class="sc">|&gt;</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>                 <span class="fu">reframe</span>(</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>                   <span class="at">pop =</span> p,</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>                   <span class="at">size =</span> <span class="fu">n</span>(),</span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>                   <span class="at">rate =</span> <span class="fu">mean</span>(r<span class="sc">==</span><span class="st">&quot;r1&quot;</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>                 ) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>())</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind,bs)</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>}</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a><span class="co"># 500 resamples</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>bsamps <span class="ot">&lt;-</span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>,</span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>    <span class="at">i =</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>, <span class="sc">~</span><span class="fu">getBS</span>())</span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a>  )</span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a><span class="co"># apply DG on each resample</span></span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>bsamps <span class="ot">&lt;-</span> bsamps <span class="sc">|&gt;</span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a>    <span class="at">dgo =</span> <span class="fu">map</span>(i, <span class="sc">~</span><span class="fu">dgnpop</span>(., <span class="at">pop=</span><span class="st">&quot;pop&quot;</span>,<span class="at">factors=</span><span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a>                         <span class="at">id_vars=</span><span class="fu">c</span>(<span class="st">&quot;age&quot;</span>,<span class="st">&quot;sex&quot;</span>),</span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a>                         <span class="at">crossclassified=</span><span class="st">&quot;size&quot;</span>))</span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

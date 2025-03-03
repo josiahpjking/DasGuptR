@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Category Effects in Das Gupta’s decomposition</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Category Effects in Das Gupta’s
+decomposition</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(DasGuptR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(gt)</span></code></pre></div>
+<p>For cross-classified data, <a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevan &amp;
+Sutherland 2009</a> provide a method for decomposing differences in
+crude rates into differences in each specific category of the
+sub-population variables in terms of change in what proportion of the
+population they make up, and changes in sub-population rates.</p>
+<p>Below we demonstrate this using eg5.3 from <a href="https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450" target="_blank">Das Gupta 1993</a>, and then Scottish Reconvictions
+data.</p>
+<div id="example-5.3-das-gupta-1993" class="section level1">
+<h1>Example 5.3, Das Gupta 1993</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>eg5<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">race =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">e=</span><span class="dv">11</span>),<span class="dv">2</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>,<span class="dv">2</span>),<span class="dv">2</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">pop =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1985</span>,<span class="dv">1970</span>), <span class="at">e=</span><span class="dv">22</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">c</span>(<span class="dv">3041</span>,<span class="dv">11577</span>,<span class="dv">27450</span>,<span class="dv">32711</span>,<span class="dv">35480</span>,<span class="dv">27411</span>,<span class="dv">19555</span>,<span class="dv">19795</span>,<span class="dv">15254</span>,<span class="dv">8022</span>,<span class="dv">2472</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>           <span class="dv">707</span>,<span class="dv">2692</span>,<span class="dv">6473</span>,<span class="dv">6841</span>,<span class="dv">6547</span>,<span class="dv">4352</span>,<span class="dv">3034</span>,<span class="dv">2540</span>,<span class="dv">1749</span>,<span class="dv">804</span>,<span class="dv">236</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>           <span class="dv">2968</span>,<span class="dv">11484</span>,<span class="dv">34614</span>,<span class="dv">30992</span>,<span class="dv">21983</span>,<span class="dv">20314</span>,<span class="dv">20928</span>,<span class="dv">16897</span>,<span class="dv">11339</span>,<span class="dv">5720</span>,<span class="dv">1315</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>           <span class="dv">535</span>,<span class="dv">2162</span>,<span class="dv">6120</span>,<span class="dv">4781</span>,<span class="dv">3096</span>,<span class="dv">2718</span>,<span class="dv">2363</span>,<span class="dv">1767</span>,<span class="dv">1149</span>,<span class="dv">448</span>,<span class="dv">117</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">rate =</span> <span class="fu">c</span>(<span class="fl">9.163</span>,<span class="fl">0.462</span>,<span class="fl">0.248</span>,<span class="fl">0.929</span>,<span class="fl">1.084</span>,<span class="fl">1.810</span>,<span class="fl">4.715</span>,<span class="fl">12.187</span>,<span class="fl">27.728</span>,<span class="fl">64.068</span>,<span class="fl">157.570</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>           <span class="fl">17.208</span>,<span class="fl">0.738</span>,<span class="fl">0.328</span>,<span class="fl">1.103</span>,<span class="fl">2.045</span>,<span class="fl">3.724</span>,<span class="fl">8.052</span>,<span class="fl">17.812</span>,<span class="fl">34.128</span>,<span class="fl">68.276</span>,<span class="fl">125.161</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>           <span class="fl">18.469</span>,<span class="fl">0.751</span>,<span class="fl">0.391</span>,<span class="fl">1.146</span>,<span class="fl">1.287</span>,<span class="fl">2.672</span>,<span class="fl">6.636</span>,<span class="fl">15.691</span>,<span class="fl">34.723</span>,<span class="fl">79.763</span>,<span class="fl">176.837</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>           <span class="fl">36.993</span>,<span class="fl">1.352</span>,<span class="fl">0.541</span>,<span class="fl">2.040</span>,<span class="fl">3.523</span>,<span class="fl">6.746</span>,<span class="fl">12.967</span>,<span class="fl">24.471</span>,<span class="fl">45.091</span>,<span class="fl">74.902</span>,<span class="fl">123.205</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>)</span></code></pre></div>
+<p>Here is the population-level decomposition:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">dgnpop</span>(eg5<span class="fl">.3</span>, <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors =</span> <span class="st">&quot;rate&quot;</span>, </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>       <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;race&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">dg_table</span>()</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">1970</th>
+<th align="right">1985</th>
+<th align="right">diff</th>
+<th align="right">decomp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">age_struct</td>
+<td align="right">8.385333</td>
+<td align="right">9.907067</td>
+<td align="right">1.5217347</td>
+<td align="right">-221.76</td>
+</tr>
+<tr class="even">
+<td align="left">race_struct</td>
+<td align="right">9.136312</td>
+<td align="right">9.156087</td>
+<td align="right">0.0197749</td>
+<td align="right">-2.88</td>
+</tr>
+<tr class="odd">
+<td align="left">rate</td>
+<td align="right">10.257368</td>
+<td align="right">8.029643</td>
+<td align="right">-2.2277254</td>
+<td align="right">324.64</td>
+</tr>
+<tr class="even">
+<td align="left">crude</td>
+<td align="right">9.421833</td>
+<td align="right">8.735618</td>
+<td align="right">-0.6862158</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In order to calculate the influence of changes in specific
+categories, we need to first get out the sub-population level
+standardised rates from the decomposition. When we specify
+<code>crossclassified</code> argument in <code>dgnpop()</code>, this
+will aggregate up to population level unless we also specify
+<code>agg = FALSE</code>.</p>
+<p>As we are working with vector-factors, this will return rates at the
+sub-population levels:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">dgnpop</span>(eg5<span class="fl">.3</span>, <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors=</span><span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>              <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;race&quot;</span>,<span class="st">&quot;age&quot;</span>), <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span>, <span class="at">agg =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">head</span>(res)</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="right">rate</th>
+<th align="left">pop</th>
+<th align="left">std.set</th>
+<th align="left">factor</th>
+<th align="right">race</th>
+<th align="right">age</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.1250755</td>
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="left">rate</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">0.0242176</td>
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="left">rate</td>
+<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="right">0.0353167</td>
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="left">rate</td>
+<td align="right">1</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="right">0.1342761</td>
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="left">rate</td>
+<td align="right">1</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="right">0.1390078</td>
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="left">rate</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="right">0.1941090</td>
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="left">rate</td>
+<td align="right">1</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We can take those individual rates, and then calculate the category
+effects for each group of the sub-population variables — e.g., for each
+<span class="math inline">\(i\)</span> of race and <span class="math inline">\(j\)</span> of age.</p>
+<p>In the scenario that we have two cross-classified variables <span class="math inline">\(I\)</span> and <span class="math inline">\(J\)</span> and the relevant sub-population rates
+<span class="math inline">\(T\)</span>, <code>dgnpop()</code> will
+return three standardised rates: <span class="math inline">\(P-I\)</span> standardised, <span class="math inline">\(P-J\)</span> standardised, and <span class="math inline">\(P-T\)</span> standardised.</p>
+<p>We can see these for each sub-population (reshaped to wide):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>res <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> factor, <span class="at">values_from =</span> rate)</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="left">pop</th>
+<th align="left">std.set</th>
+<th align="right">race</th>
+<th align="right">age</th>
+<th align="right">rate</th>
+<th align="right">race_struct</th>
+<th align="right">age_struct</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0.1250755</td>
+<td align="right">0.1849191</td>
+<td align="right">0.1793138</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0.0242176</td>
+<td align="right">0.0312242</td>
+<td align="right">0.0299156</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0.0353167</td>
+<td align="right">0.0444355</td>
+<td align="right">0.0374843</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">0.1342761</td>
+<td align="right">0.1469615</td>
+<td align="right">0.1449585</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">0.1390078</td>
+<td align="right">0.1498677</td>
+<td align="right">0.1792535</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">6</td>
+<td align="right">0.1941090</td>
+<td align="right">0.2374201</td>
+<td align="right">0.2607401</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">7</td>
+<td align="right">0.4351757</td>
+<td align="right">0.5140457</td>
+<td align="right">0.4729422</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">8</td>
+<td align="right">1.0104185</td>
+<td align="right">1.1407640</td>
+<td align="right">1.1710387</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">1.6571379</td>
+<td align="right">1.8476629</td>
+<td align="right">2.0167980</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="right">1.9754195</td>
+<td align="right">2.1919073</td>
+<td align="right">2.4477219</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">1</td>
+<td align="right">11</td>
+<td align="right">1.3240858</td>
+<td align="right">1.3951568</td>
+<td align="right">1.7474160</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">0.0480648</td>
+<td align="right">0.0837177</td>
+<td align="right">0.0728699</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0.0080751</td>
+<td align="right">0.0125611</td>
+<td align="right">0.0107877</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">0.0093711</td>
+<td align="right">0.0139973</td>
+<td align="right">0.0106301</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">0.0287400</td>
+<td align="right">0.0456377</td>
+<td align="right">0.0404630</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">5</td>
+<td align="right">0.0435722</td>
+<td align="right">0.0643659</td>
+<td align="right">0.0689884</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">6</td>
+<td align="right">0.0587736</td>
+<td align="right">0.0891903</td>
+<td align="right">0.0878703</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">7</td>
+<td align="right">0.0978413</td>
+<td align="right">0.1440782</td>
+<td align="right">0.1194106</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">8</td>
+<td align="right">0.1719650</td>
+<td align="right">0.2232247</td>
+<td align="right">0.2055169</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">9</td>
+<td align="right">0.2212087</td>
+<td align="right">0.2752681</td>
+<td align="right">0.2695225</td>
+</tr>
+<tr class="odd">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">10</td>
+<td align="right">0.1900040</td>
+<td align="right">0.2177088</td>
+<td align="right">0.2181535</td>
+</tr>
+<tr class="even">
+<td align="left">1985</td>
+<td align="left">1970</td>
+<td align="right">2</td>
+<td align="right">11</td>
+<td align="right">0.0977867</td>
+<td align="right">0.1019727</td>
+<td align="right">0.1152718</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0.2521030</td>
+<td align="right">0.1919211</td>
+<td align="right">0.1975264</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0.0393667</td>
+<td align="right">0.0322977</td>
+<td align="right">0.0336063</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0.0556807</td>
+<td align="right">0.0462478</td>
+<td align="right">0.0531990</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">0.1656409</td>
+<td align="right">0.1527656</td>
+<td align="right">0.1547685</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">0.1650397</td>
+<td align="right">0.1550981</td>
+<td align="right">0.1257123</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">6</td>
+<td align="right">0.2865521</td>
+<td align="right">0.2437729</td>
+<td align="right">0.2204529</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">7</td>
+<td align="right">0.6124764</td>
+<td align="right">0.5318985</td>
+<td align="right">0.5730020</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">8</td>
+<td align="right">1.3009335</td>
+<td align="right">1.1709845</td>
+<td align="right">1.1407098</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">2.0751875</td>
+<td align="right">1.8878707</td>
+<td align="right">1.7187356</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="right">2.4593461</td>
+<td align="right">2.2486731</td>
+<td align="right">1.9928585</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">1</td>
+<td align="right">11</td>
+<td align="right">1.4859894</td>
+<td align="right">1.4211900</td>
+<td align="right">1.0689309</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">0.1033277</td>
+<td align="right">0.0683122</td>
+<td align="right">0.0791601</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0.0147933</td>
+<td align="right">0.0104387</td>
+<td align="right">0.0122122</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">0.0154566</td>
+<td align="right">0.0112634</td>
+<td align="right">0.0146306</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">0.0531546</td>
+<td align="right">0.0363801</td>
+<td align="right">0.0415548</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">5</td>
+<td align="right">0.0750635</td>
+<td align="right">0.0519612</td>
+<td align="right">0.0473387</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">6</td>
+<td align="right">0.1064679</td>
+<td align="right">0.0750632</td>
+<td align="right">0.0763832</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">7</td>
+<td align="right">0.1575643</td>
+<td align="right">0.1135563</td>
+<td align="right">0.1382239</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">8</td>
+<td align="right">0.2362540</td>
+<td align="right">0.1847008</td>
+<td align="right">0.2024086</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">9</td>
+<td align="right">0.2922680</td>
+<td align="right">0.2360869</td>
+<td align="right">0.2418324</td>
+</tr>
+<tr class="odd">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">10</td>
+<td align="right">0.2084434</td>
+<td align="right">0.1762914</td>
+<td align="right">0.1758466</td>
+</tr>
+<tr class="even">
+<td align="left">1970</td>
+<td align="left">1985</td>
+<td align="right">2</td>
+<td align="right">11</td>
+<td align="right">0.0962585</td>
+<td align="right">0.0895382</td>
+<td align="right">0.0762391</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To calculate category effects, we aggregate these sub-population
+rates up to the categories in for each cross-classified variable
+independently for each population (see <a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevan &amp;
+Sutherland 2009</a>), and the differences between populations provide
+the category effects.</p>
+<p>Race categories:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>race_ce <span class="ot">&lt;-</span> res <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> factor, <span class="at">values_from =</span> rate) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">group_by</span>(pop,race) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="co"># sum of P-I std rates</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="at">IAi =</span> <span class="fu">sum</span>(race_struct),</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="co"># sum of P-T std rates / number of crossclass vars</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="at">RTi =</span> <span class="fu">sum</span>(rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    <span class="at">CEi =</span> IAi<span class="sc">+</span>RTi</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="fu">group_by</span>(race) <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    <span class="co"># category composition effect</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    <span class="at">comp_ce =</span> IAi[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> IAi[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>    <span class="co"># category rate effect</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>    <span class="at">rate_ce =</span> RTi[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> RTi[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>    <span class="co"># category total effect</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>    <span class="at">tot_ce =</span> CEi[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> CEi[pop<span class="sc">==</span><span class="dv">1970</span>]</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Age categories:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>age_ce <span class="ot">&lt;-</span> res <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> factor, <span class="at">values_from =</span> rate) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">group_by</span>(pop, age) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="co"># sum of P-J std rates</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">JBj =</span> <span class="fu">sum</span>(age_struct),</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="co"># sum of P-T std rates / number of crossclass vars</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="at">RTj =</span> <span class="fu">sum</span>(rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>    <span class="at">CEj =</span> JBj<span class="sc">+</span>RTj</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>    <span class="co"># category composition effect</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>    <span class="at">comp_ce =</span> JBj[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> JBj[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    <span class="co"># category rate effect</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    <span class="at">rate_ce =</span> RTj[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> RTj[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>    <span class="co"># category total effect</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>    <span class="at">tot_ce =</span> CEj[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> CEj[pop<span class="sc">==</span><span class="dv">1970</span>]</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  )</span></code></pre></div>
+<p>The category-total effects will sum back up to the difference in the
+crude rates (see top of page)</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">sum</span>( <span class="fu">c</span>(race_ce<span class="sc">$</span>tot_ce, age_ce<span class="sc">$</span>tot_ce) )</span></code></pre></div>
+<pre><code>## [1] -0.6862158</code></pre>
+<p>And the category-rate effects will sum back up to the differences in
+rate-adjusted rates:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">sum</span>( <span class="fu">c</span>(race_ce<span class="sc">$</span>rate_ce, age_ce<span class="sc">$</span>rate_ce) )</span></code></pre></div>
+<pre><code>## [1] -2.227725</code></pre>
+<p>We can simply take these as a percentage of the crude rate
+differences.</p>
+<ul>
+<li>The category-composition effect (comp_ce below) represents the
+percentage of the crude rate difference that is due to change in <span class="math inline">\(\frac{\text{category size}}{\text{total population
+size}}\)</span>.<br />
+</li>
+<li>The category-rate effect (rate_ce below) represents the percentage
+of the crude rate difference that is due to change in category-specific
+rates.<br />
+</li>
+<li>The category-total effect (tot_ce below) represents the percentage
+of the crude rate difference that is due to change in both category
+relative size and category specific rates.</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  race_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;race&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> race),</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  age_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;age&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> age)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">comp_ce =</span> comp_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">rate_ce =</span> rate_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">tot_ce =</span> tot_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  <span class="fu">group_by</span>(var) <span class="sc">|&gt;</span> </span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span><span class="fu">round</span>(.,<span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code></pre></div>
+<div id="ggxkomxyaj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ggxkomxyaj table {
+font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+#ggxkomxyaj thead, #ggxkomxyaj tbody, #ggxkomxyaj tfoot, #ggxkomxyaj tr, #ggxkomxyaj td, #ggxkomxyaj th {
+border-style: none;
+}
+#ggxkomxyaj p {
+margin: 0;
+padding: 0;
+}
+#ggxkomxyaj .gt_table {
+display: table;
+border-collapse: collapse;
+line-height: normal;
+margin-left: auto;
+margin-right: auto;
+color: #333333;
+font-size: 16px;
+font-weight: normal;
+font-style: normal;
+background-color: #FFFFFF;
+width: auto;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #A8A8A8;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #A8A8A8;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_caption {
+padding-top: 4px;
+padding-bottom: 4px;
+}
+#ggxkomxyaj .gt_title {
+color: #333333;
+font-size: 125%;
+font-weight: initial;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-color: #FFFFFF;
+border-bottom-width: 0;
+}
+#ggxkomxyaj .gt_subtitle {
+color: #333333;
+font-size: 85%;
+font-weight: initial;
+padding-top: 3px;
+padding-bottom: 5px;
+padding-left: 5px;
+padding-right: 5px;
+border-top-color: #FFFFFF;
+border-top-width: 0;
+}
+#ggxkomxyaj .gt_heading {
+background-color: #FFFFFF;
+text-align: center;
+border-bottom-color: #FFFFFF;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_bottom_border {
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_col_headings {
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_col_heading {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: normal;
+text-transform: inherit;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: bottom;
+padding-top: 5px;
+padding-bottom: 6px;
+padding-left: 5px;
+padding-right: 5px;
+overflow-x: hidden;
+}
+#ggxkomxyaj .gt_column_spanner_outer {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: normal;
+text-transform: inherit;
+padding-top: 0;
+padding-bottom: 0;
+padding-left: 4px;
+padding-right: 4px;
+}
+#ggxkomxyaj .gt_column_spanner_outer:first-child {
+padding-left: 0;
+}
+#ggxkomxyaj .gt_column_spanner_outer:last-child {
+padding-right: 0;
+}
+#ggxkomxyaj .gt_column_spanner {
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+vertical-align: bottom;
+padding-top: 5px;
+padding-bottom: 5px;
+overflow-x: hidden;
+display: inline-block;
+width: 100%;
+}
+#ggxkomxyaj .gt_spanner_row {
+border-bottom-style: hidden;
+}
+#ggxkomxyaj .gt_group_heading {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: middle;
+text-align: left;
+}
+#ggxkomxyaj .gt_empty_group_heading {
+padding: 0.5px;
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+vertical-align: middle;
+}
+#ggxkomxyaj .gt_from_md > :first-child {
+margin-top: 0;
+}
+#ggxkomxyaj .gt_from_md > :last-child {
+margin-bottom: 0;
+}
+#ggxkomxyaj .gt_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+margin: 10px;
+border-top-style: solid;
+border-top-width: 1px;
+border-top-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: middle;
+overflow-x: hidden;
+}
+#ggxkomxyaj .gt_stub {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-right-style: solid;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+padding-left: 5px;
+padding-right: 5px;
+}
+#ggxkomxyaj .gt_stub_row_group {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-right-style: solid;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+padding-left: 5px;
+padding-right: 5px;
+vertical-align: top;
+}
+#ggxkomxyaj .gt_row_group_first td {
+border-top-width: 2px;
+}
+#ggxkomxyaj .gt_row_group_first th {
+border-top-width: 2px;
+}
+#ggxkomxyaj .gt_summary_row {
+color: #333333;
+background-color: #FFFFFF;
+text-transform: inherit;
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#ggxkomxyaj .gt_first_summary_row {
+border-top-style: solid;
+border-top-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_first_summary_row.thick {
+border-top-width: 2px;
+}
+#ggxkomxyaj .gt_last_summary_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_grand_summary_row {
+color: #333333;
+background-color: #FFFFFF;
+text-transform: inherit;
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#ggxkomxyaj .gt_first_grand_summary_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-top-style: double;
+border-top-width: 6px;
+border-top-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_last_grand_summary_row_top {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-style: double;
+border-bottom-width: 6px;
+border-bottom-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_striped {
+background-color: rgba(128, 128, 128, 0.05);
+}
+#ggxkomxyaj .gt_table_body {
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_footnotes {
+color: #333333;
+background-color: #FFFFFF;
+border-bottom-style: none;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_footnote {
+margin: 0px;
+font-size: 90%;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#ggxkomxyaj .gt_sourcenotes {
+color: #333333;
+background-color: #FFFFFF;
+border-bottom-style: none;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+}
+#ggxkomxyaj .gt_sourcenote {
+font-size: 90%;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#ggxkomxyaj .gt_left {
+text-align: left;
+}
+#ggxkomxyaj .gt_center {
+text-align: center;
+}
+#ggxkomxyaj .gt_right {
+text-align: right;
+font-variant-numeric: tabular-nums;
+}
+#ggxkomxyaj .gt_font_normal {
+font-weight: normal;
+}
+#ggxkomxyaj .gt_font_bold {
+font-weight: bold;
+}
+#ggxkomxyaj .gt_font_italic {
+font-style: italic;
+}
+#ggxkomxyaj .gt_super {
+font-size: 65%;
+}
+#ggxkomxyaj .gt_footnote_marks {
+font-size: 75%;
+vertical-align: 0.4em;
+position: initial;
+}
+#ggxkomxyaj .gt_asterisk {
+font-size: 100%;
+vertical-align: 0;
+}
+#ggxkomxyaj .gt_indent_1 {
+text-indent: 5px;
+}
+#ggxkomxyaj .gt_indent_2 {
+text-indent: 10px;
+}
+#ggxkomxyaj .gt_indent_3 {
+text-indent: 15px;
+}
+#ggxkomxyaj .gt_indent_4 {
+text-indent: 20px;
+}
+#ggxkomxyaj .gt_indent_5 {
+text-indent: 25px;
+}
+#ggxkomxyaj .katex-display {
+display: inline-flex !important;
+margin-bottom: 0.75em !important;
+}
+#ggxkomxyaj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+height: 0px !important;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="category">category</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="comp_ce">comp_ce</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rate_ce">rate_ce</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="tot_ce">tot_ce</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr class="gt_group_heading_row">
+      <th colspan="4" class="gt_group_heading" scope="colgroup" id="race">race</th>
+    </tr>
+    <tr class="gt_row_group_first"><td headers="race  category" class="gt_row gt_right">1</td>
+<td headers="race  comp_ce" class="gt_row gt_right">28.91</td>
+<td headers="race  rate_ce" class="gt_row gt_right">134.37</td>
+<td headers="race  tot_ce" class="gt_row gt_right">163.27</td></tr>
+    <tr><td headers="race  category" class="gt_row gt_right">2</td>
+<td headers="race  comp_ce" class="gt_row gt_right">-31.79</td>
+<td headers="race  rate_ce" class="gt_row gt_right">27.95</td>
+<td headers="race  tot_ce" class="gt_row gt_right">-3.83</td></tr>
+    <tr class="gt_group_heading_row">
+      <th colspan="4" class="gt_group_heading" scope="colgroup" id="age">age</th>
+    </tr>
+    <tr class="gt_row_group_first"><td headers="age  category" class="gt_row gt_right">1</td>
+<td headers="age  comp_ce" class="gt_row gt_right">3.57</td>
+<td headers="age  rate_ce" class="gt_row gt_right">13.28</td>
+<td headers="age  tot_ce" class="gt_row gt_right">16.85</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">2</td>
+<td headers="age  comp_ce" class="gt_row gt_right">0.75</td>
+<td headers="age  rate_ce" class="gt_row gt_right">1.59</td>
+<td headers="age  tot_ce" class="gt_row gt_right">2.34</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">3</td>
+<td headers="age  comp_ce" class="gt_row gt_right">2.87</td>
+<td headers="age  rate_ce" class="gt_row gt_right">1.93</td>
+<td headers="age  tot_ce" class="gt_row gt_right">4.80</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">4</td>
+<td headers="age  comp_ce" class="gt_row gt_right">1.59</td>
+<td headers="age  rate_ce" class="gt_row gt_right">4.06</td>
+<td headers="age  tot_ce" class="gt_row gt_right">5.65</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">5</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-10.96</td>
+<td headers="age  rate_ce" class="gt_row gt_right">4.19</td>
+<td headers="age  tot_ce" class="gt_row gt_right">-6.77</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">6</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-7.54</td>
+<td headers="age  rate_ce" class="gt_row gt_right">10.21</td>
+<td headers="age  tot_ce" class="gt_row gt_right">2.67</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">7</td>
+<td headers="age  comp_ce" class="gt_row gt_right">17.32</td>
+<td headers="age  rate_ce" class="gt_row gt_right">17.27</td>
+<td headers="age  tot_ce" class="gt_row gt_right">34.59</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">8</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-4.87</td>
+<td headers="age  rate_ce" class="gt_row gt_right">25.85</td>
+<td headers="age  tot_ce" class="gt_row gt_right">20.98</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">9</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-47.47</td>
+<td headers="age  rate_ce" class="gt_row gt_right">35.64</td>
+<td headers="age  tot_ce" class="gt_row gt_right">-11.83</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">10</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-72.45</td>
+<td headers="age  rate_ce" class="gt_row gt_right">36.60</td>
+<td headers="age  tot_ce" class="gt_row gt_right">-35.85</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_right">11</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-104.56</td>
+<td headers="age  rate_ce" class="gt_row gt_right">11.69</td>
+<td headers="age  tot_ce" class="gt_row gt_right">-92.88</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<p>Note that these will map to how each category changes between the two
+populations with respect to a) the proportion of the population that the
+category constitutes, and b) the average rate. If a category makes up a
+larger proportion of the population, its category-composition effect
+will be positive (if the crude rate difference is positive). If the
+category specific rate changes in the same direction as the crude rate
+changes, the category-rate effect is positive. The benefit of <a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevan &amp;
+Sutherland</a>’s approach is that these are now scaled proportional to
+the total crude rate difference.</p>
+<p>Changes in category proportions:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>eg5<span class="fl">.3</span> <span class="sc">|&gt;</span> <span class="fu">group_by</span>(pop, age) <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">size =</span> <span class="fu">sum</span>(size)) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">group_by</span>(pop) <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> size<span class="sc">/</span><span class="fu">sum</span>(size)) <span class="sc">|&gt;</span> </span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">|&gt;</span> </span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">delta =</span> prop[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> prop[pop<span class="sc">==</span><span class="dv">1970</span>])</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="right">age</th>
+<th align="right">delta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">-0.0014887</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">-0.0071873</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">-0.0577726</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">-0.0098536</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.0529836</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.0200354</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">-0.0196616</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">0.0019770</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">0.0099461</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.0067051</td>
+</tr>
+<tr class="odd">
+<td align="right">11</td>
+<td align="right">0.0043166</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="scottish-reconvictions-data" class="section level1">
+<h1>Scottish Reconvictions Data</h1>
+<p>Data:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">data</span>(reconv)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>srec <span class="ot">&lt;-</span> reconv <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2004</span>,<span class="dv">2016</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">select</span>(year, Sex, Age, offenders, prev_rate)</span></code></pre></div>
+<p>Population level decomposition:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a> <span class="fu">dgnpop</span>(srec, <span class="at">pop =</span> <span class="st">&quot;year&quot;</span>, <span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;prev_rate&quot;</span>),</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>              <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Sex&quot;</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>              <span class="at">crossclassified =</span> <span class="st">&quot;offenders&quot;</span>, <span class="at">agg =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="fu">dg_table</span>()</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">2004</th>
+<th align="right">2016</th>
+<th align="right">diff</th>
+<th align="right">decomp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Age_struct</td>
+<td align="right">0.3052555</td>
+<td align="right">0.2837824</td>
+<td align="right">-0.0214731</td>
+<td align="right">41.31</td>
+</tr>
+<tr class="even">
+<td align="left">prev_rate</td>
+<td align="right">0.3094771</td>
+<td align="right">0.2797243</td>
+<td align="right">-0.0297528</td>
+<td align="right">57.23</td>
+</tr>
+<tr class="odd">
+<td align="left">Sex_struct</td>
+<td align="right">0.2948982</td>
+<td align="right">0.2941397</td>
+<td align="right">-0.0007585</td>
+<td align="right">1.46</td>
+</tr>
+<tr class="even">
+<td align="left">crude</td>
+<td align="right">0.3237422</td>
+<td align="right">0.2717579</td>
+<td align="right">-0.0519843</td>
+<td align="right">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sub-population standardised rates:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">dgnpop</span>(srec, <span class="at">pop =</span> <span class="st">&quot;year&quot;</span>, <span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;prev_rate&quot;</span>),</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>              <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Sex&quot;</span>),</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>              <span class="at">crossclassified =</span> <span class="st">&quot;offenders&quot;</span>, <span class="at">agg =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Category effects for Sex and Age:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>sex_ce <span class="ot">&lt;-</span> res <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> factor, <span class="at">values_from =</span> rate) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">group_by</span>(pop, Sex) <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>    <span class="at">IAi =</span> <span class="fu">sum</span>(Sex_struct),</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>    <span class="at">RTi =</span> <span class="fu">sum</span>(prev_rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>    <span class="at">CEi =</span> IAi<span class="sc">+</span>RTi</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex) <span class="sc">|&gt;</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>    <span class="at">comp_ce =</span> <span class="fu">diff</span>(IAi),</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>    <span class="at">rate_ce =</span> <span class="fu">diff</span>(RTi),</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>    <span class="at">tot_ce =</span> <span class="fu">diff</span>(CEi)</span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>  )</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>age_ce <span class="ot">&lt;-</span> res <span class="sc">|&gt;</span></span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> factor, <span class="at">values_from =</span> rate) <span class="sc">|&gt;</span></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>  <span class="fu">group_by</span>(pop, Age) <span class="sc">|&gt;</span></span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>    <span class="at">JBj =</span> <span class="fu">sum</span>(Age_struct),</span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a>    <span class="at">RTj =</span> <span class="fu">sum</span>(prev_rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a>    <span class="at">CEj =</span> JBj<span class="sc">+</span>RTj</span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a>  <span class="fu">group_by</span>(Age) <span class="sc">|&gt;</span></span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb17-26"><a href="#cb17-26" tabindex="-1"></a>    <span class="at">comp_ce =</span> <span class="fu">diff</span>(JBj),</span>
+<span id="cb17-27"><a href="#cb17-27" tabindex="-1"></a>    <span class="at">rate_ce =</span> <span class="fu">diff</span>(RTj),</span>
+<span id="cb17-28"><a href="#cb17-28" tabindex="-1"></a>    <span class="at">tot_ce =</span> <span class="fu">diff</span>(CEj)</span>
+<span id="cb17-29"><a href="#cb17-29" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  sex_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;sex&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> Sex),</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  age_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;age&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> Age)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    <span class="at">comp_ce =</span> comp_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>    <span class="at">rate_ce =</span> rate_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>    <span class="at">tot_ce =</span> tot_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>  <span class="fu">group_by</span>(var) <span class="sc">|&gt;</span> </span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span><span class="fu">round</span>(.,<span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code></pre></div>
+<div id="enqjgfqcjr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#enqjgfqcjr table {
+font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+#enqjgfqcjr thead, #enqjgfqcjr tbody, #enqjgfqcjr tfoot, #enqjgfqcjr tr, #enqjgfqcjr td, #enqjgfqcjr th {
+border-style: none;
+}
+#enqjgfqcjr p {
+margin: 0;
+padding: 0;
+}
+#enqjgfqcjr .gt_table {
+display: table;
+border-collapse: collapse;
+line-height: normal;
+margin-left: auto;
+margin-right: auto;
+color: #333333;
+font-size: 16px;
+font-weight: normal;
+font-style: normal;
+background-color: #FFFFFF;
+width: auto;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #A8A8A8;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #A8A8A8;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_caption {
+padding-top: 4px;
+padding-bottom: 4px;
+}
+#enqjgfqcjr .gt_title {
+color: #333333;
+font-size: 125%;
+font-weight: initial;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-color: #FFFFFF;
+border-bottom-width: 0;
+}
+#enqjgfqcjr .gt_subtitle {
+color: #333333;
+font-size: 85%;
+font-weight: initial;
+padding-top: 3px;
+padding-bottom: 5px;
+padding-left: 5px;
+padding-right: 5px;
+border-top-color: #FFFFFF;
+border-top-width: 0;
+}
+#enqjgfqcjr .gt_heading {
+background-color: #FFFFFF;
+text-align: center;
+border-bottom-color: #FFFFFF;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_bottom_border {
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_col_headings {
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_col_heading {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: normal;
+text-transform: inherit;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: bottom;
+padding-top: 5px;
+padding-bottom: 6px;
+padding-left: 5px;
+padding-right: 5px;
+overflow-x: hidden;
+}
+#enqjgfqcjr .gt_column_spanner_outer {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: normal;
+text-transform: inherit;
+padding-top: 0;
+padding-bottom: 0;
+padding-left: 4px;
+padding-right: 4px;
+}
+#enqjgfqcjr .gt_column_spanner_outer:first-child {
+padding-left: 0;
+}
+#enqjgfqcjr .gt_column_spanner_outer:last-child {
+padding-right: 0;
+}
+#enqjgfqcjr .gt_column_spanner {
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+vertical-align: bottom;
+padding-top: 5px;
+padding-bottom: 5px;
+overflow-x: hidden;
+display: inline-block;
+width: 100%;
+}
+#enqjgfqcjr .gt_spanner_row {
+border-bottom-style: hidden;
+}
+#enqjgfqcjr .gt_group_heading {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: middle;
+text-align: left;
+}
+#enqjgfqcjr .gt_empty_group_heading {
+padding: 0.5px;
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+vertical-align: middle;
+}
+#enqjgfqcjr .gt_from_md > :first-child {
+margin-top: 0;
+}
+#enqjgfqcjr .gt_from_md > :last-child {
+margin-bottom: 0;
+}
+#enqjgfqcjr .gt_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+margin: 10px;
+border-top-style: solid;
+border-top-width: 1px;
+border-top-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 1px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 1px;
+border-right-color: #D3D3D3;
+vertical-align: middle;
+overflow-x: hidden;
+}
+#enqjgfqcjr .gt_stub {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-right-style: solid;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+padding-left: 5px;
+padding-right: 5px;
+}
+#enqjgfqcjr .gt_stub_row_group {
+color: #333333;
+background-color: #FFFFFF;
+font-size: 100%;
+font-weight: initial;
+text-transform: inherit;
+border-right-style: solid;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+padding-left: 5px;
+padding-right: 5px;
+vertical-align: top;
+}
+#enqjgfqcjr .gt_row_group_first td {
+border-top-width: 2px;
+}
+#enqjgfqcjr .gt_row_group_first th {
+border-top-width: 2px;
+}
+#enqjgfqcjr .gt_summary_row {
+color: #333333;
+background-color: #FFFFFF;
+text-transform: inherit;
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#enqjgfqcjr .gt_first_summary_row {
+border-top-style: solid;
+border-top-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_first_summary_row.thick {
+border-top-width: 2px;
+}
+#enqjgfqcjr .gt_last_summary_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_grand_summary_row {
+color: #333333;
+background-color: #FFFFFF;
+text-transform: inherit;
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#enqjgfqcjr .gt_first_grand_summary_row {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-top-style: double;
+border-top-width: 6px;
+border-top-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_last_grand_summary_row_top {
+padding-top: 8px;
+padding-bottom: 8px;
+padding-left: 5px;
+padding-right: 5px;
+border-bottom-style: double;
+border-bottom-width: 6px;
+border-bottom-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_striped {
+background-color: rgba(128, 128, 128, 0.05);
+}
+#enqjgfqcjr .gt_table_body {
+border-top-style: solid;
+border-top-width: 2px;
+border-top-color: #D3D3D3;
+border-bottom-style: solid;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_footnotes {
+color: #333333;
+background-color: #FFFFFF;
+border-bottom-style: none;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_footnote {
+margin: 0px;
+font-size: 90%;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#enqjgfqcjr .gt_sourcenotes {
+color: #333333;
+background-color: #FFFFFF;
+border-bottom-style: none;
+border-bottom-width: 2px;
+border-bottom-color: #D3D3D3;
+border-left-style: none;
+border-left-width: 2px;
+border-left-color: #D3D3D3;
+border-right-style: none;
+border-right-width: 2px;
+border-right-color: #D3D3D3;
+}
+#enqjgfqcjr .gt_sourcenote {
+font-size: 90%;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 5px;
+padding-right: 5px;
+}
+#enqjgfqcjr .gt_left {
+text-align: left;
+}
+#enqjgfqcjr .gt_center {
+text-align: center;
+}
+#enqjgfqcjr .gt_right {
+text-align: right;
+font-variant-numeric: tabular-nums;
+}
+#enqjgfqcjr .gt_font_normal {
+font-weight: normal;
+}
+#enqjgfqcjr .gt_font_bold {
+font-weight: bold;
+}
+#enqjgfqcjr .gt_font_italic {
+font-style: italic;
+}
+#enqjgfqcjr .gt_super {
+font-size: 65%;
+}
+#enqjgfqcjr .gt_footnote_marks {
+font-size: 75%;
+vertical-align: 0.4em;
+position: initial;
+}
+#enqjgfqcjr .gt_asterisk {
+font-size: 100%;
+vertical-align: 0;
+}
+#enqjgfqcjr .gt_indent_1 {
+text-indent: 5px;
+}
+#enqjgfqcjr .gt_indent_2 {
+text-indent: 10px;
+}
+#enqjgfqcjr .gt_indent_3 {
+text-indent: 15px;
+}
+#enqjgfqcjr .gt_indent_4 {
+text-indent: 20px;
+}
+#enqjgfqcjr .gt_indent_5 {
+text-indent: 25px;
+}
+#enqjgfqcjr .katex-display {
+display: inline-flex !important;
+margin-bottom: 0.75em !important;
+}
+#enqjgfqcjr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+height: 0px !important;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="category">category</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="comp_ce">comp_ce</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rate_ce">rate_ce</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="tot_ce">tot_ce</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr class="gt_group_heading_row">
+      <th colspan="4" class="gt_group_heading" scope="colgroup" id="sex">sex</th>
+    </tr>
+    <tr class="gt_row_group_first"><td headers="sex  category" class="gt_row gt_left">Female</td>
+<td headers="sex  comp_ce" class="gt_row gt_right">-6.70</td>
+<td headers="sex  rate_ce" class="gt_row gt_right">5.25</td>
+<td headers="sex  tot_ce" class="gt_row gt_right">-1.45</td></tr>
+    <tr><td headers="sex  category" class="gt_row gt_left">Male</td>
+<td headers="sex  comp_ce" class="gt_row gt_right">8.16</td>
+<td headers="sex  rate_ce" class="gt_row gt_right">23.36</td>
+<td headers="sex  tot_ce" class="gt_row gt_right">31.52</td></tr>
+    <tr class="gt_group_heading_row">
+      <th colspan="4" class="gt_group_heading" scope="colgroup" id="age">age</th>
+    </tr>
+    <tr class="gt_row_group_first"><td headers="age  category" class="gt_row gt_left">21 to 25</td>
+<td headers="age  comp_ce" class="gt_row gt_right">28.00</td>
+<td headers="age  rate_ce" class="gt_row gt_right">12.73</td>
+<td headers="age  tot_ce" class="gt_row gt_right">40.73</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_left">26 to 30</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-11.12</td>
+<td headers="age  rate_ce" class="gt_row gt_right">8.16</td>
+<td headers="age  tot_ce" class="gt_row gt_right">-2.97</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_left">31 to 40</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-17.74</td>
+<td headers="age  rate_ce" class="gt_row gt_right">-2.14</td>
+<td headers="age  tot_ce" class="gt_row gt_right">-19.88</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_left">over 40</td>
+<td headers="age  comp_ce" class="gt_row gt_right">-46.57</td>
+<td headers="age  rate_ce" class="gt_row gt_right">-1.58</td>
+<td headers="age  tot_ce" class="gt_row gt_right">-48.15</td></tr>
+    <tr><td headers="age  category" class="gt_row gt_left">under 21</td>
+<td headers="age  comp_ce" class="gt_row gt_right">88.73</td>
+<td headers="age  rate_ce" class="gt_row gt_right">11.45</td>
+<td headers="age  tot_ce" class="gt_row gt_right">100.18</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
