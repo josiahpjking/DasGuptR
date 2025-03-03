@@ -382,7 +382,7 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
 
     # tidy rates and add crude
     DG_OUT.rates <- do.call(rbind, DG_OUT.rates)
-    DG_OUT.rates <- rbind(crude, DG_OUT.rates)
+    if(output_agg){DG_OUT.rates <- rbind(crude, DG_OUT.rates)}
     row.names(DG_OUT.rates) <- NULL
     # tidy diffs
     DG_OUT.diffs <- do.call(rbind, DG_OUT.diffs)
