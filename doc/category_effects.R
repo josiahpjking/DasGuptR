@@ -1,33 +1,15 @@
----
-title: "Category Effects in Das Gupta's decomposition"
-format:
-  html:
-    embed-resources: true
----
-
-```{r}
-#| echo: false
+## -----------------------------------------------------------------------------
 knitr::opts_chunk$set(
   message=FALSE,
   warning=FALSE
 )
-```
 
-```{r}
+## -----------------------------------------------------------------------------
 library(DasGuptR)
 library(tidyverse)
 library(gt)
-```
 
-
-For cross-classified data, [Chevan & Sutherland 2009](https://doi.org/10.1353/dem.0.0060){target="_blank"} provide a method for decomposing differences in crude rates into differences in each specific category of the sub-population variables in terms of change in what proportion of the population they make up, and changes in sub-population rates.  
-
-Below we demonstrate this using eg5.3 from [Das Gupta 1993 ](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450){target="_blank"}, and then Scottish Reconvictions data.  
-
-
-# Example 5.3, Das Gupta 1993
-
-```{r}
+## -----------------------------------------------------------------------------
 eg5.3 <- data.frame(
   race = rep(rep(1:2, e=11),2),
   age = rep(rep(1:11,2),2),
@@ -41,39 +23,22 @@ eg5.3 <- data.frame(
            18.469,0.751,0.391,1.146,1.287,2.672,6.636,15.691,34.723,79.763,176.837,
            36.993,1.352,0.541,2.040,3.523,6.746,12.967,24.471,45.091,74.902,123.205)
 )
-```
 
-Here is the population-level decomposition:
-```{r}
+## -----------------------------------------------------------------------------
 dgnpop(eg5.3, pop = "pop", factors = "rate", 
        id_vars = c("race", "age"), crossclassified = "size") |>
   dg_table()
-```
 
-
-In order to calculate the influence of changes in specific categories, we need to first get out the sub-population level standardised rates from the decomposition. When we specify `crossclassified` argument in `dgnpop()`, this will aggregate up to population level unless we also specify `agg = FALSE`. 
-
-As we are working with vector-factors, this will return rates at the sub-population levels:  
-```{r}
+## -----------------------------------------------------------------------------
 res <- dgnpop(eg5.3, pop = "pop", factors="rate",
               id_vars = c("race","age"), crossclassified = "size", agg = FALSE)
 head(res)
-```
 
-We can take those individual rates, and then calculate the category effects for each group of the sub-population variables --- e.g., for each $i$ of race and $j$ of age.  
-
-In the scenario that we have two cross-classified variables $I$ and $J$ and the relevant sub-population rates $T$, `dgnpop()` will return three standardised rates: $P-I$ standardised, $P-J$ standardised, and $P-T$ standardised.  
-
-We can see these for each sub-population (reshaped to wide): 
-```{r}
+## -----------------------------------------------------------------------------
 res |>
   pivot_wider(names_from = factor, values_from = rate)
-```
 
-To calculate category effects, we aggregate these sub-population rates up to the categories in for each cross-classified variable independently for each population (see [Chevan & Sutherland 2009](https://doi.org/10.1353/dem.0.0060){target="_blank"}), and the differences between populations provide the category effects.  
-
-Race categories:  
-```{r}
+## -----------------------------------------------------------------------------
 race_ce <- res |>
   pivot_wider(names_from = factor, values_from = rate) |>
   group_by(pop,race) |>
@@ -93,10 +58,8 @@ race_ce <- res |>
     # category total effect
     tot_ce = CEi[pop==1985] - CEi[pop==1970]
   )
-```
 
-Age categories:  
-```{r}
+## -----------------------------------------------------------------------------
 age_ce <- res |>
   pivot_wider(names_from = factor, values_from = rate) |>
   group_by(pop, age) |>
@@ -116,25 +79,14 @@ age_ce <- res |>
     # category total effect
     tot_ce = CEj[pop==1985] - CEj[pop==1970]
   )
-```
 
-The category-total effects will sum back up to the difference in the crude rates (see top of page) 
-```{r}
+## -----------------------------------------------------------------------------
 sum( c(race_ce$tot_ce, age_ce$tot_ce) )
-```
-And the category-rate effects will sum back up to the differences in rate-adjusted rates: 
-```{r}
+
+## -----------------------------------------------------------------------------
 sum( c(race_ce$rate_ce, age_ce$rate_ce) )
-```
 
-
-We can simply take these as a percentage of the crude rate differences.  
-
-- The category-composition effect (comp_ce below) represents the percentage of the crude rate difference that is due to change in $\frac{\text{category size}}{\text{total population size}}$.  
-- The category-rate effect (rate_ce below) represents the percentage of the crude rate difference that is due to change in category-specific rates.  
-- The category-total effect (tot_ce below) represents the percentage of the crude rate difference that is due to change in both category relative size and category specific rates. 
-
-```{r}
+## -----------------------------------------------------------------------------
 bind_rows(
   race_ce |> mutate(var = "race") |> rename(category = race),
   age_ce |> mutate(var = "age") |> rename(category = age)
@@ -147,51 +99,32 @@ bind_rows(
   group_by(var) |> 
   mutate(across(2:4, ~round(.,2))) |>
   gt()
-```
 
-
-
-
-Note that these will map to how each category changes between the two populations with respect to a) the proportion of the population that the category constitutes, and b) the average rate. If a category makes up a larger proportion of the population, its category-composition effect will be positive (if the crude rate difference is positive). If the category specific rate changes in the same direction as the crude rate changes, the category-rate effect is positive. The benefit of [Chevan & Sutherland](https://doi.org/10.1353/dem.0.0060){target="_blank"}'s approach is that these are now scaled proportional to the total crude rate difference.  
-
-Changes in category proportions:
-```{r}
+## -----------------------------------------------------------------------------
 eg5.3 |> group_by(pop, age) |> 
   summarise(size = sum(size)) |> 
   group_by(pop) |> 
   mutate(prop = size/sum(size)) |> 
   group_by(age) |> 
   summarise(delta = prop[pop==1985] - prop[pop==1970])
-```
 
-
-# Scottish Reconvictions Data  
-
-Data: 
-```{r}
+## -----------------------------------------------------------------------------
 data(reconv)
 srec <- reconv |> filter(year %in% c(2004,2016)) |>
   select(year, Sex, Age, offenders, prev_rate)
-```
 
-Population level decomposition:
-```{r}
+## -----------------------------------------------------------------------------
  dgnpop(srec, pop = "year", factors = c("prev_rate"),
               id_vars = c("Age","Sex"),
               crossclassified = "offenders", agg = TRUE) |>
   dg_table()
-```
 
-Sub-population standardised rates: 
-
-```{r}
+## -----------------------------------------------------------------------------
 res <- dgnpop(srec, pop = "year", factors = c("prev_rate"),
               id_vars = c("Age","Sex"),
               crossclassified = "offenders", agg = FALSE)
-```
 
-Category effects for Sex and Age:  
-```{r}
+## -----------------------------------------------------------------------------
 sex_ce <- res |>
   pivot_wider(names_from = factor, values_from = rate) |>
   group_by(pop, Sex) |>
@@ -221,9 +154,8 @@ age_ce <- res |>
     rate_ce = diff(RTj),
     tot_ce = diff(CEj)
   )
-```
 
-```{r}
+## -----------------------------------------------------------------------------
 bind_rows(
   sex_ce |> mutate(var = "sex") |> rename(category = Sex),
   age_ce |> mutate(var = "age") |> rename(category = Age)
@@ -236,4 +168,4 @@ bind_rows(
   group_by(var) |> 
   mutate(across(2:4, ~round(.,2))) |>
   gt()
-```
+

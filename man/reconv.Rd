@@ -15,7 +15,6 @@ Scottish Reconvictions data 2004-2016
 }
 \examples{
 data(reconv)
-dgnpop(reconv, pop="year", factors=c("prev_rate"), id_vars=c("Sex","Age"), crossclassified="offenders")$rates |> dg_plot()
 
 }
 \references{

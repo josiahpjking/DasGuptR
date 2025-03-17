@@ -13,6 +13,8 @@
 #'
 #' @examples
 #' data(reconv)
-#' dgnpop(reconv, pop="year", factors=c("prev_rate"), id_vars=c("Sex","Age"), crossclassified="offenders")$rates |> dg_plot()
+# dgnpop(reconv, pop="year", factors=c("prev_rate"),
+#        id_vars=c("Sex","Age"), crossclassified="offenders")$rates |>
+#   dg_plot()
 #'
 "reconv"
