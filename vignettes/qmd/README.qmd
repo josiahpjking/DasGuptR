@@ -418,7 +418,7 @@ eg4.1 <- data.frame(
 
 # rate function:
 RF4.1 <- function(A, B) {
-  idx <- 1:length(A)
+  idx <- seq_len(length(A))
   mu0 <- sum(A * B / 100000)
   mu1 <- sum((5 * idx + 7.5) * A * B / 100000)
   r1 <- log(mu0) * (mu0 / mu1)

@@ -120,9 +120,9 @@ factor, and a single variable denoting the population:
 
 ``` r
 eg.dg <- data.frame(
-  pop = c("pop1","pop2"),
-  alpha = c(.6,.3),
-  beta = c(.5,.45)
+  pop = c("pop1", "pop2"),
+  alpha = c(.6, .3),
+  beta = c(.5, .45)
 )
 eg.dg
 #>    pop alpha beta
@@ -135,10 +135,10 @@ calculated manually:
 
 ``` r
 data.frame(
-  pop = c("pop1","pop2"),
-  Rcrude = c(.6*.5, .3*.45),
-  R_alpha = c(.6,.3) * ((.5+.45)/2),
-  R_beta = ((.6+.3)/2) * c(.5,.45)
+  pop = c("pop1", "pop2"),
+  Rcrude = c(.6 * .5, .3 * .45),
+  R_alpha = c(.6, .3) * ((.5 + .45) / 2),
+  R_beta = ((.6 + .3) / 2) * c(.5, .45)
 )
 #>    pop Rcrude R_alpha R_beta
 #> 1 pop1  0.300  0.2850 0.2250
@@ -149,7 +149,7 @@ The workhorse of the DasGuptR package is `dgnpop()`, which computes the
 adjusted rates for $P$ factors across $N$ populations:
 
 ``` r
-dgnpop(eg.dg, pop = "pop", factors = c("alpha","beta"))
+dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta"))
 #>     rate  pop std.set factor
 #> 1 0.3000 pop1    <NA>  crude
 #> 2 0.1350 pop2    <NA>  crude
@@ -165,7 +165,7 @@ provides the difference in rates, and expresses them as the percentage
 of the crude rate difference:
 
 ``` r
-dgnpop(eg.dg, pop = "pop", factors = c("alpha","beta")) |>
+dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta")) |>
   dg_table()
 #>        pop1   pop2    diff decomp
 #> alpha 0.285 0.1425 -0.1425  86.36
@@ -178,7 +178,7 @@ the adjusted rates, although this is really only useful when working
 with many populations, such as with time series data.
 
 ``` r
-dgnpop(eg.dg, pop = "pop", factors = c("alpha","beta")) |>
+dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta")) |>
   dg_plot()
 ```
 
@@ -221,7 +221,7 @@ all factors specified.
 
 ``` r
 eg2.1 <- data.frame(
-  pop = c("black","white"),
+  pop = c("black", "white"),
   avg_earnings = c(10930, 16591),
   earner_prop = c(.717892, .825974)
 )
@@ -244,7 +244,7 @@ dgnpop(eg2.1, pop = "pop", factors = c("avg_earnings", "earner_prop")) |>
 
 ``` r
 eg2.2 <- data.frame(
-  pop = c("austria","chile"),
+  pop = c("austria", "chile"),
   birthsw1549 = c(51.78746, 84.90502),
   propw1549 = c(.45919, .75756),
   propw = c(.52638, .51065)
@@ -279,8 +279,10 @@ eg2.3 <- data.frame(
   w_prop = c(.949, .986)
 )
 
-dgnpop(eg2.3, pop = "pop", 
-       factors = c("birth_preg", "preg_actw", "actw_prop", "w_prop")) |>
+dgnpop(eg2.3,
+  pop = "pop",
+  factors = c("birth_preg", "preg_actw", "actw_prop", "w_prop")
+) |>
   dg_table()
 #>                1971     1979      diff decomp
 #> birth_preg 2.355434 3.044375 0.6889411  23.05
@@ -310,8 +312,10 @@ eg2.4 <- data.frame(
   fecund = c(16.573, 16.158)
 )
 
-dgnpop(eg2.4, pop = "pop", 
-       factors = c("prop_m", "noncontr", "abort", "lact", "fecund")) |>
+dgnpop(eg2.4,
+  pop = "pop",
+  factors = c("prop_m", "noncontr", "abort", "lact", "fecund")
+) |>
   dg_table()
 #>              1970     1980       diff decomp
 #> prop_m   4.519768 5.610746  1.0909785  52.46
@@ -349,16 +353,24 @@ sum of the cell-specific rates, so the user would specify
 eg4.3 <- data.frame(
   agegroup = rep(1:7, 2),
   pop = rep(c(1970, 1960), e = 7),
-  bm = c(488, 452, 338, 156, 63, 22, 3,
-         393, 407, 369, 274, 184, 90, 16),
-  mw = c(.082, .527, .866, .941, .942, .923, .876,
-         .122, .622, .903, .930, .916, .873, .800),
-  wp = c(.058, .038, .032, .030, .026, .023, .019,
-         .043, .041, .036, .032, .026, .020, .018)
+  bm = c(
+    488, 452, 338, 156, 63, 22, 3,
+    393, 407, 369, 274, 184, 90, 16
+  ),
+  mw = c(
+    .082, .527, .866, .941, .942, .923, .876,
+    .122, .622, .903, .930, .916, .873, .800
+  ),
+  wp = c(
+    .058, .038, .032, .030, .026, .023, .019,
+    .043, .041, .036, .032, .026, .020, .018
+  )
 )
 
-dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"),
-       ratefunction = "sum(bm*mw*wp)") |>
+dgnpop(eg4.3,
+  pop = "pop", factors = c("bm", "mw", "wp"),
+  ratefunction = "sum(bm*mw*wp)"
+) |>
   dg_table()
 #>           1960     1970       diff decomp
 #> bm    36.72867 29.44304  -7.285632  62.96
@@ -377,9 +389,11 @@ specify the variable indicating the sub-population in `id_vars`
 argument.
 
 ``` r
-dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"), 
-       id_vars = c("agegroup"),
-       ratefunction = "bm*mw*wp")
+dgnpop(eg4.3,
+  pop = "pop", factors = c("bm", "mw", "wp"),
+  id_vars = c("agegroup"),
+  ratefunction = "bm*mw*wp"
+)
 #>          rate  pop std.set factor agegroup
 #> 1   2.4892880 1970    1960     bm        1
 #> 2  10.2678580 1970    1960     bm        2
@@ -408,9 +422,11 @@ these post-hoc:
 ``` r
 library(tidyverse)
 
-dgnpop(eg4.3, pop = "pop", factors = c("bm", "mw", "wp"), 
-       id_vars = c("agegroup"),
-       ratefunction = "bm*mw*wp") |>
+dgnpop(eg4.3,
+  pop = "pop", factors = c("bm", "mw", "wp"),
+  id_vars = c("agegroup"),
+  ratefunction = "bm*mw*wp"
+) |>
   group_by(pop, factor) |>
   reframe(
     rate = sum(rate)
@@ -432,13 +448,13 @@ then running `dgnpop()` on data for each sub-population separately and
 aggregating up will achieve the same goal:
 
 ``` r
-eg4.3 |> 
+eg4.3 |>
   nest(data = -agegroup) |>
   mutate(
-    dg = map(data, ~ dgnpop(., pop = "pop", factors = c("bm","mw","wp")))
-  ) |> 
+    dg = map(data, ~ dgnpop(., pop = "pop", factors = c("bm", "mw", "wp")))
+  ) |>
   unnest(dg) |>
-  group_by(pop,factor) |>
+  group_by(pop, factor) |>
   reframe(
     rate = sum(rate)
   )
@@ -467,13 +483,15 @@ $R = \alpha - \beta$ (specified as `ratefunction = "a-b"`):
 
 ``` r
 eg3.1 <- data.frame(
-  pop = c(1940,1960),
+  pop = c(1940, 1960),
   crude_birth = c(19.4, 23.7),
   crude_death = c(10.8, 9.5)
 )
-dgnpop(eg3.1, pop = "pop",
-       factors = c("crude_birth","crude_death"),
-       ratefunction = "crude_birth-crude_death") |>
+dgnpop(eg3.1,
+  pop = "pop",
+  factors = c("crude_birth", "crude_death"),
+  ratefunction = "crude_birth-crude_death"
+) |>
   dg_table()
 #>              1940  1960 diff decomp
 #> crude_birth  9.25 13.55  4.3  76.79
@@ -502,21 +520,31 @@ The example below shows once such example:
 
 ``` r
 eg4.4 <- data.frame(
-  pop = rep(c(1963,1983), e = 6),
-  agegroup = c("15-19","20-24","25-29","30-34","35-39","40-44"),
-  A = c(.200,.163,.146,.154,.168,.169,
-        .169,.195,.190,.174,.150,.122),
-  B = c(.866,.325,.119,.099,.099,.121,
-        .931,.563,.311,.216,.199,.191),
-  C = c(.007,.021,.023,.015,.008,.002,
-        .018,.026,.023,.016,.008,.002),
-  D = c(.454,.326,.195,.107,.051,.015,
-        .380,.201,.149,.079,.025,.006)
+  pop = rep(c(1963, 1983), e = 6),
+  agegroup = c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44"),
+  A = c(
+    .200, .163, .146, .154, .168, .169,
+    .169, .195, .190, .174, .150, .122
+  ),
+  B = c(
+    .866, .325, .119, .099, .099, .121,
+    .931, .563, .311, .216, .199, .191
+  ),
+  C = c(
+    .007, .021, .023, .015, .008, .002,
+    .018, .026, .023, .016, .008, .002
+  ),
+  D = c(
+    .454, .326, .195, .107, .051, .015,
+    .380, .201, .149, .079, .025, .006
+  )
 )
 
-dgnpop(eg4.4, pop = "pop", factors = c("A","B","C","D"), 
-       id_vars = "agegroup",
-       ratefunction = "sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))") |>
+dgnpop(eg4.4,
+  pop = "pop", factors = c("A", "B", "C", "D"),
+  id_vars = "agegroup",
+  ratefunction = "sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
+) |>
   dg_table()
 #>             1963       1983        diff decomp
 #> A     0.07770985 0.07150487 -0.00620498  -6.59
@@ -537,13 +565,15 @@ environment, and provide a call to that function to the `ratefunction`
 argument of `dgnpop()`:
 
 ``` r
-myratef <- function(a,b,c,d){
-  return( sum(a*b*c) / (sum(a*b*c) + sum(a*(1-b)*d))  )
+myratef <- function(a, b, c, d) {
+  return(sum(a * b * c) / (sum(a * b * c) + sum(a * (1 - b) * d)))
 }
 
-dgnpop(eg4.4, pop = "pop", factors = c("A","B","C","D"), 
-       id_vars = "agegroup",
-       ratefunction = "myratef(A,B,C,D)") |>
+dgnpop(eg4.4,
+  pop = "pop", factors = c("A", "B", "C", "D"),
+  id_vars = "agegroup",
+  ratefunction = "myratef(A,B,C,D)"
+) |>
   dg_table()
 #>             1963       1983        diff decomp
 #> A     0.07770985 0.07150487 -0.00620498  -6.59
@@ -567,30 +597,34 @@ Newton-Raphson:
 
 ``` r
 eg4.1 <- data.frame(
-  age_group = c("10-15","15-20","20-25","25-30","30-35","35-40","40-45","45-50","50-55"),
-  pop = rep(c(1965,1960), e = 9),
-  Lx = c(486446,485454,483929,482046,479522,475844,470419,462351,450468,
-       485434,484410,492905,481001,478485,474911,469528,461368,449349),
-  mx = c(.00041,.03416,.09584,.07915,.04651,.02283,.00631,.00038,.00000,
-       .00040,.04335,.12581,.09641,.05504,.02760,.00756,.00045,.00000)
+  age_group = c("10-15", "15-20", "20-25", "25-30", "30-35", "35-40", "40-45", "45-50", "50-55"),
+  pop = rep(c(1965, 1960), e = 9),
+  Lx = c(
+    486446, 485454, 483929, 482046, 479522, 475844, 470419, 462351, 450468,
+    485434, 484410, 492905, 481001, 478485, 474911, 469528, 461368, 449349
+  ),
+  mx = c(
+    .00041, .03416, .09584, .07915, .04651, .02283, .00631, .00038, .00000,
+    .00040, .04335, .12581, .09641, .05504, .02760, .00756, .00045, .00000
+  )
 )
 
-# rate function:  
-RF4.1 <- function(A,B){
-  idx = 1:length(A)
-  mu0 = sum(A*B/100000)
-  mu1 = sum((5*idx + 7.5)*A*B/100000)
-  r1 = log(mu0) * (mu0/mu1)
-  while(TRUE){
-    Nr1 = 0
-    Dr1 = 0
-    Nr1 = Nr1 + sum(exp(-r1 * (5*idx + 7.5)) * A * (B / 100000))
-    Dr1 = Dr1 - sum((5*idx + 7.5) * exp(-r1 * (5*idx + 7.5)) * A * (B / 100000))
-    r2 = r1 - ((Nr1 - 1)/Dr1)
-    if(abs(r2 - r1)<=.0000001){
+# rate function:
+RF4.1 <- function(A, B) {
+  idx <- seq_len(length(A))
+  mu0 <- sum(A * B / 100000)
+  mu1 <- sum((5 * idx + 7.5) * A * B / 100000)
+  r1 <- log(mu0) * (mu0 / mu1)
+  while (TRUE) {
+    Nr1 <- 0
+    Dr1 <- 0
+    Nr1 <- Nr1 + sum(exp(-r1 * (5 * idx + 7.5)) * A * (B / 100000))
+    Dr1 <- Dr1 - sum((5 * idx + 7.5) * exp(-r1 * (5 * idx + 7.5)) * A * (B / 100000))
+    r2 <- r1 - ((Nr1 - 1) / Dr1)
+    if (abs(r2 - r1) <= .0000001) {
       break
     }
-    r1 = r2
+    r1 <- r2
   }
   return(r2)
 }
@@ -601,10 +635,12 @@ RF4.1(A = eg4.1$Lx[1:9], B = eg4.1$mx[1:9])
 RF4.1(A = eg4.1$Lx[10:18], B = eg4.1$mx[10:18])
 #> [1] 0.02107187
 
-# decomposition: 
-dgnpop(eg4.1, pop = "pop", factors = c("Lx","mx"), 
-       id_vars = "age_group",
-       ratefunction = "RF4.1(Lx,mx)") |>
+# decomposition:
+dgnpop(eg4.1,
+  pop = "pop", factors = c("Lx", "mx"),
+  id_vars = "age_group",
+  ratefunction = "RF4.1(Lx,mx)"
+) |>
   dg_table()
 #>             1960       1965          diff decomp
 #> Lx    0.01670319 0.01649246 -0.0002107251   2.36
@@ -639,14 +675,20 @@ percentage in the `size` column.
 
 ``` r
 eg5.1 <- data.frame(
-  age_group = rep(c("15-19","20-24","25-29","30-34","35-39",
-                "40-44","45-49","50-54","55-59","60-64",
-                "65-69","70-74","75+"), 2),
-  pop = rep(c(1970,1985), e = 13),
-  size = c(12.9,10.9,9.5,8.0,7.8,8.4,8.6,7.8,7.0,5.9,4.7,3.6,4.9,
-           10.1,11.2,11.6,10.9,9.4,7.7,6.3,6.0,6.3,5.9,5.1,4.0,5.5),
-  rate = c(1.9,25.8,45.7,49.6,51.2,51.6,51.8,54.9,58.7,60.4,62.8,66.6,66.8,
-           2.2,24.3,45.8,52.5,56.1,55.6,56.0,57.4,57.2,61.2,63.9,68.6,72.2)
+  age_group = rep(c(
+    "15-19", "20-24", "25-29", "30-34", "35-39",
+    "40-44", "45-49", "50-54", "55-59", "60-64",
+    "65-69", "70-74", "75+"
+  ), 2),
+  pop = rep(c(1970, 1985), e = 13),
+  size = c(
+    12.9, 10.9, 9.5, 8.0, 7.8, 8.4, 8.6, 7.8, 7.0, 5.9, 4.7, 3.6, 4.9,
+    10.1, 11.2, 11.6, 10.9, 9.4, 7.7, 6.3, 6.0, 6.3, 5.9, 5.1, 4.0, 5.5
+  ),
+  rate = c(
+    1.9, 25.8, 45.7, 49.6, 51.2, 51.6, 51.8, 54.9, 58.7, 60.4, 62.8, 66.6, 66.8,
+    2.2, 24.3, 45.8, 52.5, 56.1, 55.6, 56.0, 57.4, 57.2, 61.2, 63.9, 68.6, 72.2
+  )
 )
 ```
 
@@ -658,12 +700,14 @@ various ways.
     previously:
 
 ``` r
-eg5.1$age_str <- eg5.1$size/100
+eg5.1$age_str <- eg5.1$size / 100
 
-dgnpop(eg5.1, pop = "pop", factors = c("age_str","rate"), 
-       id_vars = "age_group",
-       ratefunction = "sum(age_str*rate)") |>
-  dg_table() 
+dgnpop(eg5.1,
+  pop = "pop", factors = c("age_str", "rate"),
+  id_vars = "age_group",
+  ratefunction = "sum(age_str*rate)"
+) |>
+  dg_table()
 #>            1970    1985   diff decomp
 #> age_str 45.5876 46.8145 1.2269  41.35
 #> rate    45.3309 47.0712 1.7403  58.65
@@ -676,9 +720,11 @@ dgnpop(eg5.1, pop = "pop", factors = c("age_str","rate"),
     `sum(size)` will give us the total population size:
 
 ``` r
-dgnpop(eg5.1, pop = "pop", factors = c("size","rate"), 
-       id_vars = "age_group",
-       ratefunction = "sum( (size/sum(size))*rate )") |>
+dgnpop(eg5.1,
+  pop = "pop", factors = c("size", "rate"),
+  id_vars = "age_group",
+  ratefunction = "sum( (size/sum(size))*rate )"
+) |>
   dg_table()
 #>          1970    1985   diff decomp
 #> size  45.5876 46.8145 1.2269  41.35
@@ -691,10 +737,12 @@ dgnpop(eg5.1, pop = "pop", factors = c("size","rate"),
     `dgnpop()`.
 
 ``` r
-dgnpop(eg5.1, pop = "pop", factors = c("rate"), 
-       id_vars = "age_group",
-       crossclassified = "size") |>
-  dg_table() 
+dgnpop(eg5.1,
+  pop = "pop", factors = c("rate"),
+  id_vars = "age_group",
+  crossclassified = "size"
+) |>
+  dg_table()
 #>                     1970    1985   diff decomp
 #> age_group_struct 45.5876 46.8145 1.2269  41.35
 #> rate             45.3309 47.0712 1.7403  58.65
@@ -714,16 +762,20 @@ the combination of multiple variables such as age and race.
 ``` r
 eg5.3 <- data.frame(
   race = rep(rep(1:2, e = 11), 2),
-  age = rep(rep(1:11,2), 2),
-  pop = rep(c(1985,1970), e = 22),
-  size = c(3041,11577,27450,32711,35480,27411,19555,19795,15254,8022,2472,
-           707,2692,6473,6841,6547,4352,3034,2540,1749,804,236,
-           2968,11484,34614,30992,21983,20314,20928,16897,11339,5720,1315,
-           535,2162,6120,4781,3096,2718,2363,1767,1149,448,117),
-  rate = c(9.163,0.462,0.248,0.929,1.084,1.810,4.715,12.187,27.728,64.068,157.570,
-           17.208,0.738,0.328,1.103,2.045,3.724,8.052,17.812,34.128,68.276,125.161,
-           18.469,0.751,0.391,1.146,1.287,2.672,6.636,15.691,34.723,79.763,176.837,
-           36.993,1.352,0.541,2.040,3.523,6.746,12.967,24.471,45.091,74.902,123.205)
+  age = rep(rep(1:11, 2), 2),
+  pop = rep(c(1985, 1970), e = 22),
+  size = c(
+    3041, 11577, 27450, 32711, 35480, 27411, 19555, 19795, 15254, 8022, 2472,
+    707, 2692, 6473, 6841, 6547, 4352, 3034, 2540, 1749, 804, 236,
+    2968, 11484, 34614, 30992, 21983, 20314, 20928, 16897, 11339, 5720, 1315,
+    535, 2162, 6120, 4781, 3096, 2718, 2363, 1767, 1149, 448, 117
+  ),
+  rate = c(
+    9.163, 0.462, 0.248, 0.929, 1.084, 1.810, 4.715, 12.187, 27.728, 64.068, 157.570,
+    17.208, 0.738, 0.328, 1.103, 2.045, 3.724, 8.052, 17.812, 34.128, 68.276, 125.161,
+    18.469, 0.751, 0.391, 1.146, 1.287, 2.672, 6.636, 15.691, 34.723, 79.763, 176.837,
+    36.993, 1.352, 0.541, 2.040, 3.523, 6.746, 12.967, 24.471, 45.091, 74.902, 123.205
+  )
 )
 ```
 
@@ -732,10 +784,12 @@ compositional factor straight off the bat will collapse the two
 variables that make up the structure of the population:
 
 ``` r
-dgnpop(eg5.3, pop = "pop", factors = c("size","rate"), 
-       id_vars = c("race","age"),
-       ratefunction = "sum( (size/sum(size))*rate)") |>
-  dg_table() 
+dgnpop(eg5.3,
+  pop = "pop", factors = c("size", "rate"),
+  id_vars = c("race", "age"),
+  ratefunction = "sum( (size/sum(size))*rate)"
+) |>
+  dg_table()
 #>            1970     1985       diff  decomp
 #> size   8.372751 9.914260  1.5415096 -224.64
 #> rate  10.257368 8.029643 -2.2277254  324.64
@@ -748,10 +802,12 @@ cell as a product of K factors representing each of the structural
 variables. These are then included in the decomposition:
 
 ``` r
-dgnpop(eg5.3, pop = "pop", factors = c("rate"), 
-       id_vars = c("race","age"),
-       crossclassified = "size") |>
-  dg_table() 
+dgnpop(eg5.3,
+  pop = "pop", factors = c("rate"),
+  id_vars = c("race", "age"),
+  crossclassified = "size"
+) |>
+  dg_table()
 #>                  1970     1985       diff  decomp
 #> age_struct   8.385332 9.907067  1.5217347 -221.76
 #> race_struct  9.136312 9.156087  0.0197749   -2.88
@@ -781,28 +837,36 @@ and 2 and 3, should sum to the difference between 1 and 3).
 
 ``` r
 eg6.5 <- data.frame(
-  pop=rep(c(1963,1968,1973,1978,1983),e=6),
-  agegroup=c("15-19","20-24","25-29","30-34","35-39","40-44"),
-  A = c(.200,.163,.146,.154,.168,.169,
-        .215,.191,.156,.137,.144,.157,
-        .218,.203,.175,.144,.127,.133,
-        .205,.200,.181,.162,.134,.118,
-        .169,.195,.190,.174,.150,.122),
-  B = c(.866,.325,.119,.099,.099,.121,
-        .891,.373,.124,.100,.107,.127,
-        .870,.396,.158,.125,.113,.129,
-        .900,.484,.243,.176,.155,.168,
-        .931,.563,.311,.216,.199,.191),
-  C = c(.007,.021,.023,.015,.008,.002,
-        .010,.023,.023,.015,.008,.002,
-        .011,.016,.017,.011,.006,.002,
-        .014,.019,.015,.010,.005,.001,
-        .018,.026,.023,.016,.008,.002),
-  D = c(.454,.326,.195,.107,.051,.015,
-        .433,.249,.159,.079,.037,.011,
-        .314,.181,.133,.063,.023,.006,
-        .313,.191,.143,.069,.021,.004,
-        .380,.201,.149,.079,.025,.006)
+  pop = rep(c(1963, 1968, 1973, 1978, 1983), e = 6),
+  agegroup = c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44"),
+  A = c(
+    .200, .163, .146, .154, .168, .169,
+    .215, .191, .156, .137, .144, .157,
+    .218, .203, .175, .144, .127, .133,
+    .205, .200, .181, .162, .134, .118,
+    .169, .195, .190, .174, .150, .122
+  ),
+  B = c(
+    .866, .325, .119, .099, .099, .121,
+    .891, .373, .124, .100, .107, .127,
+    .870, .396, .158, .125, .113, .129,
+    .900, .484, .243, .176, .155, .168,
+    .931, .563, .311, .216, .199, .191
+  ),
+  C = c(
+    .007, .021, .023, .015, .008, .002,
+    .010, .023, .023, .015, .008, .002,
+    .011, .016, .017, .011, .006, .002,
+    .014, .019, .015, .010, .005, .001,
+    .018, .026, .023, .016, .008, .002
+  ),
+  D = c(
+    .454, .326, .195, .107, .051, .015,
+    .433, .249, .159, .079, .037, .011,
+    .314, .181, .133, .063, .023, .006,
+    .313, .191, .143, .069, .021, .004,
+    .380, .201, .149, .079, .025, .006
+  )
 )
 ```
 
@@ -825,9 +889,11 @@ The first entry provides the adjusted rates, standardised across all N
 populations, and can be used as above with `dg_table()` and `dg_plot()`.
 
 ``` r
-dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
-       id_vars = "agegroup",
-       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
+dgnpop(eg6.5,
+  pop = "pop", factors = c("A", "B", "C", "D"),
+  id_vars = "agegroup",
+  ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
+)$rates |>
   dg_table()
 #>           1963     1968     1973     1978      1983
 #> A     72.77031 74.65254 73.83625 71.36001  64.60057
@@ -842,9 +908,11 @@ standardised rates for each population, it will not return decomposition
 effects unless only two populations are specified:
 
 ``` r
-dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
-       id_vars = "agegroup",
-       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
+dgnpop(eg6.5,
+  pop = "pop", factors = c("A", "B", "C", "D"),
+  id_vars = "agegroup",
+  ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
+)$rates |>
   dg_table(pop1 = 1963, pop2 = 1968)
 #>           1963     1968      diff decomp
 #> A     72.77031 74.65254  1.882236   8.45
@@ -858,9 +926,11 @@ Alternatively, the decomposition effects are returned by `dgnpop()` in
 the `diffs` entry:
 
 ``` r
-dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
-       id_vars = "agegroup",
-       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$diffs
+dgnpop(eg6.5,
+  pop = "pop", factors = c("A", "B", "C", "D"),
+  id_vars = "agegroup",
+  ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
+)$diffs
 #>           diff  pop diff.calc        std.set factor
 #> 1    1.8822361 1963 1963-1968 1973.1978.1983      A
 #> 2    1.0659408 1963 1963-1973 1968.1978.1983      A
@@ -868,7 +938,7 @@ dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
 #> 4   -8.1697336 1963 1963-1983 1968.1973.1978      A
 #> 5   -0.8162953 1968 1968-1973 1963.1978.1983      A
 #> 6   -3.2925340 1968 1968-1978 1963.1973.1983      A
-#> ...  ...       ...  ...       ...                 .. 
+#> ...  ...       ...  ...       ...                 ..
 #> ...  ...       ...  ...       ...                 ..
 ```
 
@@ -876,9 +946,11 @@ When working with multiple populations in a time series, we can get
 quick rough and ready plots of the standardised rates using `dg_plot()`:
 
 ``` r
-dgnpop(eg6.5, pop = "pop", factors = c("A","B","C","D"),
-       id_vars = "agegroup",
-       ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))")$rates |>
+dgnpop(eg6.5,
+  pop = "pop", factors = c("A", "B", "C", "D"),
+  id_vars = "agegroup",
+  ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
+)$rates |>
   dg_plot()
 ```
 
@@ -895,15 +967,18 @@ Returning to the example above, we can compute these manually for the
 case of 2 cross-classified variables as so:
 
 ``` r
-eg5.3a <- 
+eg5.3a <-
   eg5.3 |>
-  group_by(pop) |> mutate(n_tot = sum(size)) |>
-  group_by(pop,age) |> mutate(n_age = sum(size)) |>
-  group_by(pop,race) |> mutate(n_race = sum(size)) |>
+  group_by(pop) |>
+  mutate(n_tot = sum(size)) |>
+  group_by(pop, age) |>
+  mutate(n_age = sum(size)) |>
+  group_by(pop, race) |>
+  mutate(n_race = sum(size)) |>
   ungroup() |>
   mutate(
-    A = ((size / n_race) * (n_age / n_tot))^(1/2),
-    B = ((size / n_age) * (n_race / n_tot))^(1/2),
+    A = ((size / n_race) * (n_age / n_tot))^(1 / 2),
+    B = ((size / n_age) * (n_race / n_tot))^(1 / 2),
   )
 ```
 
@@ -911,10 +986,10 @@ The product of variables `A` and `B` above will return the individual
 group proportions:
 
 ``` r
-eg5.3a |> 
+eg5.3a |>
   mutate(
-    AB = A*B,
-    prop = size/n_tot
+    AB = A * B,
+    prop = size / n_tot
   ) |>
   head()
 #> # A tibble: 6 × 12
@@ -934,8 +1009,10 @@ wish, this intermediary step in the decomposition can be done using
 `dgcc()`:
 
 ``` r
-dgcc(eg5.3, pop = "pop", id_vars = c("age","race"), 
-     crossclassified ="size") |>
+dgcc(eg5.3,
+  pop = "pop", id_vars = c("age", "race"),
+  crossclassified = "size"
+) |>
   head()
 #>   race age  pop  size  rate age_struct race_struct
 #> 1    1   1 1985  3041 9.163 0.01534415   0.8301237
@@ -963,8 +1040,10 @@ head(uspop)
 #> 5 1940  30-34  5192      83.4
 #> 6 1940  35-39  4823      46.3
 
-dgo_us <- dgnpop(uspop, pop = "year", factors = c("birthrate"),
-       id_vars = "agebin", crossclassified = "thous")
+dgo_us <- dgnpop(uspop,
+  pop = "year", factors = c("birthrate"),
+  id_vars = "agebin", crossclassified = "thous"
+)
 
 dg_plot(dgo_us$rates)
 ```
@@ -1000,8 +1079,10 @@ head(reconv)
 #> 5 0.2849462
 #> 6 0.3674086
 
-dg_srec <- dgnpop(reconv, pop = "year", factors = c("prev_rate"), 
-                  id_vars = c("Sex","Age"), crossclassified="offenders")
+dg_srec <- dgnpop(reconv,
+  pop = "year", factors = c("prev_rate"),
+  id_vars = c("Sex", "Age"), crossclassified = "offenders"
+)
 
 dg_plot(dg_srec$rates)
 ```

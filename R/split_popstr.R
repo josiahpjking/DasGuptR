@@ -35,7 +35,7 @@ split_popstr <- function(x, id_vars, nvar) {
   } else {
     pop_str <-
       lapply(id_vars, \(ix)
-      sapply(1:nrow(tmpdf), \(rw) .onerow(tmpdf, rw, id_vars, ix, nvar)))
+      sapply(seq_len(nrow(tmpdf)), \(rw) .onerow(tmpdf, rw, id_vars, ix, nvar)))
     names(pop_str) <- paste0(id_vars, "_struct")
     pop_str <- as.data.frame(pop_str)
   }

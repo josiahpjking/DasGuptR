@@ -75,7 +75,7 @@ dg354 <- function(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE) {
 
   fdata_clean <- vector(mode = "list", length = dim(fdata)[2])
 
-  for (l in 1:length(fdata_clean)) {
+  for (l in seq_len(length(fdata_clean))) {
     fdata_clean[[l]] <- fdata[[l]]
     names(fdata_clean[[l]]) <- gsub(paste0(pops, collapse = "|"), "", t(relperms))[, l]
     fdata_clean[[l]] <- c(fdata_clean[[l]], setNames(NA, facti))
@@ -86,7 +86,7 @@ dg354 <- function(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE) {
     # sub in each pop rate for A/a
 
     fdata_cleanRF <- fdata_clean
-    for (l in 1:length(fdata_cleanRF)) {
+    for (l in seq_len(length(fdata_cleanRF))) {
       fdata_cleanRF[[l]][facti] <- list(a)
     }
     # calc F(a,...)

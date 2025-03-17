@@ -432,7 +432,7 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
         if (!output_agg) {
           subpops <- unique(tmpdf[, id_vars])
           standardized_rates <- list()
-          for (sp_i in 1:nrow(subpops)) {
+          for (sp_i in seq_len(nrow(subpops))) {
             # filter to sub-pop
             dgNp_rates_sp <- dgNp_rates[apply(dgNp_rates[, id_vars], 1, \(x) all(x == subpops[sp_i, id_vars])), ]
             # std rates across N

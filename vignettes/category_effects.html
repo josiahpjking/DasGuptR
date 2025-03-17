@@ -3251,24 +3251,30 @@ window.Quarto = {
 <h1>Example 5.3, Das Gupta 1993</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>eg5<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">race =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">e=</span><span class="dv">11</span>),<span class="dv">2</span>),</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>,<span class="dv">2</span>),<span class="dv">2</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1985</span>,<span class="dv">1970</span>), <span class="at">e=</span><span class="dv">22</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">c</span>(<span class="dv">3041</span>,<span class="dv">11577</span>,<span class="dv">27450</span>,<span class="dv">32711</span>,<span class="dv">35480</span>,<span class="dv">27411</span>,<span class="dv">19555</span>,<span class="dv">19795</span>,<span class="dv">15254</span>,<span class="dv">8022</span>,<span class="dv">2472</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>           <span class="dv">707</span>,<span class="dv">2692</span>,<span class="dv">6473</span>,<span class="dv">6841</span>,<span class="dv">6547</span>,<span class="dv">4352</span>,<span class="dv">3034</span>,<span class="dv">2540</span>,<span class="dv">1749</span>,<span class="dv">804</span>,<span class="dv">236</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>           <span class="dv">2968</span>,<span class="dv">11484</span>,<span class="dv">34614</span>,<span class="dv">30992</span>,<span class="dv">21983</span>,<span class="dv">20314</span>,<span class="dv">20928</span>,<span class="dv">16897</span>,<span class="dv">11339</span>,<span class="dv">5720</span>,<span class="dv">1315</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>           <span class="dv">535</span>,<span class="dv">2162</span>,<span class="dv">6120</span>,<span class="dv">4781</span>,<span class="dv">3096</span>,<span class="dv">2718</span>,<span class="dv">2363</span>,<span class="dv">1767</span>,<span class="dv">1149</span>,<span class="dv">448</span>,<span class="dv">117</span>),</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">rate =</span> <span class="fu">c</span>(<span class="fl">9.163</span>,<span class="fl">0.462</span>,<span class="fl">0.248</span>,<span class="fl">0.929</span>,<span class="fl">1.084</span>,<span class="fl">1.810</span>,<span class="fl">4.715</span>,<span class="fl">12.187</span>,<span class="fl">27.728</span>,<span class="fl">64.068</span>,<span class="fl">157.570</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>           <span class="fl">17.208</span>,<span class="fl">0.738</span>,<span class="fl">0.328</span>,<span class="fl">1.103</span>,<span class="fl">2.045</span>,<span class="fl">3.724</span>,<span class="fl">8.052</span>,<span class="fl">17.812</span>,<span class="fl">34.128</span>,<span class="fl">68.276</span>,<span class="fl">125.161</span>,</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>           <span class="fl">18.469</span>,<span class="fl">0.751</span>,<span class="fl">0.391</span>,<span class="fl">1.146</span>,<span class="fl">1.287</span>,<span class="fl">2.672</span>,<span class="fl">6.636</span>,<span class="fl">15.691</span>,<span class="fl">34.723</span>,<span class="fl">79.763</span>,<span class="fl">176.837</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>           <span class="fl">36.993</span>,<span class="fl">1.352</span>,<span class="fl">0.541</span>,<span class="fl">2.040</span>,<span class="fl">3.523</span>,<span class="fl">6.746</span>,<span class="fl">12.967</span>,<span class="fl">24.471</span>,<span class="fl">45.091</span>,<span class="fl">74.902</span>,<span class="fl">123.205</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">race =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">e =</span> <span class="dv">11</span>), <span class="dv">2</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>, <span class="dv">2</span>), <span class="dv">2</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1985</span>, <span class="dv">1970</span>), <span class="at">e =</span> <span class="dv">22</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">c</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">3041</span>, <span class="dv">11577</span>, <span class="dv">27450</span>, <span class="dv">32711</span>, <span class="dv">35480</span>, <span class="dv">27411</span>, <span class="dv">19555</span>, <span class="dv">19795</span>, <span class="dv">15254</span>, <span class="dv">8022</span>, <span class="dv">2472</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">707</span>, <span class="dv">2692</span>, <span class="dv">6473</span>, <span class="dv">6841</span>, <span class="dv">6547</span>, <span class="dv">4352</span>, <span class="dv">3034</span>, <span class="dv">2540</span>, <span class="dv">1749</span>, <span class="dv">804</span>, <span class="dv">236</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2968</span>, <span class="dv">11484</span>, <span class="dv">34614</span>, <span class="dv">30992</span>, <span class="dv">21983</span>, <span class="dv">20314</span>, <span class="dv">20928</span>, <span class="dv">16897</span>, <span class="dv">11339</span>, <span class="dv">5720</span>, <span class="dv">1315</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="dv">535</span>, <span class="dv">2162</span>, <span class="dv">6120</span>, <span class="dv">4781</span>, <span class="dv">3096</span>, <span class="dv">2718</span>, <span class="dv">2363</span>, <span class="dv">1767</span>, <span class="dv">1149</span>, <span class="dv">448</span>, <span class="dv">117</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rate =</span> <span class="fu">c</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="fl">9.163</span>, <span class="fl">0.462</span>, <span class="fl">0.248</span>, <span class="fl">0.929</span>, <span class="fl">1.084</span>, <span class="fl">1.810</span>, <span class="fl">4.715</span>, <span class="fl">12.187</span>, <span class="fl">27.728</span>, <span class="fl">64.068</span>, <span class="fl">157.570</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fl">17.208</span>, <span class="fl">0.738</span>, <span class="fl">0.328</span>, <span class="fl">1.103</span>, <span class="fl">2.045</span>, <span class="fl">3.724</span>, <span class="fl">8.052</span>, <span class="fl">17.812</span>, <span class="fl">34.128</span>, <span class="fl">68.276</span>, <span class="fl">125.161</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="fl">18.469</span>, <span class="fl">0.751</span>, <span class="fl">0.391</span>, <span class="fl">1.146</span>, <span class="fl">1.287</span>, <span class="fl">2.672</span>, <span class="fl">6.636</span>, <span class="fl">15.691</span>, <span class="fl">34.723</span>, <span class="fl">79.763</span>, <span class="fl">176.837</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="fl">36.993</span>, <span class="fl">1.352</span>, <span class="fl">0.541</span>, <span class="fl">2.040</span>, <span class="fl">3.523</span>, <span class="fl">6.746</span>, <span class="fl">12.967</span>, <span class="fl">24.471</span>, <span class="fl">45.091</span>, <span class="fl">74.902</span>, <span class="fl">123.205</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here is the population-level decomposition:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dgnpop</span>(eg5<span class="fl">.3</span>, <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors =</span> <span class="st">&quot;rate&quot;</span>, </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;race&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dg_table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dgnpop</span>(eg5<span class="fl">.3</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;race&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dg_table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 1970     1985       diff  decomp
 age_struct   8.385332 9.907067  1.5217347 -221.76
@@ -3280,9 +3286,11 @@ crude        9.421833 8.735618 -0.6862158  100.00</code></pre>
 <p>In order to calculate the influence of changes in specific categories, we need to first get out the sub-population level standardised rates from the decomposition. When we specify <code>crossclassified</code> argument in <code>dgnpop()</code>, this will aggregate up to population level unless we also specify <code>agg = FALSE</code>.</p>
 <p>As we are working with vector-factors, this will return rates at the sub-population levels:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">dgnpop</span>(eg5<span class="fl">.3</span>, <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors=</span><span class="st">&quot;rate&quot;</span>,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;race&quot;</span>,<span class="st">&quot;age&quot;</span>), <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span>, <span class="at">agg =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">dgnpop</span>(eg5<span class="fl">.3</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop =</span> <span class="st">&quot;pop&quot;</span>, <span class="at">factors =</span> <span class="st">&quot;rate&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;race&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="at">crossclassified =</span> <span class="st">&quot;size&quot;</span>, <span class="at">agg =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        rate  pop std.set factor race age
 1 0.12507554 1985    1970   rate    1   1
@@ -3321,22 +3329,22 @@ crude        9.421833 8.735618 -0.6862158  100.00</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>race_ce <span class="ot">&lt;-</span> res <span class="sc">|&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> factor, <span class="at">values_from =</span> rate) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pop,race) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pop, race) <span class="sc">|&gt;</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sum of P-I std rates</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">IAi =</span> <span class="fu">sum</span>(race_struct),</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sum of P-T std rates / number of crossclass vars</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTi =</span> <span class="fu">sum</span>(rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEi =</span> IAi<span class="sc">+</span>RTi</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTi =</span> <span class="fu">sum</span>(rate) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEi =</span> IAi <span class="sc">+</span> RTi</span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(race) <span class="sc">|&gt;</span></span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># category composition effect</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> IAi[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> IAi[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> IAi[pop <span class="sc">==</span> <span class="dv">1985</span>] <span class="sc">-</span> IAi[pop <span class="sc">==</span> <span class="dv">1970</span>],</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># category rate effect</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> RTi[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> RTi[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> RTi[pop <span class="sc">==</span> <span class="dv">1985</span>] <span class="sc">-</span> RTi[pop <span class="sc">==</span> <span class="dv">1970</span>],</span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># category total effect</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> CEi[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> CEi[pop<span class="sc">==</span><span class="dv">1970</span>]</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> CEi[pop <span class="sc">==</span> <span class="dv">1985</span>] <span class="sc">-</span> CEi[pop <span class="sc">==</span> <span class="dv">1970</span>]</span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Age categories:</p>
@@ -3348,29 +3356,29 @@ crude        9.421833 8.735618 -0.6862158  100.00</code></pre>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sum of P-J std rates</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">JBj =</span> <span class="fu">sum</span>(age_struct),</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sum of P-T std rates / number of crossclass vars</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTj =</span> <span class="fu">sum</span>(rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEj =</span> JBj<span class="sc">+</span>RTj</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTj =</span> <span class="fu">sum</span>(rate) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEj =</span> JBj <span class="sc">+</span> RTj</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">|&gt;</span></span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># category composition effect</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> JBj[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> JBj[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> JBj[pop <span class="sc">==</span> <span class="dv">1985</span>] <span class="sc">-</span> JBj[pop <span class="sc">==</span> <span class="dv">1970</span>],</span>
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># category rate effect</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> RTj[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> RTj[pop<span class="sc">==</span><span class="dv">1970</span>],</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> RTj[pop <span class="sc">==</span> <span class="dv">1985</span>] <span class="sc">-</span> RTj[pop <span class="sc">==</span> <span class="dv">1970</span>],</span>
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># category total effect</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> CEj[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> CEj[pop<span class="sc">==</span><span class="dv">1970</span>]</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> CEj[pop <span class="sc">==</span> <span class="dv">1985</span>] <span class="sc">-</span> CEj[pop <span class="sc">==</span> <span class="dv">1970</span>]</span>
 <span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The category-total effects will sum back up to the difference in the crude rates (see top of page)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>( <span class="fu">c</span>(race_ce<span class="sc">$</span>tot_ce, age_ce<span class="sc">$</span>tot_ce) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">c</span>(race_ce<span class="sc">$</span>tot_ce, age_ce<span class="sc">$</span>tot_ce))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -0.6862158</code></pre>
 </div>
 </div>
 <p>And the category-rate effects will sum back up to the differences in rate-adjusted rates:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>( <span class="fu">c</span>(race_ce<span class="sc">$</span>rate_ce, age_ce<span class="sc">$</span>rate_ce) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">c</span>(race_ce<span class="sc">$</span>rate_ce, age_ce<span class="sc">$</span>rate_ce))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -2.227725</code></pre>
 </div>
@@ -3387,30 +3395,30 @@ crude        9.421833 8.735618 -0.6862158  100.00</code></pre>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  race_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;race&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> race),</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  age_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;age&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> age)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> comp_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> rate_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> tot_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> comp_ce <span class="sc">/</span> <span class="fu">sum</span>(tot_ce) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> rate_ce <span class="sc">/</span> <span class="fu">sum</span>(tot_ce) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> tot_ce <span class="sc">/</span> <span class="fu">sum</span>(tot_ce) <span class="sc">*</span> <span class="dv">100</span></span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(var) <span class="sc">|&gt;</span> </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span><span class="fu">round</span>(.,<span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(var) <span class="sc">|&gt;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span> <span class="fu">round</span>(., <span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ynvcmulhnl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ynvcmulhnl table {
+<div id="vzfytumeoz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vzfytumeoz table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#ynvcmulhnl thead, #ynvcmulhnl tbody, #ynvcmulhnl tfoot, #ynvcmulhnl tr, #ynvcmulhnl td, #ynvcmulhnl th {
+#vzfytumeoz thead, #vzfytumeoz tbody, #vzfytumeoz tfoot, #vzfytumeoz tr, #vzfytumeoz td, #vzfytumeoz th {
 border-style: none;
 }
-#ynvcmulhnl p {
+#vzfytumeoz p {
 margin: 0;
 padding: 0;
 }
-#ynvcmulhnl .gt_table {
+#vzfytumeoz .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -3435,11 +3443,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_caption {
+#vzfytumeoz .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#ynvcmulhnl .gt_title {
+#vzfytumeoz .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -3450,7 +3458,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#ynvcmulhnl .gt_subtitle {
+#vzfytumeoz .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -3461,7 +3469,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#ynvcmulhnl .gt_heading {
+#vzfytumeoz .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -3472,12 +3480,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_bottom_border {
+#vzfytumeoz .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_col_headings {
+#vzfytumeoz .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3491,7 +3499,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_col_heading {
+#vzfytumeoz .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3510,7 +3518,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#ynvcmulhnl .gt_column_spanner_outer {
+#vzfytumeoz .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3521,13 +3529,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#ynvcmulhnl .gt_column_spanner_outer:first-child {
+#vzfytumeoz .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#ynvcmulhnl .gt_column_spanner_outer:last-child {
+#vzfytumeoz .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#ynvcmulhnl .gt_column_spanner {
+#vzfytumeoz .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -3538,10 +3546,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#ynvcmulhnl .gt_spanner_row {
+#vzfytumeoz .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#ynvcmulhnl .gt_group_heading {
+#vzfytumeoz .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3566,7 +3574,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#ynvcmulhnl .gt_empty_group_heading {
+#vzfytumeoz .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -3580,13 +3588,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#ynvcmulhnl .gt_from_md > :first-child {
+#vzfytumeoz .gt_from_md > :first-child {
 margin-top: 0;
 }
-#ynvcmulhnl .gt_from_md > :last-child {
+#vzfytumeoz .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#ynvcmulhnl .gt_row {
+#vzfytumeoz .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3604,7 +3612,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#ynvcmulhnl .gt_stub {
+#vzfytumeoz .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3616,7 +3624,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ynvcmulhnl .gt_stub_row_group {
+#vzfytumeoz .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3629,13 +3637,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#ynvcmulhnl .gt_row_group_first td {
+#vzfytumeoz .gt_row_group_first td {
 border-top-width: 2px;
 }
-#ynvcmulhnl .gt_row_group_first th {
+#vzfytumeoz .gt_row_group_first th {
 border-top-width: 2px;
 }
-#ynvcmulhnl .gt_summary_row {
+#vzfytumeoz .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3644,14 +3652,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ynvcmulhnl .gt_first_summary_row {
+#vzfytumeoz .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_first_summary_row.thick {
+#vzfytumeoz .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#ynvcmulhnl .gt_last_summary_row {
+#vzfytumeoz .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3660,7 +3668,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_grand_summary_row {
+#vzfytumeoz .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3669,7 +3677,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ynvcmulhnl .gt_first_grand_summary_row {
+#vzfytumeoz .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3678,7 +3686,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_last_grand_summary_row_top {
+#vzfytumeoz .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3687,10 +3695,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_striped {
+#vzfytumeoz .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#ynvcmulhnl .gt_table_body {
+#vzfytumeoz .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3698,7 +3706,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_footnotes {
+#vzfytumeoz .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3711,7 +3719,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_footnote {
+#vzfytumeoz .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3719,7 +3727,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ynvcmulhnl .gt_sourcenotes {
+#vzfytumeoz .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3732,64 +3740,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#ynvcmulhnl .gt_sourcenote {
+#vzfytumeoz .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ynvcmulhnl .gt_left {
+#vzfytumeoz .gt_left {
 text-align: left;
 }
-#ynvcmulhnl .gt_center {
+#vzfytumeoz .gt_center {
 text-align: center;
 }
-#ynvcmulhnl .gt_right {
+#vzfytumeoz .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#ynvcmulhnl .gt_font_normal {
+#vzfytumeoz .gt_font_normal {
 font-weight: normal;
 }
-#ynvcmulhnl .gt_font_bold {
+#vzfytumeoz .gt_font_bold {
 font-weight: bold;
 }
-#ynvcmulhnl .gt_font_italic {
+#vzfytumeoz .gt_font_italic {
 font-style: italic;
 }
-#ynvcmulhnl .gt_super {
+#vzfytumeoz .gt_super {
 font-size: 65%;
 }
-#ynvcmulhnl .gt_footnote_marks {
+#vzfytumeoz .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#ynvcmulhnl .gt_asterisk {
+#vzfytumeoz .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#ynvcmulhnl .gt_indent_1 {
+#vzfytumeoz .gt_indent_1 {
 text-indent: 5px;
 }
-#ynvcmulhnl .gt_indent_2 {
+#vzfytumeoz .gt_indent_2 {
 text-indent: 10px;
 }
-#ynvcmulhnl .gt_indent_3 {
+#vzfytumeoz .gt_indent_3 {
 text-indent: 15px;
 }
-#ynvcmulhnl .gt_indent_4 {
+#vzfytumeoz .gt_indent_4 {
 text-indent: 20px;
 }
-#ynvcmulhnl .gt_indent_5 {
+#vzfytumeoz .gt_indent_5 {
 text-indent: 25px;
 }
-#ynvcmulhnl .katex-display {
+#vzfytumeoz .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#ynvcmulhnl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#vzfytumeoz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3897,12 +3905,13 @@ height: 0px !important;
 <p>Note that these will map to how each category changes between the two populations with respect to a) the proportion of the population that the category constitutes, and b) the average rate. If a category makes up a larger proportion of the population, its category-composition effect will be positive (if the crude rate difference is positive). If the category specific rate changes in the same direction as the crude rate changes, the category-rate effect is positive. The benefit of <a href="https://doi.org/10.1353/dem.0.0060" target="_blank">Chevan &amp; Sutherland</a>’s approach is that these are now scaled proportional to the total crude rate difference.</p>
 <p>Changes in category proportions:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>eg5<span class="fl">.3</span> <span class="sc">|&gt;</span> <span class="fu">group_by</span>(pop, age) <span class="sc">|&gt;</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">size =</span> <span class="fu">sum</span>(size)) <span class="sc">|&gt;</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pop) <span class="sc">|&gt;</span> </span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> size<span class="sc">/</span><span class="fu">sum</span>(size)) <span class="sc">|&gt;</span> </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">|&gt;</span> </span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">delta =</span> prop[pop<span class="sc">==</span><span class="dv">1985</span>] <span class="sc">-</span> prop[pop<span class="sc">==</span><span class="dv">1970</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>eg5<span class="fl">.3</span> <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pop, age) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">size =</span> <span class="fu">sum</span>(size)) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pop) <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> size <span class="sc">/</span> <span class="fu">sum</span>(size)) <span class="sc">|&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">delta =</span> prop[pop <span class="sc">==</span> <span class="dv">1985</span>] <span class="sc">-</span> prop[pop <span class="sc">==</span> <span class="dv">1970</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 11 × 2
      age    delta
@@ -3926,15 +3935,18 @@ height: 0px !important;
 <p>Data:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(reconv)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>srec <span class="ot">&lt;-</span> reconv <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2004</span>,<span class="dv">2016</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, Sex, Age, offenders, prev_rate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>srec <span class="ot">&lt;-</span> reconv <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2004</span>, <span class="dv">2016</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, Sex, Age, offenders, prev_rate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Population level decomposition:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">dgnpop</span>(srec, <span class="at">pop =</span> <span class="st">&quot;year&quot;</span>, <span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;prev_rate&quot;</span>),</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Sex&quot;</span>),</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">crossclassified =</span> <span class="st">&quot;offenders&quot;</span>, <span class="at">agg =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dg_table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dgnpop</span>(srec,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop =</span> <span class="st">&quot;year&quot;</span>, <span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;prev_rate&quot;</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;Age&quot;</span>, <span class="st">&quot;Sex&quot;</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">crossclassified =</span> <span class="st">&quot;offenders&quot;</span>, <span class="at">agg =</span> <span class="cn">TRUE</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dg_table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                2004      2016          diff decomp
 Age_struct 0.3052555 0.2837824 -0.0214730910  41.31
@@ -3945,9 +3957,11 @@ crude      0.3237422 0.2717579 -0.0519843051 100.00</code></pre>
 </div>
 <p>Sub-population standardised rates:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">dgnpop</span>(srec, <span class="at">pop =</span> <span class="st">&quot;year&quot;</span>, <span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;prev_rate&quot;</span>),</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Sex&quot;</span>),</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">crossclassified =</span> <span class="st">&quot;offenders&quot;</span>, <span class="at">agg =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">dgnpop</span>(srec,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop =</span> <span class="st">&quot;year&quot;</span>, <span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;prev_rate&quot;</span>),</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_vars =</span> <span class="fu">c</span>(<span class="st">&quot;Age&quot;</span>, <span class="st">&quot;Sex&quot;</span>),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">crossclassified =</span> <span class="st">&quot;offenders&quot;</span>, <span class="at">agg =</span> <span class="cn">FALSE</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Category effects for Sex and Age:</p>
 <div class="cell">
@@ -3956,8 +3970,8 @@ crude      0.3237422 0.2717579 -0.0519843051 100.00</code></pre>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pop, Sex) <span class="sc">|&gt;</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">IAi =</span> <span class="fu">sum</span>(Sex_struct),</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTi =</span> <span class="fu">sum</span>(prev_rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEi =</span> IAi<span class="sc">+</span>RTi</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTi =</span> <span class="fu">sum</span>(prev_rate) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEi =</span> IAi <span class="sc">+</span> RTi</span>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex) <span class="sc">|&gt;</span></span>
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
@@ -3971,8 +3985,8 @@ crude      0.3237422 0.2717579 -0.0519843051 100.00</code></pre>
 <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(pop, Age) <span class="sc">|&gt;</span></span>
 <span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">JBj =</span> <span class="fu">sum</span>(Age_struct),</span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTj =</span> <span class="fu">sum</span>(prev_rate)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>),</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEj =</span> JBj<span class="sc">+</span>RTj</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">RTj =</span> <span class="fu">sum</span>(prev_rate) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">CEj =</span> JBj <span class="sc">+</span> RTj</span>
 <span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Age) <span class="sc">|&gt;</span></span>
 <span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
@@ -3985,30 +3999,30 @@ crude      0.3237422 0.2717579 -0.0519843051 100.00</code></pre>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  sex_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;sex&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> Sex),</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  age_ce <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">var =</span> <span class="st">&quot;age&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">category =</span> Age)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> comp_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> rate_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span>,</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> tot_ce<span class="sc">/</span><span class="fu">sum</span>(tot_ce)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">comp_ce =</span> comp_ce <span class="sc">/</span> <span class="fu">sum</span>(tot_ce) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate_ce =</span> rate_ce <span class="sc">/</span> <span class="fu">sum</span>(tot_ce) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">tot_ce =</span> tot_ce <span class="sc">/</span> <span class="fu">sum</span>(tot_ce) <span class="sc">*</span> <span class="dv">100</span></span>
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(var) <span class="sc">|&gt;</span> </span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span><span class="fu">round</span>(.,<span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(var) <span class="sc">|&gt;</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span> <span class="fu">round</span>(., <span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="swlssxfxuh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#swlssxfxuh table {
+<div id="yznsfdxzml" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yznsfdxzml table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#swlssxfxuh thead, #swlssxfxuh tbody, #swlssxfxuh tfoot, #swlssxfxuh tr, #swlssxfxuh td, #swlssxfxuh th {
+#yznsfdxzml thead, #yznsfdxzml tbody, #yznsfdxzml tfoot, #yznsfdxzml tr, #yznsfdxzml td, #yznsfdxzml th {
 border-style: none;
 }
-#swlssxfxuh p {
+#yznsfdxzml p {
 margin: 0;
 padding: 0;
 }
-#swlssxfxuh .gt_table {
+#yznsfdxzml .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -4033,11 +4047,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#swlssxfxuh .gt_caption {
+#yznsfdxzml .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#swlssxfxuh .gt_title {
+#yznsfdxzml .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -4048,7 +4062,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#swlssxfxuh .gt_subtitle {
+#yznsfdxzml .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -4059,7 +4073,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#swlssxfxuh .gt_heading {
+#yznsfdxzml .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -4070,12 +4084,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#swlssxfxuh .gt_bottom_border {
+#yznsfdxzml .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#swlssxfxuh .gt_col_headings {
+#yznsfdxzml .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4089,7 +4103,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#swlssxfxuh .gt_col_heading {
+#yznsfdxzml .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4108,7 +4122,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#swlssxfxuh .gt_column_spanner_outer {
+#yznsfdxzml .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4119,13 +4133,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#swlssxfxuh .gt_column_spanner_outer:first-child {
+#yznsfdxzml .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#swlssxfxuh .gt_column_spanner_outer:last-child {
+#yznsfdxzml .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#swlssxfxuh .gt_column_spanner {
+#yznsfdxzml .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -4136,10 +4150,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#swlssxfxuh .gt_spanner_row {
+#yznsfdxzml .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#swlssxfxuh .gt_group_heading {
+#yznsfdxzml .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4164,7 +4178,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#swlssxfxuh .gt_empty_group_heading {
+#yznsfdxzml .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -4178,13 +4192,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#swlssxfxuh .gt_from_md > :first-child {
+#yznsfdxzml .gt_from_md > :first-child {
 margin-top: 0;
 }
-#swlssxfxuh .gt_from_md > :last-child {
+#yznsfdxzml .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#swlssxfxuh .gt_row {
+#yznsfdxzml .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4202,7 +4216,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#swlssxfxuh .gt_stub {
+#yznsfdxzml .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4214,7 +4228,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#swlssxfxuh .gt_stub_row_group {
+#yznsfdxzml .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4227,13 +4241,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#swlssxfxuh .gt_row_group_first td {
+#yznsfdxzml .gt_row_group_first td {
 border-top-width: 2px;
 }
-#swlssxfxuh .gt_row_group_first th {
+#yznsfdxzml .gt_row_group_first th {
 border-top-width: 2px;
 }
-#swlssxfxuh .gt_summary_row {
+#yznsfdxzml .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -4242,14 +4256,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#swlssxfxuh .gt_first_summary_row {
+#yznsfdxzml .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#swlssxfxuh .gt_first_summary_row.thick {
+#yznsfdxzml .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#swlssxfxuh .gt_last_summary_row {
+#yznsfdxzml .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4258,7 +4272,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#swlssxfxuh .gt_grand_summary_row {
+#yznsfdxzml .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -4267,7 +4281,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#swlssxfxuh .gt_first_grand_summary_row {
+#yznsfdxzml .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4276,7 +4290,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#swlssxfxuh .gt_last_grand_summary_row_top {
+#yznsfdxzml .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4285,10 +4299,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#swlssxfxuh .gt_striped {
+#yznsfdxzml .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#swlssxfxuh .gt_table_body {
+#yznsfdxzml .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4296,7 +4310,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#swlssxfxuh .gt_footnotes {
+#yznsfdxzml .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -4309,7 +4323,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#swlssxfxuh .gt_footnote {
+#yznsfdxzml .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -4317,7 +4331,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#swlssxfxuh .gt_sourcenotes {
+#yznsfdxzml .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -4330,64 +4344,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#swlssxfxuh .gt_sourcenote {
+#yznsfdxzml .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#swlssxfxuh .gt_left {
+#yznsfdxzml .gt_left {
 text-align: left;
 }
-#swlssxfxuh .gt_center {
+#yznsfdxzml .gt_center {
 text-align: center;
 }
-#swlssxfxuh .gt_right {
+#yznsfdxzml .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#swlssxfxuh .gt_font_normal {
+#yznsfdxzml .gt_font_normal {
 font-weight: normal;
 }
-#swlssxfxuh .gt_font_bold {
+#yznsfdxzml .gt_font_bold {
 font-weight: bold;
 }
-#swlssxfxuh .gt_font_italic {
+#yznsfdxzml .gt_font_italic {
 font-style: italic;
 }
-#swlssxfxuh .gt_super {
+#yznsfdxzml .gt_super {
 font-size: 65%;
 }
-#swlssxfxuh .gt_footnote_marks {
+#yznsfdxzml .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#swlssxfxuh .gt_asterisk {
+#yznsfdxzml .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#swlssxfxuh .gt_indent_1 {
+#yznsfdxzml .gt_indent_1 {
 text-indent: 5px;
 }
-#swlssxfxuh .gt_indent_2 {
+#yznsfdxzml .gt_indent_2 {
 text-indent: 10px;
 }
-#swlssxfxuh .gt_indent_3 {
+#yznsfdxzml .gt_indent_3 {
 text-indent: 15px;
 }
-#swlssxfxuh .gt_indent_4 {
+#yznsfdxzml .gt_indent_4 {
 text-indent: 20px;
 }
-#swlssxfxuh .gt_indent_5 {
+#yznsfdxzml .gt_indent_5 {
 text-indent: 25px;
 }
-#swlssxfxuh .katex-display {
+#yznsfdxzml .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#swlssxfxuh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#yznsfdxzml div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
