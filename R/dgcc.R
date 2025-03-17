@@ -4,17 +4,13 @@
 #' @param id_vars character vector of variables indicating cross-classified structure.
 #' @param crossclassified variable name (character string) containing cell sizes or proportions
 #' @export
-dgcc<-function(x,pop,id_vars,crossclassified){
-
+dgcc <- function(x, pop, id_vars, crossclassified) {
   tmpdf <- as.data.frame(x)
 
-  for(p in unique(tmpdf[[pop]])){
-
-    str_vars = split_popstr(tmpdf[tmpdf[[pop]]==p, ], id_vars = id_vars, nvar = crossclassified)
-    tmpdf[tmpdf[[pop]]==p, names(str_vars)] <- str_vars
-
+  for (p in unique(tmpdf[[pop]])) {
+    str_vars <- split_popstr(tmpdf[tmpdf[[pop]] == p, ], id_vars = id_vars, nvar = crossclassified)
+    tmpdf[tmpdf[[pop]] == p, names(str_vars)] <- str_vars
   }
 
   return(tmpdf)
-
 }
