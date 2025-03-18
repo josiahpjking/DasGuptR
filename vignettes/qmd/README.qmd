@@ -19,7 +19,7 @@ library(DasGuptR)
 ```
 # DasGuptR
 
-The goal of the DasGuptR package is to provide an implementation of Prithwith Das Gupta's specification of *standardization* and *decomposition* of rates, as set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.    
+The goal of the DasGuptR package is to provide an implementation of Prithwis Das Gupta's specification of *standardization* and *decomposition* of rates, as set out in his 1993 book _[Standardization and decomposition of rates: A user's manual](https://babel.hathitrust.org/cgi/pt?id=osu.32437011198450)_.    
   
 You can install DasGuptR from here with:
 
