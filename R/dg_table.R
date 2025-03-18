@@ -13,19 +13,21 @@ dg_table <- function(dgo, pop1 = NULL, pop2 = NULL) {
 
   if (is.null(pop1) & is.null(pop2)) {
     if (npops > 2) {
-      dgt <- xtabs(rate ~ factor + pop, dgo) |>
-        as.data.frame.matrix()
+      dgt <- as.data.frame.matrix(xtabs(rate ~ factor + pop, dgo))
     } else {
-      dgt <- xtabs(rate ~ factor + pop, dgo) |>
-        addmargins(margin = 2, FUN = diff) |>
-        as.data.frame.matrix()
+      dgt <- as.data.frame.matrix(
+        addmargins(xtabs(rate ~ factor + pop, dgo),
+                   margin = 2, FUN = diff
+        )
+      )
       dgt$decomp <- round(dgt[["diff"]] / dgt[row.names(dgt) == "crude", "diff"] * 100, 2)
     }
   } else {
-    dgt <- droplevels(dgo[dgo[["pop"]] %in% c(pop1, pop2), ]) |>
-      xtabs(rate ~ factor + pop, data = _) |>
-      addmargins(margin = 2, FUN = diff) |>
-      as.data.frame.matrix()
+    dgt <- as.data.frame.matrix(
+      addmargins(xtabs(rate ~ factor + pop, droplevels(dgo[dgo[["pop"]] %in% c(pop1, pop2), ])),
+                 margin = 2, FUN = diff
+      )
+    )
     dgt$decomp <- round(dgt[["diff"]] / dgt[row.names(dgt) == "crude", "diff"] * 100, 2)
   }
   return(dgt)

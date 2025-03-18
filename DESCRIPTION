@@ -2,7 +2,13 @@ Package: DasGuptR
 Type: Package
 Title: Das Gupta Standardisation and Decomposition
 Version: 2.1.0
-Author: Josiah King and Ben Matthews
+Authors@R: c(person(given = "Josiah",
+                      family = "King",
+                      role = c("aut", "cre"),
+                      email = "josiah.king@ed.ac.uk"),
+               person(given = "Ben",
+                      family = "Matthews",
+                      role = "aut"))
 Maintainer: Josiah King <josiah.king@ed.ac.uk>
 Description: Implementation of Prithwis Das Gupta's standardization and decomposition of population rates, as set out in his 1993 manual.  
 License: GPL (>= 3)
