@@ -1,4 +1,4 @@
-#' Standardisation and decomposition of rates over P rate-factors and 2 populations.
+#' Standardisation and decomposition of rates over K rate-factors and 2 populations.
 #' We suggest using dgnpop, which will internally call this function.
 #' @param pw dataframe containing two populations worth of factor data, with columns specifying 1) population and 2) each rate-factor to be considered. must have column named "pop" indicating the population ID.
 #' @param pop name (character string) of variable indicating population
@@ -6,6 +6,8 @@
 #' @param id_vars character vector of variables indicating sub-populations
 #' @param ratefunction user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors.
 #' @param quietly logical indicating whether interim messages should be outputted indicating progress through the P factors
+#' @return named list along set of K factors included in the standardisation. Each list element contains a data.frame that includes K-a standardised rates for each population, along with differences between standardised rates
+#'
 #' @export
 dg2pop <- function(pw, pop, factors, id_vars, ratefunction = NULL, quietly = TRUE) {
   nfact <- length(factors)

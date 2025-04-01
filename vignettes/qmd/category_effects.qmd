@@ -70,7 +70,7 @@ head(res)
 
 We can take those individual rates, and then calculate the category effects for each group of the sub-population variables --- e.g., for each $i$ of race and $j$ of age.  
 
-In the scenario that we have two cross-classified variables $I$ and $J$ and the relevant sub-population rates $T$, `dgnpop()` will return three standardised rates: $P-I$ standardised, $P-J$ standardised, and $P-T$ standardised.  
+In the scenario that we have two cross-classified variables $I$ and $J$ and the relevant sub-population rates $T$, `dgnpop()` will return three standardised rates: $K-I$ standardised, $K-J$ standardised, and $K-T$ standardised.  
 
 We can see these for each sub-population (reshaped to wide): 
 ```{r}

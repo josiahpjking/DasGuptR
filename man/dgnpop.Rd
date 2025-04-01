@@ -2,7 +2,7 @@
 % Please edit documentation in R/dgnpop.R
 \name{dgnpop}
 \alias{dgnpop}
-\title{Prithwis Das Gupta's 1993 standardisation and decomposition of rates over P rate-factors and N populations.}
+\title{Prithwis Das Gupta's 1993 standardisation and decomposition of rates over K rate-factors and N populations.}
 \usage{
 dgnpop(
   x,
@@ -27,7 +27,7 @@ dgnpop(
 
 \item{crossclassified}{character string of variable indicating size of sub-population. If specified, the proportion of each population in a given sub-population (e.g. each age-sex combination) is re-expressed as a product of symmetrical expressions representing the different variables (age, sex) constituting the sub-populations. These expressions are then used as compositional factors in the standardisation. If NULL, then providing a single variable as a compositional factor that represents the proportion of the population in each given sub-population will combine the contribution of all sub-population variables.}
 
-\item{ratefunction}{user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors. When sub-populations are provided, this should aggregate to a summary value (e.g., for the simple product rate this should be provided as `"sum(A*B*C*)"`.). User-defined functions can also be provided, as whatever string is given here will be parsed and evaluated as any other R code (see example eg4.4).}
+\item{ratefunction}{user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors. When sub-populations are provided, this should aggregate to a summary value (e.g., for the simple product rate this should be provided as \code{"sum(A*B*C*)"}.). User-defined functions can also be provided, as whatever string is given here will be parsed and evaluated as any other R code (see example eg4.4).}
 
 \item{agg}{logical indicating whether, when cross-classified data is used, to output should be aggregated up to the population level}
 
@@ -36,10 +36,29 @@ dgnpop(
 \item{quietly}{logical indicating whether interim messages should be outputted indicating progress through the P factors and N populations}
 }
 \value{
-data.frame with P-p standardised rates for each population.
+data.frame containing K-a standardised rates for each population.
+\itemize{
+\item \code{rate}: standardised rate such that factor a is from population p and all other factors are averaged across populations, f(a^p,...)
+\item \code{pop}: population p for which factor a is taken from
+\item \code{std.set}: set of N populations (minus p) across which the standardisation has been performed
+\item \code{factor}: name of factor a that is being considered, such that for the set of factors K, the \{K-a\}-standardised rate is returned
+}
 }
 \description{
-Population rates are often composed of various different compositional factors. For example, Das Gupta 1992 expressed the birth rate as the product of the fertility rate, proportion of women who are of childbearing ages, and the proportion of women in the population. Comparisons of crude rates between populations can be misleading as different compositional factors may be contributing to different extents on any observed differences in the crude rate. Standardisation of rates ... TODO finish this description
+Prithwis Das Gupta's 1993 standardisation and decomposition of rates over K rate-factors and N populations.
+}
+\details{
+Population rates are often composed of various different compositional factors. Standardisation techniques calculate the rate were a set of factors to be held constant (either with a specific population as standard, or at the average of the populations). Decomposition methods quantify the amount of the difference between two population crude rate that is due to differences in population characteristics.
+
+Das Gupta's general solution for the decomposition of two rates can be written as:
+
+\deqn{ \Delta\text{crude-}r = \sum\limits_{\vec{\alpha} \in K}Q(\vec{\alpha}^p) - Q(\vec{\alpha}^{p'}) }
+
+Where \eqn{K} is the set of factors \eqn{\alpha, \beta, ..., \kappa}, which may take the form of vectors over sub-populations \eqn{i}. \eqn{Q(\vec{\alpha}^p)} denotes the rate in population \eqn{p} holding all factors other than \eqn{\alpha} --- \eqn{K \setminus \alpha} --- equal (standardised across populations \eqn{p} and \eqn{p'}). The total crude rate difference is the sum of all standardised-rate differences, and the standardisation \eqn{Q} is expressed as:
+
+\deqn{Q(\vec{\alpha}^p) = \sum\limits_{j=1}^{\lfloor \frac{|K|}{2} \rfloor} \frac{ \sum\limits_{L \in {K \setminus \{\alpha\} \choose j-1}}f(\{L^p,(K\setminus L)^{p'},\vec{\alpha}^p\}) + f(\{L^{p'},(K\setminus L)^p,\vec{\alpha}^p\})} { |K| {|K| -1\choose j-1} } }
+
+Where \eqn{f(K)} is the function that defines the calculation of the rate
 }
 \examples{
 ## 2 populations, R=ab

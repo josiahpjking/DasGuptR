@@ -2,8 +2,7 @@
 % Please edit documentation in R/dg611.R
 \name{dg611}
 \alias{dg611}
-\title{Das Gupta equation 6.11: Standardises rates across populations
-Outputs a dataframe object of the rate factor F in population Y, standardised across all populations}
+\title{Das Gupta equation 6.11: Standardises rates across populations}
 \usage{
 dg611(srates, all_p, y, factor)
 }
@@ -16,7 +15,9 @@ dg611(srates, all_p, y, factor)
 
 \item{factor}{string indicating rate-factor being standardised.}
 }
+\value{
+data.frame object including K-a standardised rates for each population for given factor a, across N populations
+}
 \description{
 Das Gupta equation 6.11: Standardises rates across populations
-Outputs a dataframe object of the rate factor F in population Y, standardised across all populations
 }

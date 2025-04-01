@@ -9,7 +9,7 @@ dg_plot <- function(dgo) {
   fs <- unique(dgo[["factor"]])
   fs_lab <- ifelse(tolower(fs) == "crude",
     "crude",
-    paste0("P-", tolower(fs), " adjusted")
+    paste0("K-", tolower(fs), " adjusted")
   )
 
   fcols <- rainbow(length(fs))

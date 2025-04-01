@@ -1,7 +1,20 @@
-#' Prithwis Das Gupta's 1993 standardisation and decomposition of rates over P rate-factors and N populations.
+#' Prithwis Das Gupta's 1993 standardisation and decomposition of rates over K rate-factors and N populations.
 #'
 #' @description
-#' Population rates are often composed of various different compositional factors. For example, Das Gupta 1992 expressed the birth rate as the product of the fertility rate, proportion of women who are of childbearing ages, and the proportion of women in the population. Comparisons of crude rates between populations can be misleading as different compositional factors may be contributing to different extents on any observed differences in the crude rate. Standardisation of rates ... TODO finish this description
+#' Prithwis Das Gupta's 1993 standardisation and decomposition of rates over K rate-factors and N populations.
+#' @details
+#' Population rates are often composed of various different compositional factors. Standardisation techniques calculate the rate were a set of factors to be held constant (either with a specific population as standard, or at the average of the populations). Decomposition methods quantify the amount of the difference between two population crude rate that is due to differences in population characteristics.
+#'
+#' Das Gupta's general solution for the decomposition of two rates can be written as:
+#'
+#' \deqn{ \Delta\text{crude-}r = \sum\limits_{\vec{\alpha} \in K}Q(\vec{\alpha}^p) - Q(\vec{\alpha}^{p'}) }
+#'
+#' Where \eqn{K} is the set of factors \eqn{\alpha, \beta, ..., \kappa}, which may take the form of vectors over sub-populations \eqn{i}. \eqn{Q(\vec{\alpha}^p)} denotes the rate in population \eqn{p} holding all factors other than \eqn{\alpha} --- \eqn{K \setminus \alpha} --- equal (standardised across populations \eqn{p} and \eqn{p'}). The total crude rate difference is the sum of all standardised-rate differences, and the standardisation \eqn{Q} is expressed as:
+#'
+#' \deqn{Q(\vec{\alpha}^p) = \sum\limits_{j=1}^{\lfloor \frac{|K|}{2} \rfloor} \frac{ \sum\limits_{L \in {K \setminus \{\alpha\} \choose j-1}}f(\{L^p,(K\setminus L)^{p'},\vec{\alpha}^p\}) + f(\{L^{p'},(K\setminus L)^p,\vec{\alpha}^p\})} { |K| {|K| -1\choose j-1} } }
+#'
+#' Where \eqn{f(K)} is the function that defines the calculation of the rate
+#'
 #' @param x dataframe or tibble object, with columns specifying 1) population, 2) each rate-factor to be considered, and (optionally) 3) variables indicating underlying subpopulations
 #' @param pop name (character string) of variable indicating population
 #' @param factors names (character vector) of variables indicating compositional factors
@@ -12,7 +25,13 @@
 #' @param baseline baseline population to standardise against. if NULL then will do Das Gupta's full N-population standardisation.
 #' @param quietly logical indicating whether interim messages should be outputted indicating progress through the P factors and N populations
 #' @return
-#' data.frame with P-p standardised rates for each population.
+#' data.frame containing K-a standardised rates for each population.
+#'
+#' - `rate`: standardised rate such that factor a is from population p and all other factors are averaged across populations, f(a^p,...)
+#' - `pop`: population p for which factor a is taken from
+#' - `std.set`: set of N populations (minus p) across which the standardisation has been performed
+#' - `factor`: name of factor a that is being considered, such that for the set of factors K, the \{K-a\}-standardised rate is returned
+#'
 #' @export
 #' @examples
 #' ## 2 populations, R=ab
@@ -423,7 +442,7 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
       } else {
         # std_rates
         if (!quietly) {
-          print(paste0("Standardizing P-", f, " across N pops..."))
+          print(paste0("Standardizing K-", f, " across N pops..."))
         }
 
         # these are the standardized rate for factor f in each year, standardized over all Ys.
@@ -449,7 +468,7 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
 
 
         if (!quietly) {
-          print(paste0("Getting decomposition effects for P-", f, " standardised rates..."))
+          print(paste0("Getting decomposition effects for K-", f, " standardised rates..."))
         }
 
         pairwise_pops <- combn(allpops, 2, simplify = F)

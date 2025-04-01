@@ -1,4 +1,4 @@
-#' internal function called by dg2pop that implements equation 3.54 in Das Gupta 1993
+#' Das Gupta equation 3.54. internal function called by dg2pop.
 #' @param df2 list of 2 population dataframes, in which each one contains data for all factors for the relevant population, along with variables indicating population and subpopulations
 #' @param i the index of the factors vector which is not being adjusted for (the alpha in "P-alpha standardised rates")
 #' @param pop name (character string) of variable indicating population
@@ -6,6 +6,7 @@
 #' @param id_vars character vector of variables indicating sub-populations
 #' @param ratefunction user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors.
 #' @param quietly logical indicating whether interim messages should be outputted indicating progress
+#' @return data.frame object including K-a standardised rates for each population for given factor a, along with differences between standardised rates
 #' @export
 dg354 <- function(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE) {
   # how many factors?

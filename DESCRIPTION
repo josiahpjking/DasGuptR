@@ -18,5 +18,6 @@ Depends: R (>= 4.1.0)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)
 Suggests: R.rsp
 VignetteBuilder: R.rsp

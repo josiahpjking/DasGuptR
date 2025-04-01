@@ -5,7 +5,7 @@
 - [DasGuptR functionality](#dasguptr-functionality)
 - [Vector factors, Rates as functions, Cross-classified data, and N
   populations](#vector-factors-rates-as-functions-cross-classified-data-and-n-populations)
-  - [P factors](#p-factors)
+  - [K factors](#k-factors)
     - [2 factors, 2 populations, R=ab](#2-factors-2-populations-rab)
     - [3 factors, 2 populations, R=abc](#3-factors-2-populations-rabc)
     - [4 factors, 2 populations, R=abcd](#4-factors-2-populations-rabcd)
@@ -91,13 +91,13 @@ replacing $A$ and $a$ with $\frac{a+A}{2}$.
 These $\alpha$-adjusted rates can be interpreted as “what the crude rate
 would look like if $\alpha$ was held equal” (and analogously for
 $\beta$). In cases involving multiple factors, this can quickly become
-unwieldy, requiring listing the $P-1$ factors that are held equal for
+unwieldy, requiring listing the $K-1$ factors that are held equal for
 each standardised rate.[^1] For this reason, we opt to refer to these
-rates as, e.g., $P-\alpha$, where $P$ is the set of all compositional
+rates as, e.g., $K-\alpha$, where $K$ is the set of all compositional
 factors. This is reflected in the table above, where we have used
 $R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote, respectively, the
-crude rate, the $P-\alpha$-adjusted rate (or “$\beta$-adjusted”), and
-the $P-\beta$-adjusted (or “$\alpha$-adjusted”) rate. The
+crude rate, the $K-\alpha$-adjusted rate (or “$\beta$-adjusted”), and
+the $K-\beta$-adjusted (or “$\alpha$-adjusted”) rate. The
 $P-\alpha$-adjusted rate can therefore be interpreted as “what the crude
 rate would look like if $\alpha$ changed but all other factors were held
 equal”.
@@ -146,7 +146,7 @@ data.frame(
 ```
 
 The workhorse of the DasGuptR package is `dgnpop()`, which computes the
-adjusted rates for $P$ factors across $N$ populations:
+adjusted rates for $K$ factors across $N$ populations:
 
 ``` r
 dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta"))
@@ -204,7 +204,7 @@ generalising to different rate functions, compositional structures of
 populations, and finally extending the process to more than just two
 populations.
 
-## P factors
+## K factors
 
 The addition of factors into the make up of a population rate is handled
 in `dgnpop()` by simply adding the variable name into the `factors`
@@ -798,7 +798,7 @@ dgnpop(eg5.3,
 
 Instead, providing the group-specific sizes to the `crossclassified`
 argument will re-express the proportion of the population in a given
-cell as a product of K factors representing each of the structural
+cell as a product of factors representing each of the structural
 variables. These are then included in the decomposition:
 
 ``` r
@@ -1025,7 +1025,7 @@ dgcc(eg5.3,
 
 ## Example: US population data
 
-- Birthrates by Nina Age-Sex groups: United States, 1940 to 1990
+- Birthrates by Nine Age-Sex groups: United States, 1940 to 1990
   - `birthrate` = births per 1000 for age-sex group
   - `thous` = population in thousands of age-sex group
 

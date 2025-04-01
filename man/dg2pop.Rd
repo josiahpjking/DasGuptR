@@ -2,7 +2,7 @@
 % Please edit documentation in R/dg2pop.R
 \name{dg2pop}
 \alias{dg2pop}
-\title{Standardisation and decomposition of rates over P rate-factors and 2 populations.
+\title{Standardisation and decomposition of rates over K rate-factors and 2 populations.
 We suggest using dgnpop, which will internally call this function.}
 \usage{
 dg2pop(pw, pop, factors, id_vars, ratefunction = NULL, quietly = TRUE)
@@ -20,7 +20,10 @@ dg2pop(pw, pop, factors, id_vars, ratefunction = NULL, quietly = TRUE)
 
 \item{quietly}{logical indicating whether interim messages should be outputted indicating progress through the P factors}
 }
+\value{
+named list along set of K factors included in the standardisation. Each list element contains a data.frame that includes K-a standardised rates for each population, along with differences between standardised rates
+}
 \description{
-Standardisation and decomposition of rates over P rate-factors and 2 populations.
+Standardisation and decomposition of rates over K rate-factors and 2 populations.
 We suggest using dgnpop, which will internally call this function.
 }

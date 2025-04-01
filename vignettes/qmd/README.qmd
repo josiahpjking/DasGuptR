@@ -57,7 +57,7 @@ In this simple case, we can standardise across the two populations, calculating 
 
 
 These $\alpha$-adjusted rates can be interpreted as "what the crude rate would look like if $\alpha$ was held equal" (and analogously for $\beta$). 
-In cases involving multiple factors, this can quickly become unwieldy, requiring listing the $P-1$ factors that are held equal for each standardised rate.^[For instance, in the case of a rate as the product of four factors $R = \alpha\beta\gamma\delta$, we get out four sets of adjusted rates: the $\alpha\beta\gamma$-adjusted, $\beta\gamma\delta$-adjusted, $\alpha\gamma\delta$-adjusted, and $\alpha\beta\delta$-adjusted.] For this reason, we opt to refer to these rates as, e.g., $P-\alpha$, where $P$ is the set of all compositional factors. This is reflected in the table above, where we have used $R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote, respectively, the crude rate, the $P-\alpha$-adjusted rate (or "$\beta$-adjusted"), and the $P-\beta$-adjusted (or "$\alpha$-adjusted") rate. The $P-\alpha$-adjusted rate can therefore be interpreted as "what the crude rate would look like if $\alpha$ changed but all other factors were held equal". 
+In cases involving multiple factors, this can quickly become unwieldy, requiring listing the $K-1$ factors that are held equal for each standardised rate.^[For instance, in the case of a rate as the product of four factors $R = \alpha\beta\gamma\delta$, we get out four sets of adjusted rates: the $\alpha\beta\gamma$-adjusted, $\beta\gamma\delta$-adjusted, $\alpha\gamma\delta$-adjusted, and $\alpha\beta\delta$-adjusted.] For this reason, we opt to refer to these rates as, e.g., $K-\alpha$, where $K$ is the set of all compositional factors. This is reflected in the table above, where we have used $R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote, respectively, the crude rate, the $K-\alpha$-adjusted rate (or "$\beta$-adjusted"), and the $K-\beta$-adjusted (or "$\alpha$-adjusted") rate. The $P-\alpha$-adjusted rate can therefore be interpreted as "what the crude rate would look like if $\alpha$ changed but all other factors were held equal". 
 
 The _difference_ in the adjusted/standardised rates is known as a __decomposition effect__, so named because differences in the crude rates can be decomposed into differences in adjusted rates: $\Delta R_{crude} = \Delta R_{-\alpha} + \Delta R_{-\beta}$. 
 This decomposition allows us to quantify how much of the difference between two crude rates is attributable to differences in $\alpha$, differences in $\beta$, and so on. [^caus]
@@ -90,7 +90,7 @@ data.frame(
 )
 ```
 
-The workhorse of the DasGuptR package is `dgnpop()`, which computes the adjusted rates for $P$ factors across $N$ populations:  
+The workhorse of the DasGuptR package is `dgnpop()`, which computes the adjusted rates for $K$ factors across $N$ populations:  
 
 ```{r}
 dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta"))
@@ -121,7 +121,7 @@ The full explanation of Das Gupta's methodology for standardisation and decompos
 Below are various examples taken from Das Gupta's 1993 work, following his exposition by building up the number of factors, vectorisation, generalising to different rate functions, compositional structures of populations, and finally extending the process to more than just two populations.  
 
 
-## P factors
+## K factors
 
 The addition of factors into the make up of a population rate is handled in `dgnpop()` by simply adding the variable name into the `factors` argument. The default behaviour will take the rate to be the product of all factors specified.  
 
@@ -557,7 +557,7 @@ dgnpop(eg5.3,
   dg_table()
 ```
 
-Instead, providing the group-specific sizes to the `crossclassified` argument will re-express the proportion of the population in a given cell as a product of K factors representing each of the structural variables. These are then included in the decomposition:  
+Instead, providing the group-specific sizes to the `crossclassified` argument will re-express the proportion of the population in a given cell as a product of factors representing each of the structural variables. These are then included in the decomposition:  
 
 ```{r}
 dgnpop(eg5.3,
@@ -747,7 +747,7 @@ dgcc(eg5.3,
 
 ## Example: US population data
 
-- Birthrates by Nina Age-Sex groups: United States, 1940 to 1990
+- Birthrates by Nine Age-Sex groups: United States, 1940 to 1990
     - `birthrate` = births per 1000 for age-sex group
     - `thous` = population in thousands of age-sex group
 

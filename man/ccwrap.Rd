@@ -2,7 +2,7 @@
 % Please edit documentation in R/ccwrap.R
 \name{ccwrap}
 \alias{ccwrap}
-\title{Wrapper for cross-classified data that standardises rates across a pair of populations.}
+\title{Wrapper for cross-classified data that standardises rates across a pair of populations. Because these are (r+r')/2 * Q(a_i), this requires 1) doing the rate standardisation on each sub-population, 2) performing the standardisation on the cross classified structure variables, 3) multiplying and (optionally) aggregating up}
 \usage{
 ccwrap(
   pw,
@@ -32,6 +32,9 @@ ccwrap(
 
 \item{quietly}{logical indicating whether interim messages should be outputted indicating progress through the P factors}
 }
+\value{
+data.frame that includes K-a standardised rates for each population and each factor a, along with differences between standardised rates
+}
 \description{
-Wrapper for cross-classified data that standardises rates across a pair of populations.
+Wrapper for cross-classified data that standardises rates across a pair of populations. Because these are (r+r')/2 * Q(a_i), this requires 1) doing the rate standardisation on each sub-population, 2) performing the standardisation on the cross classified structure variables, 3) multiplying and (optionally) aggregating up
 }

@@ -1,4 +1,4 @@
-#' Wrapper for cross-classified data that standardises rates across a pair of populations.
+#' Wrapper for cross-classified data that standardises rates across a pair of populations. Because these are (r+r')/2 * Q(a_i), this requires 1) doing the rate standardisation on each sub-population, 2) performing the standardisation on the cross classified structure variables, 3) multiplying and (optionally) aggregating up
 #' @param pw dataframe containing two populations worth of factor data, with columns specifying 1) population and 2) each rate-factor to be considered. must have column named "pop" indicating the population ID.
 #' @param pop name (character string) of variable indicating population
 #' @param factors names (character vector) of variables indicating compositional factors
@@ -7,6 +7,7 @@
 #' @param agg logical indicating whether, when cross-classified data is used, to output should be aggregated up to the population level
 #' @param ratefunction user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors.
 #' @param quietly logical indicating whether interim messages should be outputted indicating progress through the P factors
+#' @return data.frame that includes K-a standardised rates for each population and each factor a, along with differences between standardised rates
 #' @export
 ccwrap <- function(pw, pop, factors, id_vars, crossclassified, agg, ratefunction = NULL, quietly = TRUE) {
   dgo_rate <- dg2pop(pw,

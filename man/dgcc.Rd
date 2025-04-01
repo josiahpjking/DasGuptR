@@ -2,7 +2,7 @@
 % Please edit documentation in R/dgcc.R
 \name{dgcc}
 \alias{dgcc}
-\title{Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.}
+\title{Das Gupta equation 5.36 across N populations: Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.}
 \usage{
 dgcc(x, pop, id_vars, crossclassified)
 }
@@ -15,6 +15,9 @@ dgcc(x, pop, id_vars, crossclassified)
 
 \item{crossclassified}{variable name (character string) containing cell sizes or proportions}
 }
+\value{
+inputted data.frame is returned with the addition of variables for each of the the cross-classified variables representing the contribution to the population size.
+}
 \description{
-Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.
+Das Gupta equation 5.36 across N populations: Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.
 }

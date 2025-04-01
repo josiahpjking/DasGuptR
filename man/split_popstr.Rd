@@ -2,7 +2,7 @@
 % Please edit documentation in R/split_popstr.R
 \name{split_popstr}
 \alias{split_popstr}
-\title{Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.}
+\title{Das Gupta equation 5.36 for a single population: Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.}
 \usage{
 split_popstr(x, id_vars, nvar)
 }
@@ -13,6 +13,9 @@ split_popstr(x, id_vars, nvar)
 
 \item{nvar}{variable name (character string) containing cell sizes}
 }
+\value{
+inputted data.frame is returned with the addition of variables for each of the the cross-classified variables representing the contribution to the population size.
+}
 \description{
-Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.
+Das Gupta equation 5.36 for a single population: Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.
 }

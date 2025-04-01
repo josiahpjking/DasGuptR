@@ -2,7 +2,7 @@
 % Please edit documentation in R/dg354.R
 \name{dg354}
 \alias{dg354}
-\title{internal function called by dg2pop that implements equation 3.54 in Das Gupta 1993}
+\title{Das Gupta equation 3.54. internal function called by dg2pop.}
 \usage{
 dg354(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE)
 }
@@ -21,6 +21,9 @@ dg354(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE)
 
 \item{quietly}{logical indicating whether interim messages should be outputted indicating progress}
 }
+\value{
+data.frame object including K-a standardised rates for each population for given factor a, along with differences between standardised rates
+}
 \description{
-internal function called by dg2pop that implements equation 3.54 in Das Gupta 1993
+Das Gupta equation 3.54. internal function called by dg2pop.
 }

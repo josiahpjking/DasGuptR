@@ -1,7 +1,8 @@
-#' Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.
+#' Das Gupta equation 5.36 for a single population: Decomposes cross-classified population structures into a set of symmetric proportions indicating contribution of individual structural variables.
 #' @param x dataframe consisting of one population, including variables indicating cross-classified structure, and a variable indicating size of each cell
 #' @param id_vars character vector of variables indicating cross-classified structure.
 #' @param nvar variable name (character string) containing cell sizes
+#' @return inputted data.frame is returned with the addition of variables for each of the the cross-classified variables representing the contribution to the population size.
 #' @export
 split_popstr <- function(x, id_vars, nvar) {
   tmpdf <- as.data.frame(x)
