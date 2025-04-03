@@ -2,13 +2,18 @@
 % Please edit documentation in R/dg_plot.R
 \name{dg_plot}
 \alias{dg_plot}
-\title{Creates a plot of Das Gupta adjusted rates across the set of populations}
+\title{Creates a plot of Das Gupta standardised rates across the set of populations}
 \usage{
-dg_plot(dgo)
+dg_plot(dgo, legend.position = "topright")
 }
 \arguments{
-\item{dgo}{DG output}
+\item{dgo}{output from \code{dgnpop()}}
+
+\item{legend.position}{legend position, passed to \code{graphics::legend} - choose from "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center", or provide xy.coords}
+}
+\value{
+A plot of each of the set of K-a standardised rates across populations
 }
 \description{
-Creates a plot of Das Gupta adjusted rates across the set of populations
+Creates a plot of Das Gupta standardised rates across the set of populations
 }

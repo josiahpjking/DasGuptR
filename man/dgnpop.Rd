@@ -13,7 +13,8 @@ dgnpop(
   ratefunction = NULL,
   agg = TRUE,
   baseline = NULL,
-  quietly = TRUE
+  quietly = TRUE,
+  diffs = FALSE
 )
 }
 \arguments{
@@ -33,10 +34,12 @@ dgnpop(
 
 \item{baseline}{baseline population to standardise against. if NULL then will do Das Gupta's full N-population standardisation.}
 
-\item{quietly}{logical indicating whether interim messages should be outputted indicating progress through the P factors and N populations}
+\item{quietly}{logical indicating whether interim messages should be outputted indicating progress through the K factors and N populations}
+
+\item{diffs}{logical indicating whether to return list of standardised rates and rate-differences, or just the standardised rates.}
 }
 \value{
-data.frame containing K-a standardised rates for each population.
+data.frame containing K-a standardised rates (or differences) for each population.
 \itemize{
 \item \code{rate}: standardised rate such that factor a is from population p and all other factors are averaged across populations, f(a^p,...)
 \item \code{pop}: population p for which factor a is taken from
@@ -279,13 +282,13 @@ dgnpop(eg6.5,
   pop = "pop", factors = c("A", "B", "C", "D"),
   id_vars = "agegroup",
   ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
-)$rates |>
+) |>
   dg_table()
 
 dgnpop(eg6.5,
   pop = "pop", factors = c("A", "B", "C", "D"),
   id_vars = "agegroup",
   ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
-)$rates |>
+) |>
   dg_plot()
 }

@@ -23,9 +23,10 @@
 #' @param ratefunction user defined character string in R syntax that when evaluated specifies the function defining the rate as a function of factors. if NULL then will assume rate is the product of all factors. When sub-populations are provided, this should aggregate to a summary value (e.g., for the simple product rate this should be provided as `"sum(A*B*C*)"`.). User-defined functions can also be provided, as whatever string is given here will be parsed and evaluated as any other R code (see example eg4.4).
 #' @param agg logical indicating whether, when cross-classified data is used, to output should be aggregated up to the population level
 #' @param baseline baseline population to standardise against. if NULL then will do Das Gupta's full N-population standardisation.
-#' @param quietly logical indicating whether interim messages should be outputted indicating progress through the P factors and N populations
+#' @param quietly logical indicating whether interim messages should be outputted indicating progress through the K factors and N populations
+#' @param diffs logical indicating whether to return list of standardised rates and rate-differences, or just the standardised rates.
 #' @return
-#' data.frame containing K-a standardised rates for each population.
+#' data.frame containing K-a standardised rates (or differences) for each population.
 #'
 #' - `rate`: standardised rate such that factor a is from population p and all other factors are averaged across populations, f(a^p,...)
 #' - `pop`: population p for which factor a is taken from
@@ -252,17 +253,17 @@
 #'   pop = "pop", factors = c("A", "B", "C", "D"),
 #'   id_vars = "agegroup",
 #'   ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
-#' )$rates |>
+#' ) |>
 #'   dg_table()
 #'
 #' dgnpop(eg6.5,
 #'   pop = "pop", factors = c("A", "B", "C", "D"),
 #'   id_vars = "agegroup",
 #'   ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
-#' )$rates |>
+#' ) |>
 #'   dg_plot()
 dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
-                   ratefunction = NULL, agg = TRUE, baseline = NULL, quietly = TRUE) {
+                   ratefunction = NULL, agg = TRUE, baseline = NULL, quietly = TRUE, diffs = FALSE) {
   tmpdf <- as.data.frame(x)
 
   ##########
@@ -491,7 +492,10 @@ dgnpop <- function(x, pop, factors, id_vars = NULL, crossclassified = NULL,
     row.names(DG_OUT.diffs) <- NULL
 
     # final output
-    dgo <- list(rates = DG_OUT.rates, diffs = DG_OUT.diffs)
+    if(diffs){
+      dgo <- list(rates = DG_OUT.rates, diffs = DG_OUT.diffs)
+    } else { dgo <- DG_OUT.rates }
+
   }
   return(dgo)
 }

@@ -1,7 +1,9 @@
-#' Creates a plot of Das Gupta adjusted rates across the set of populations
-#' @param dgo DG output
+#' Creates a plot of Das Gupta standardised rates across the set of populations
+#' @param dgo output from `dgnpop()`
+#' @param legend.position legend position, passed to `graphics::legend` - choose from "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center", or provide xy.coords
+#' @return A plot of each of the set of K-a standardised rates across populations
 #' @export
-dg_plot <- function(dgo) {
+dg_plot <- function(dgo, legend.position = "topright") {
   pops <- as.numeric(factor(dgo[["pop"]]))
   ps_labs <- as.character(dgo[["pop"]])
   rates <- dgo[["rate"]]
@@ -28,5 +30,5 @@ dg_plot <- function(dgo) {
       col = fcols[f], lwd = 2, lty = 2
     )
   }
-  legend("topright", legend = fs_lab, col = fcols, lwd = 2)
+  legend(legend.position, legend = fs_lab, col = fcols, lwd = 2)
 }

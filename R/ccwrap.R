@@ -10,12 +10,26 @@
 #' @return data.frame that includes K-a standardised rates for each population and each factor a, along with differences between standardised rates
 #' @export
 ccwrap <- function(pw, pop, factors, id_vars, crossclassified, agg, ratefunction = NULL, quietly = TRUE) {
+
+  # standardised rates
   dgo_rate <- dg2pop(pw,
     pop = pop, factors = factors, id_vars = id_vars,
     ratefunction = ratefunction, quietly = quietly
   )
   dgo_rate <- do.call(rbind, dgo_rate)
 
+  # cell specific rates
+  if(length(factors)>1){
+    pw$r1 = eval(parse(text = ratefunction), envir = as.list(pw))
+    dgo_rate1 <- dg2pop(pw,
+                        pop = pop, factors = "r1",
+                        ratefunction="r1", id_vars = id_vars,
+                        quietly = quietly
+    )
+    dgo_rate1 <- do.call(rbind, dgo_rate1)
+  } else { dgo_rate1 <- dgo_rate }
+
+  # cell specific proportions
   dgo_size <- dg2pop(pw,
     pop = pop, factors = crossclassified, id_vars = id_vars,
     ratefunction = paste0(crossclassified, "/sum(", crossclassified, ")"),
@@ -23,6 +37,7 @@ ccwrap <- function(pw, pop, factors, id_vars, crossclassified, agg, ratefunction
   )
   dgo_size <- do.call(rbind, dgo_size)
 
+  # standardisation of structural variables
   dgo_struct <- dg2pop(
     dgcc(pw,
       pop = pop,
@@ -36,10 +51,10 @@ ccwrap <- function(pw, pop, factors, id_vars, crossclassified, agg, ratefunction
   )
   dgo_struct <- do.call(rbind, dgo_struct)
 
-  # [bc..]A * tT2
-  dgo_struct$rate <- dgo_struct$rate * with(dgo_rate, (rate + (rate - diff)) / 2)
   # T * nN2
   dgo_rate$rate <- dgo_rate$rate * with(dgo_size, (rate + (rate - diff)) / 2)
+  # [bc..]A * tT2
+  dgo_struct$rate <- dgo_struct$rate * with(dgo_rate1, (rate + (rate - diff)) / 2)
 
   DG_OUT <- rbind(
     dgo_rate,

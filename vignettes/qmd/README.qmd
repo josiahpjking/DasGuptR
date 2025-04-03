@@ -45,21 +45,21 @@ In the simplest example, consider a case where the rate is taken as the product 
 | crude rate | $AB$ | $ab$ |
 
 
-In this simple case, we can standardise across the two populations, calculating $\alpha$-adjusted (or "$\alpha$-standardised") rates by replacing $A$ and $a$ with $\frac{a+A}{2}$.  
+In this simple case, we can standardise across the two populations, calculating $\alpha$-standardised rates by replacing $A$ and $a$ with $\frac{a+A}{2}$.  
 
 |        | pop1 | pop2 |
 | ------ | ---- | ---- |
 | $\alpha$ | $A$ | $a$ |
 | $\beta$ | $B$ | $b$ |
 | crude rate, $R_{crude}$ | $AB$ | $ab$ |
-"$\beta$-adjusted rate", $R_{-\alpha}$ | $A\frac{B+b}{2}$ | $a\frac{B+b}{2}$ | 
-"$\alpha$-adjusted rate", $R_{-\beta}$ | $\frac{A+a}{2}B$ |  $\frac{A+a}{2}b$ |
+"$\beta$-standardised rate", $R_{-\alpha}$ | $A\frac{B+b}{2}$ | $a\frac{B+b}{2}$ | 
+"$\alpha$-standardised rate", $R_{-\beta}$ | $\frac{A+a}{2}B$ |  $\frac{A+a}{2}b$ |
 
 
-These $\alpha$-adjusted rates can be interpreted as "what the crude rate would look like if $\alpha$ was held equal" (and analogously for $\beta$). 
-In cases involving multiple factors, this can quickly become unwieldy, requiring listing the $K-1$ factors that are held equal for each standardised rate.^[For instance, in the case of a rate as the product of four factors $R = \alpha\beta\gamma\delta$, we get out four sets of adjusted rates: the $\alpha\beta\gamma$-adjusted, $\beta\gamma\delta$-adjusted, $\alpha\gamma\delta$-adjusted, and $\alpha\beta\delta$-adjusted.] For this reason, we opt to refer to these rates as, e.g., $K-\alpha$, where $K$ is the set of all compositional factors. This is reflected in the table above, where we have used $R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote, respectively, the crude rate, the $K-\alpha$-adjusted rate (or "$\beta$-adjusted"), and the $K-\beta$-adjusted (or "$\alpha$-adjusted") rate. The $P-\alpha$-adjusted rate can therefore be interpreted as "what the crude rate would look like if $\alpha$ changed but all other factors were held equal". 
+These $\alpha$-standardised rates can be interpreted as "what the crude rate would look like if $\alpha$ was held equal" (and analogously for $\beta$). 
+In cases involving multiple factors, this can quickly become unwieldy, requiring listing the $K-1$ factors that are held equal for each standardised rate.^[For instance, in the case of a rate as the product of four factors $R = \alpha\beta\gamma\delta$, we get out four sets of standardised rates: the $\alpha\beta\gamma$-standardised, $\beta\gamma\delta$-standardised, $\alpha\gamma\delta$-standardised, and $\alpha\beta\delta$-standardised.] For this reason, we opt to refer to these rates as, e.g., $K-\alpha$, where $K$ is the set of all compositional factors. This is reflected in the table above, where we have used $R_{crude}$, $R_{-\alpha}$ and $R_{-\beta}$ to denote, respectively, the crude rate, the $K-\alpha$-standardised rate (or "$\beta$-standardised"), and the $K-\beta$-standardised (or "$\alpha$-standardised") rate. The $K-\alpha$-standardised rate can therefore be interpreted as "what the crude rate would look like if $\alpha$ changed but all other factors were held equal". 
 
-The _difference_ in the adjusted/standardised rates is known as a __decomposition effect__, so named because differences in the crude rates can be decomposed into differences in adjusted rates: $\Delta R_{crude} = \Delta R_{-\alpha} + \Delta R_{-\beta}$. 
+The _difference_ in the standardised rates is known as a __decomposition effect__, so named because differences in the crude rates can be decomposed into differences in standardised rates: $\Delta R_{crude} = \Delta R_{-\alpha} + \Delta R_{-\beta}$. 
 This decomposition allows us to quantify how much of the difference between two crude rates is attributable to differences in $\alpha$, differences in $\beta$, and so on. [^caus]
 
 [^caus]: Importantly, the use of "attributable" has a very narrow sense of 'numerically attributable', and it is important to stress the lack of any causal interpretation here - different decomposition effects identified by standardization and decomposition may themselves be the products of one (or more) variables not included in the analysis (Das Gupta 1993:4).  
@@ -79,7 +79,7 @@ eg.dg <- data.frame(
 eg.dg
 ```
 
-In this case, the calculations for the adjusted rates can easily be calculated manually: 
+In this case, the calculations for the standardised rates can easily be calculated manually: 
 
 ```{r}
 data.frame(
@@ -90,7 +90,7 @@ data.frame(
 )
 ```
 
-The workhorse of the DasGuptR package is `dgnpop()`, which computes the adjusted rates for $K$ factors across $N$ populations:  
+The workhorse of the DasGuptR package is `dgnpop()`, which computes the standardised rates for $K$ factors across $N$ populations:  
 
 ```{r}
 dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta"))
@@ -104,7 +104,7 @@ dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta")) |>
   dg_table()
 ```
 
-In addition to the tabular form, `dg_plot()` will create a rough plot of the adjusted rates, although this is really only useful when working with many populations, such as with time series data.  
+In addition to the tabular form, `dg_plot()` will create a rough plot of the standardised rates, although this is really only useful when working with many populations, such as with time series data.  
 ```{r}
 dgnpop(eg.dg, pop = "pop", factors = c("alpha", "beta")) |>
   dg_plot()
@@ -257,7 +257,7 @@ dgnpop(eg4.3,
   dg_table()
 ```
 
-Note that for most purposes when working with vector factors, the population-level rates are what is desired and so users will provide appropriate rate function. If the rate function provided does _not_ aggregate up to a summary value, then `dgnpop()` will return an array of adjusted sub-population rates of the same length as the number of sub-populations. In order to do this, the user is also required to specify the variable indicating the sub-population in `id_vars` argument.  
+Note that for most purposes when working with vector factors, the population-level rates are what is desired and so users will provide appropriate rate function. If the rate function provided does _not_ aggregate up to a summary value, then `dgnpop()` will return an array of standardised sub-population rates of the same length as the number of sub-populations. In order to do this, the user is also required to specify the variable indicating the sub-population in `id_vars` argument.  
 
 ```{r}
 #| eval: false
@@ -280,7 +280,7 @@ dgnpop(eg4.3,
 #> ..  ...       ...     ...      ...     ...
 ```
 
-Returning the array of adjusted sub-population rates may be desired for those looking to calculate *category effects* as detailed in [Chevan & Sutherland 2009](https://doi.org/10.1353/dem.0.0060){target="_blank"} to examine the amount to which a difference in rates is attributable to differences in _specific_ sub-populations (see associated vignette with `vignette("category_effects", package="DasGuptR")`). 
+Returning the array of standardised sub-population rates may be desired for those looking to calculate *category effects* as detailed in [Chevan & Sutherland 2009](https://doi.org/10.1353/dem.0.0060){target="_blank"} to examine the amount to which a difference in rates is attributable to differences in _specific_ sub-populations (see associated vignette with `vignette("category_effects", package="DasGuptR")`). 
 
 If desired, it is simple retrieve the population rates by aggregating these post-hoc:  
 ```{r}
@@ -482,7 +482,7 @@ eg5.1 <- data.frame(
 )
 ```
 
-We can decompose this into the rate-adjusted and age-adjusted rates in various ways. 
+We can decompose this into the rate-standardised and age-standardised rates in various ways. 
 
 1. Creating a new column of proportions (rather than percentages) we can include it in the list of factors and do decomposition as previously:  
 
@@ -570,7 +570,7 @@ dgnpop(eg5.3,
 
 ## N populations
 
-When standardising across more than two populations, computing the decompositions across all pairs of populations returns N-1 sets of adjusted rates, and decompositions between populations that are internally inconsistent (i.e. differences between populations 1 and 2, and 2 and 3, should sum to the difference between 1 and 3).  
+When standardising across more than two populations, computing the decompositions across all pairs of populations returns N-1 sets of standardised rates, and decompositions between populations that are internally inconsistent (i.e. differences between populations 1 and 2, and 2 and 3, should sum to the difference between 1 and 3).  
 
 ### 4 vector factors, 5 populations, R = f(a,b,c,d)  
 
@@ -647,15 +647,14 @@ tibble(
 ) |> knitr::kable()
 ```
 
-Das Gupta provided a secondary standardisation procedure that takes sets of pairwise standardised rates and resolves the problems shown above. When given more than two populations, `dgnpop()` will undertake this procedure. In this case, the function will return a list of length 2.  
-The first entry provides the adjusted rates, standardised across all N populations, and can be used as above with `dg_table()` and `dg_plot()`.  
+Das Gupta provided a secondary standardisation procedure that takes sets of pairwise standardised rates and resolves the problems shown above. When given more than two populations, `dgnpop()` will undertake this procedure:  
 
 ```{r}
 dgnpop(eg6.5,
   pop = "pop", factors = c("A", "B", "C", "D"),
   id_vars = "agegroup",
   ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
-)$rates |>
+) |>
   dg_table()
 ```
 
@@ -665,18 +664,19 @@ dgnpop(eg6.5,
   pop = "pop", factors = c("A", "B", "C", "D"),
   id_vars = "agegroup",
   ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
-)$rates |>
+) |>
   dg_table(pop1 = 1963, pop2 = 1968)
 ```
 
-Alternatively, the decomposition effects are returned by `dgnpop()` in the `diffs` entry: 
+Alternatively, all rate-differences are returned by `dgnpop()` if `diffs = TRUE`, in which case a list of length 2 is returned, with the first entry providing the standardised rates, and the second the rate-differences.  
 
 ```{r}
 #| eval: false
 dgnpop(eg6.5,
   pop = "pop", factors = c("A", "B", "C", "D"),
   id_vars = "agegroup",
-  ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
+  ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))",
+  diffs = TRUE
 )$diffs
 #>           diff  pop diff.calc        std.set factor
 #> 1    1.8822361 1963 1963-1968 1973.1978.1983      A
@@ -696,7 +696,7 @@ dgnpop(eg6.5,
   pop = "pop", factors = c("A", "B", "C", "D"),
   id_vars = "agegroup",
   ratefunction = "1000*sum(A*B*C) / (sum(A*B*C) + sum(A*(1-B)*D))"
-)$rates |>
+) |>
   dg_plot()
 ```
 
@@ -760,7 +760,7 @@ dgo_us <- dgnpop(uspop,
   id_vars = "agebin", crossclassified = "thous"
 )
 
-dg_plot(dgo_us$rates)
+dg_plot(dgo_us)
 ```
 
 ## Example: Scottish Reconvictions
@@ -781,7 +781,7 @@ dg_srec <- dgnpop(reconv,
   id_vars = c("Sex", "Age"), crossclassified = "offenders"
 )
 
-dg_plot(dg_srec$rates)
+dg_plot(dg_srec)
 ```
 
 ## Bootstrapping

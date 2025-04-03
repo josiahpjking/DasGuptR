@@ -10,7 +10,7 @@ Authors@R: c(person(given = "Josiah",
                       family = "Matthews",
                       role = "aut"))
 Maintainer: Josiah King <josiah.king@ed.ac.uk>
-Description: Implementation of Prithwis Das Gupta's standardization and decomposition of population rates, as set out in his 1993 manual.  
+Description: Implementation of Das Gupta's standardisation and decomposition of population rates, as set out "Standardization and decomposition of rates: A user’s manual", Das Gupta (1993) <https://www2.census.gov/library/publications/1993/demographics/p23-186.pdf>. The goal of these methods is to calculate adjusted rates based on compositional 'factors' and quantify the contribution of each factor to the difference in crude rates between populations. The package offers functionality to handle various scenarios for any number of factors and populations, where said factors can be comprised of vectors across sub-populations (including cross-classified population breakdowns), and with the option to specify user-defined rate functions.  
 License: GPL (>= 3)
 URL: https://github.com/josiahpjking/DasGuptR
 BugReports: https://github.com/josiahpjking/DasGuptR/issues

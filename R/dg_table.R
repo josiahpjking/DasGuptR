@@ -1,7 +1,8 @@
-#' Creates a small table of Das Gupta adjusted rates. If no populations are specified, rates will be shown for all available populations. If only two populations (or if two particular populations are specified), then difference effects are calculated and presented.
-#' @param dgo DG output
-#' @param pop1 population 1 (character/numeric)
-#' @param pop2 population 2 (character/numeric)
+#' Creates a small table of Das Gupta standardised rates. If no populations are specified, rates will be shown for all available populations. If only two populations (or if two particular populations are specified), then rate-differences and 'decomposition effects' are calculated and presented.
+#' @param dgo output from `dgnpop()`
+#' @param pop1 optional name of first population for decomposition (character/numeric)
+#' @param pop2 optional name of second population for decomposition (character/numeric)
+#' @return data.frame object with rows for each of the K-a standardised rates and the crude rates, and columns for each of the N populations. When only two populations are included, or if two populations are explicitly specified, standardised rate differences are provided, and are also expressed as a percentage of the crude rate differences (typically referred to as 'decomposition effects').
 #' @export
 dg_table <- function(dgo, pop1 = NULL, pop2 = NULL) {
   # n pops

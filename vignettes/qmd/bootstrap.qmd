@@ -201,8 +201,7 @@ bsamps <- bsamps |>
 #| echo: false
 bsamps <- readRDS("bsamps500.RDS")
 bsamps |>
-  transmute(rates = map(dgo, "rates")) |>
-  unnest(rates) |>
+  unnest(dgo) |>
   mutate(pop = as.numeric(as.character(pop))) |>
   # group_by(pop,factor) |>
   # median_qi(rate, .width = c(.5,.8,.95)) |>
