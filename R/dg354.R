@@ -129,7 +129,7 @@ dg354 <- function(df2, i, pop, factors, id_vars, ratefunction, quietly = TRUE) {
     ), e = length(popAi)),
     factor = facti
   )
-  if (!is.null(id_vars) & length(popAi) > 2) {
+  if (!is.null(id_vars) & length(popAi) > 1) {
     res <- as.data.frame(cbind(res, pop_facts[, id_vars, drop = FALSE]))
   }
   return(res)
